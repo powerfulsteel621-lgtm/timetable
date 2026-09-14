@@ -563,6 +563,24 @@ body[data-view="phone"] .view-switch button{width:100%}
 }
 .data-tools button:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
 
+/* ---------- Backup panel ---------- */
+.data-panel[hidden]{display:none}
+.data-panel{margin-top:8px}
+.data-note{margin:0 0 6px;color:var(--muted);font-size:.78rem;line-height:1.4}
+#data-box{
+  width:100%;height:90px;padding:8px;border:1px solid #d5e1ee;border-radius:8px;
+  background:#fbfdff;color:var(--text);font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:12px;resize:vertical;
+}
+.data-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.data-actions button,.data-actions label{
+  flex:1 1 auto;min-height:34px;padding:6px 10px;border:1px solid #d5e1ee;border-radius:99px;
+  background:#f4f8fc;color:#33587f;font:inherit;font-size:.78rem;font-weight:650;
+  text-align:center;cursor:pointer;
+}
+.data-actions .primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.data-actions input[type="file"]{display:none}
+
 /* ---------- Toast (undo, backup messages) ---------- */
 .toast{
   position:fixed;left:50%;bottom:18px;z-index:60;
@@ -838,6 +856,11 @@ body[data-view="phone"] .diff-seg span{height:42px}
         <div class="data-tools">
           <button type="button" id="data-export">Export backup</button>
           <button type="button" id="data-import">Import backup</button>
+        </div>
+        <div class="data-panel" id="data-panel" hidden>
+          <p class="data-note" id="data-note"></p>
+          <textarea id="data-box" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea>
+          <div class="data-actions" id="data-actions"></div>
         </div>
       </div>
 
@@ -2734,53 +2757,126 @@ body[data-view="phone"] .diff-seg span{height:42px}
     try { localStorage.setItem("renert_seeded", JSON.stringify(seeded)); } catch (e) {}
   }
 
+  function backupPayload() {
+    return JSON.stringify({
+      v: 1,
+      assignments: assignments,
+      completed: completed,
+      seeded: seeded
+    });
+  }
+
+  function applyBackup(text) {
+    var data;
+    try { data = JSON.parse(text); } catch (e) { data = null; }
+    if (!data || !Array.isArray(data.assignments)) {
+      showToast("That did not look like a backup.");
+      return false;
+    }
+
+    assignments = data.assignments;
+    completed = Array.isArray(data.completed) ? data.completed : [];
+    seeded = Array.isArray(data.seeded) ? data.seeded : [];
+
+    normalizeAssignments();
+    saveAssignments();
+    saveCompleted();
+    saveSeeded();
+    renderTracker();
+    showToast("Restored " + plural(assignments.length, "item"));
+    return true;
+  }
+
   (function bindBackup() {
     var exportBtn = document.getElementById("data-export");
     var importBtn = document.getElementById("data-import");
+    var panel = document.getElementById("data-panel");
+    var note = document.getElementById("data-note");
+    var box = document.getElementById("data-box");
+    var actions = document.getElementById("data-actions");
+    if (!exportBtn || !importBtn || !panel) return;
 
-    if (exportBtn) exportBtn.addEventListener("click", function () {
-      var payload = JSON.stringify({
-        v: 1,
-        assignments: assignments,
-        completed: completed,
-        seeded: seeded
+    function close() {
+      panel.hidden = true;
+      box.value = "";
+      actions.innerHTML = "";
+    }
+
+    function button(label, primary, onClick) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = label;
+      if (primary) b.className = "primary";
+      b.addEventListener("click", onClick);
+      actions.appendChild(b);
+      return b;
+    }
+
+    exportBtn.addEventListener("click", function () {
+      var payload = backupPayload();
+      panel.hidden = false;
+      note.textContent = "Backup of " + plural(assignments.length, "item") +
+                         ". Copy this text, or save it as a file.";
+      box.value = payload;
+      box.readOnly = false;
+      box.focus();
+      box.select();
+      actions.innerHTML = "";
+
+      button("Copy", true, function () {
+        box.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) {}
+        if (!ok && navigator.clipboard) navigator.clipboard.writeText(payload);
+        showToast("Copied. Paste it somewhere safe.");
       });
 
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(payload).then(function () {
-          showToast("Backup copied : " + plural(assignments.length, "item"));
-        }).catch(function () {
-          window.prompt("Copy this backup:", payload);
-        });
-      } else {
-        window.prompt("Copy this backup:", payload);
-      }
+      button("Save as file", false, function () {
+        var blob = new Blob([payload], {type: "application/json"});
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "renert-backup-" + isoDate(new Date()) + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+      });
+
+      button("Close", false, close);
     });
 
-    if (importBtn) importBtn.addEventListener("click", function () {
-      var text = window.prompt("Paste a backup here. This replaces what is on this device.");
-      if (!text) return;
+    importBtn.addEventListener("click", function () {
+      panel.hidden = false;
+      note.textContent = "Paste a backup below, or pick a saved .json file. " +
+                         "This replaces what is on this device.";
+      box.value = "";
+      box.readOnly = false;
+      box.focus();
+      actions.innerHTML = "";
 
-      var data;
-      try { data = JSON.parse(text); } catch (e) {
-        showToast("That was not a valid backup.");
-        return;
-      }
-      if (!data || !Array.isArray(data.assignments)) {
-        showToast("That was not a valid backup.");
-        return;
-      }
+      button("Restore", true, function () {
+        if (applyBackup(box.value.trim())) close();
+      });
 
-      assignments = data.assignments;
-      completed = Array.isArray(data.completed) ? data.completed : [];
-      seeded = Array.isArray(data.seeded) ? data.seeded : [];
+      // A file picker avoids the clipboard entirely, which is easier on a phone.
+      var label = document.createElement("label");
+      label.textContent = "Choose file";
+      var file = document.createElement("input");
+      file.type = "file";
+      file.accept = "application/json,.json,text/plain";
+      file.addEventListener("change", function () {
+        var f = file.files && file.files[0];
+        if (!f) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          if (applyBackup(String(reader.result).trim())) close();
+        };
+        reader.readAsText(f);
+      });
+      label.appendChild(file);
+      actions.appendChild(label);
 
-      normalizeAssignments();
-      saveAssignments();
-      saveCompleted();
-      saveSeeded();
-      renderTracker();
-      showToast("Restored " + plural(assignments.length, "item"));
+      button("Close", false, close);
     });
   })();
 
