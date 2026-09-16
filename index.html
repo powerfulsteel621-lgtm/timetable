@@ -41,13 +41,7 @@ m.setAttribute("content", "width=device-width, initial-scale=1");
 --radius:14px;
 --shadow:0 6px 18px rgba(30,60,95,.07);
 --btn-height:38px;
-.data-tools{display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
-.data-tools button{
-  flex:1;min-height:34px;padding:4px 10px;border:1px solid #d5e1ee;border-radius:99px;
-  background:#f4f8fc;color:#33587f;font:inherit;font-size:.78rem;font-weight:650;cursor:pointer;
-}
-.sync-status{margin:6px 2px 0;color:var(--muted);font-size:.74rem}
-.sync-status.is-bad{color:#c0392b}
+
 --tone-homeroom:#efe9fb;
 --tone-homeroom-line:#c9b8ec;
 --tone-study:#e7f0fa;
@@ -742,6 +736,13 @@ body[data-view="phone"] .diff-seg span{height:42px}
 body[data-view="phone"] .tracker-form .next-chip{height:auto;min-height:40px;font-size:.84rem}
 
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+.data-tools{display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.data-tools button{
+flex:1;min-height:34px;padding:4px 10px;border:1px solid #d5e1ee;border-radius:99px;
+background:#f4f8fc;color:#33587f;font:inherit;font-size:.78rem;font-weight:650;cursor:pointer;
+}
+.sync-status{margin:6px 2px 0;color:var(--muted);font-size:.74rem}
+.sync-status.is-bad{color:#c0392b}
 </style>
 </head>
 
@@ -867,10 +868,11 @@ data-tab="chart" aria-selected="false" aria-controls="panel-chart">Workload</but
 </div>
 <div id="tracker-done" class="tracker-list" hidden></div>
 <div class="data-tools">
-  <button type="button" id="data-sync">Sync now</button>
-  <button type="button" id="data-sync-setup">Sync setup</button>
+<button type="button" id="data-sync">Sync now</button>
+<button type="button" id="data-sync-setup">Sync setup</button>
 </div>
 <p class="sync-status" id="sync-status">Sync is off.</p>
+
 </div>
 
 <div class="chart-body" id="panel-chart" role="tabpanel" aria-labelledby="tab-chart" hidden>
@@ -1254,11 +1256,8 @@ normalizeAssignments();
 saveAssignments();
 
 function saveAssignments() {
-  function saveAssignments() {
-    localStorage.setItem("renert_assignments", JSON.stringify(assignments));
-    if (typeof touchLocal === "function") touchLocal();
-  }
 localStorage.setItem("renert_assignments", JSON.stringify(assignments));
+if (typeof touchLocal === "function") touchLocal();
 }
 
 /* Checking something off moves it here instead of deleting it, so a mis-tap
@@ -1274,12 +1273,9 @@ completed = [];
 if (!Array.isArray(completed)) completed = [];
 
 function saveCompleted() {
-  function saveAssignments() {
-    localStorage.setItem("renert_assignments", JSON.stringify(assignments));
-    if (typeof touchLocal === "function") touchLocal();
-  }
 if (completed.length > DONE_LIMIT) completed.length = DONE_LIMIT;
 try { localStorage.setItem("renert_completed", JSON.stringify(completed)); } catch (e) {}
+if (typeof touchLocal === "function") touchLocal();
 }
 
 function completeAssignment(id) {
@@ -2960,6 +2956,7 @@ var saved = null;
 try { saved = localStorage.getItem("renert_tab"); } catch (e) {}
 show(saved === "chart" ? "chart" : "list");
 })();
+
   var SYNC_URL_KEY = "renert_sync_url", SYNC_STAMP_KEY = "renert_sync_stamp";
   var syncTimer = null, applyingRemote = false;
 
@@ -3036,6 +3033,7 @@ show(saved === "chart" ? "chart" : "list");
       document.addEventListener("visibilitychange", function(){ if (!document.hidden) pullSync(true); });
     }
   })();
+
 /* ---------- Cross-tab sync ----------
 Another tab (or the phone view in a second window) wrote to storage: pick
 the change up instead of quietly overwriting it on our next save. */
