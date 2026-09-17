@@ -743,6 +743,40 @@ background:#f4f8fc;color:#33587f;font:inherit;font-size:.78rem;font-weight:650;c
 }
 .sync-status{margin:6px 2px 0;color:var(--muted);font-size:.74rem}
 .sync-status.is-bad{color:#c0392b}
+
+/* Neutral schedule blocks: Study Block, Lunch, and Short Break share the exact same gray */
+.block[data-title="Study Block"],
+.block[data-title="Lunch"],
+.block[data-title="Short Break"],
+.block.study-block,
+.block.lunch,
+.block.short-break{
+  --tone:#E2E2DF;
+  --tone-line:#BDBDB8;
+}
+
+
+/* Homeroom, Community, and CALM share one colour */
+.block[data-title="Homeroom"],
+.block[data-title="Community"],
+.block[data-title="CALM"],
+.block.class-calm{
+  --tone:var(--class-calm);
+  --tone-line:var(--class-calm-line);
+}
+
+
+/* Study Block must always use the same gray as Lunch and Short Break */
+.schedule .block[data-title="Study Block"],
+.schedule .block[data-name="Study Block"],
+.schedule .block.study-block,
+.schedule .block.study{
+  --tone:#E2E2DF !important;
+  --tone-line:#BDBDB8 !important;
+  background:#E2E2DF !important;
+  border-color:#BDBDB8 !important;
+}
+
 </style>
 </head>
 
