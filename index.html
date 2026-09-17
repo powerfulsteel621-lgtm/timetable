@@ -4,13 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<link rel="icon" type="image/svg+xml" href="<data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231769e0'/%3E%3Cpath d='M8.5 16.8l5.2 5.2L23.5 10.5' fill='none' stroke='%23ffffff' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231769e0'/%3E%3Cpath d='M8.5 16.8l5.2 5.2L23.5 10.5' fill='none' stroke='%23ffffff' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 
 <meta name="theme-color" content="#ffffff">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-<script src="https://links.renertschool.ca/static/js/jquery-3.5.1.min.js"></script>
 
 <script>
 /* Some hosts rewrite the <head> and drop or override the viewport tag; without
@@ -42,39 +41,34 @@ m.setAttribute("content", "width=device-width, initial-scale=1");
 --shadow:0 6px 18px rgba(30,60,95,.07);
 --btn-height:38px;
 
---tone-homeroom:#efe9fb;
---tone-homeroom-line:#c9b8ec;
---tone-study:#e7f0fa;
---tone-study-line:#bdbdb8;
---tone-humanities:#fdf3d6;
---tone-humanities-line:#e6cf8c;
---tone-stem:#e4f2e4;
---tone-stem-line:#a9d3a9;
---tone-other:#fbe3e8;
---tone-other-line:#eab3bf;
---tone-activity:#fcdad6;
---tone-activity-line:#ea9a90;
---tone-break:#eef0f3;
---tone-break-line:#c4ccd6;
---tone-event:#d8eef0;
---tone-event-line:#87c5cc;
---tone-alberta:#fce7d6;
---tone-alberta-line:#edb87f;
---tone-ontario:#e4e1f7;
---tone-ontario-line:#b0a8e6;
+/* ---------- Pastel palette ----------
+Every fill sits at roughly the same lightness (~90%) and the same moderate
+saturation, so no one class shouts louder than another; every -line is the
+same hue at ~72% lightness for the left edge and tracker borders. Hues are
+spaced around the wheel so neighbouring blocks stay distinguishable. */
+--class-english:#d9e9fb;  --class-english-line:#8fb9e4;   /* blue    210 */
+--class-social:#faedc6;   --class-social-line:#d9bd72;    /* yellow   45 */
+--class-calculus:#fbdce8; --class-calculus-line:#e79db8;  /* pink    340 */
+--class-math:#e5ddf8;     --class-math-line:#ab9bda;      /* lilac   260 */
+--class-biology:#d9efdd;  --class-biology-line:#8ec69a;   /* green   140 */
+--class-physics:#d6eef1;  --class-physics-line:#8bc5cb;   /* cyan    185 */
+--class-cs:#fbe1d2;       --class-cs-line:#e5a87f;        /* peach    25 */
+--class-calm:#eddef7;     --class-calm-line:#bb9ade;      /* purple  280 */
+--class-alberta:#fbe7cf;  --class-alberta-line:#e0b273;   /* sand     35 */
+--class-ontario:#ddddf7;  --class-ontario-line:#a2a2dd;   /* indigo  240 */
+--class-personal:#e6e8ea; --class-personal-line:#b0b7bd;  /* neutral     */
 
-/* Pastel worksheet colours, shared by the assignment tracker and schedule. */
---class-english:#dfeeff; --class-english-line:#a9c8ec;
---class-social:#fff0cf; --class-social-line:#e5c98d;
---class-math:#ebe5fb; --class-math-line:#c0afe8;
---class-calculus:#fce5f5; --class-calculus-line:#f5bde5;
---class-biology:#dff2e3; --class-biology-line:#a8d3b0;
---class-physics:#d9f0f1; --class-physics-line:#9ecdd0;
---class-cs:#fbe4dc; --class-cs-line:#e5b4a7;
---class-calm:#eee8f8; --class-calm-line:#c8b8df;
---class-alberta:#fce7d6; --class-alberta-line:#edb87f;
---class-ontario:#e4e1f7; --class-ontario-line:#b0a8e6;
---class-personal:#f9dfe4; --class-personal-line:#dfaab5;
+/* Block tones that are not a course. */
+--tone-homeroom:#eddef7;  --tone-homeroom-line:#bb9ade;   /* homeroom = CALM purple */
+--tone-break:#e4e5e1;     --tone-break-line:#bcbcb6;      /* break, lunch, study     */
+--tone-study:#e4e5e1;     --tone-study-line:#bcbcb6;
+--tone-humanities:#faedc6;--tone-humanities-line:#d9bd72;
+--tone-stem:#d9efdd;      --tone-stem-line:#8ec69a;
+--tone-other:#e7f0cb;     --tone-other-line:#b2c47e;      /* choir, trivia     80 */
+--tone-activity:#fbdcd8;  --tone-activity-line:#dfa098;   /* after school       5 */
+--tone-event:#dde6ec;     --tone-event-line:#a8bcc9;      /* calendar events      */
+--tone-alberta:#fbe7cf;   --tone-alberta-line:#e0b273;
+--tone-ontario:#ddddf7;   --tone-ontario-line:#a2a2dd;
 }
 
 *{box-sizing:border-box}
@@ -225,8 +219,8 @@ color:#1d2b3a;font-size:.86rem;font-weight:800;letter-spacing:.01em;
 .tracker-item.tone-study .tracker-tag{background:var(--tone-study)}
 .tracker-item.tone-activity .tracker-tag{background:var(--tone-activity)}
 .tracker-item.tone-event .tracker-tag{background:var(--tone-event)}
-.tracker-item.tone-alberta .tracker-tag{background:var(--tone-alberta)}
-.tracker-item.tone-ontario .tracker-tag{background:var(--tone-ontario)}
+.tracker-item.tone-alberta .tracker-tag{background:var(--class-alberta)}
+.tracker-item.tone-ontario .tracker-tag{background:var(--class-ontario)}
 .tracker-item.tone-english .tracker-tag{background:var(--class-english)}
 .tracker-item.tone-social .tracker-tag{background:var(--class-social)}
 .tracker-item.tone-math .tracker-tag{background:var(--class-math)}
@@ -290,8 +284,8 @@ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 .cal-bar.tone-study{background:var(--tone-study)}
 .cal-bar.tone-activity{background:var(--tone-activity)}
 .cal-bar.tone-event{background:var(--tone-event)}
-.cal-bar.tone-alberta{background:var(--tone-alberta)}
-.cal-bar.tone-ontario{background:var(--tone-ontario)}
+.cal-bar.tone-alberta{background:var(--class-alberta)}
+.cal-bar.tone-ontario{background:var(--class-ontario)}
 .cal-bar.tone-english{background:var(--class-english)}
 .cal-bar.tone-social{background:var(--class-social)}
 .cal-bar.tone-math{background:var(--class-math)}
@@ -332,11 +326,12 @@ border-left:4px solid var(--tone-study-line);border-radius:8px;background:#fff;
 .cal-detail-item.tone-homeroom{border-left-color:var(--tone-homeroom-line)}
 .cal-detail-item.tone-activity{border-left-color:var(--tone-activity-line)}
 .cal-detail-item.tone-event{border-left-color:var(--tone-event-line)}
-.cal-detail-item.tone-alberta{border-left-color:var(--tone-alberta-line)}
-.cal-detail-item.tone-ontario{border-left-color:var(--tone-ontario-line)}
+.cal-detail-item.tone-alberta{border-left-color:var(--class-alberta-line)}
+.cal-detail-item.tone-ontario{border-left-color:var(--class-ontario-line)}
 .cal-detail-item.tone-english{border-left-color:var(--class-english-line)}
 .cal-detail-item.tone-social{border-left-color:var(--class-social-line)}
 .cal-detail-item.tone-math{border-left-color:var(--class-math-line)}
+.cal-detail-item.tone-calculus{border-left-color:var(--class-calculus-line)}
 .cal-detail-item.tone-biology{border-left-color:var(--class-biology-line)}
 .cal-detail-item.tone-physics{border-left-color:var(--class-physics-line)}
 .cal-detail-item.tone-cs{border-left-color:var(--class-cs-line)}
@@ -429,7 +424,8 @@ border-radius:9px;background:var(--tone,#f7fafd);
 .block.tone-activity{--tone:var(--tone-activity);--tone-line:var(--tone-activity-line)}
 .block.tone-break{--tone:var(--tone-break);--tone-line:var(--tone-break-line)}
 
-/* Course blocks use the same pastel class colours as the worksheet/tracker. */
+/* Course blocks use the same pastel class colours as the tracker. These come
+after the tone rules on purpose, so a course always wins. */
 .block.class-english{--tone:var(--class-english);--tone-line:var(--class-english-line)}
 .block.class-social{--tone:var(--class-social);--tone-line:var(--class-social-line)}
 .block.class-math{--tone:var(--class-math);--tone-line:var(--class-math-line)}
@@ -571,7 +567,7 @@ color:#33587f;font:inherit;font-size:.76rem;font-weight:650;cursor:pointer;
 .done-restore{background:none;border:none;color:#2f7d4f;font-size:1.05rem;padding:0 4px;align-self:center;cursor:pointer}
 .done-remove{background:none;border:none;color:#dc3545;font-size:1rem;padding:0 4px;align-self:center;cursor:pointer}
 
-/* ---------- Toast (undo, backup messages) ---------- */
+/* ---------- Toast (undo, sync messages) ---------- */
 .toast{
 position:fixed;left:50%;bottom:18px;z-index:60;
 display:flex;align-items:center;gap:14px;max-width:calc(100% - 28px);
@@ -669,15 +665,14 @@ color:#33587f;font:inherit;font-size:.78rem;font-weight:650;cursor:pointer;
 }
 
 /* ---------- Workload chart ----------
-Colours are the validated categorical palette, assigned to a class by its
-fixed position in CLASS_ORDER : never by rank, so filtering never repaints. */
+Segment colours come straight from the class palette, so a bar in the chart
+is the same pastel as that class everywhere else. */
 .chart-body{
 --grid:#e1e0d9;
 --axis:#c3c2b7;
 --ink-muted:#898781;
 --ink-2:#52514e;
---s1:var(--class-english); --s2:var(--class-social); --s3:var(--class-math); --s4:var(--class-calculus);
---s5:var(--class-biology); --s6:var(--class-physics); --s7:var(--class-cs); --s8:var(--class-calm); --s9:#898781;
+--s9:#b6bcc2;
 padding:12px 12px 14px;
 }
 .chart-summary{margin:0 0 10px;color:var(--muted);font-size:.82rem;line-height:1.45}
@@ -706,7 +701,7 @@ box-shadow:0 6px 16px rgba(15,35,60,.25);transform:translate(-50%,-100%);
 .chart-tip em{font-style:normal;color:#b9d2f2}
 .chart-legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:10px}
 .legend-item{display:inline-flex;align-items:center;gap:6px;color:var(--ink-2);font-size:.76rem;font-weight:600}
-.legend-swatch{flex:0 0 10px;width:10px;height:10px;border-radius:3px}
+.legend-swatch{flex:0 0 10px;width:10px;height:10px;border-radius:3px;border:1px solid rgba(0,0,0,.08)}
 .chart-detail{margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
 .chart-detail h4{margin:0 0 6px;font-size:.86rem;font-weight:750}
 .chart-detail-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.84rem}
@@ -735,56 +730,17 @@ padding:4px 6px;border-bottom:1px solid var(--border);text-align:left;white-spac
 body[data-view="phone"] .diff-seg span{height:42px}
 body[data-view="phone"] .tracker-form .next-chip{height:auto;min-height:40px;font-size:.84rem}
 
-@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+/* ---------- Sync controls ---------- */
 .data-tools{display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
 .data-tools button{
 flex:1;min-height:34px;padding:4px 10px;border:1px solid #d5e1ee;border-radius:99px;
 background:#f4f8fc;color:#33587f;font:inherit;font-size:.78rem;font-weight:650;cursor:pointer;
 }
+.data-tools button:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
 .sync-status{margin:6px 2px 0;color:var(--muted);font-size:.74rem}
 .sync-status.is-bad{color:#c0392b}
 
-/* Neutral schedule blocks: Study Block, Lunch, and Short Break share the exact same gray */
-.block[data-title="Study Block"],
-.block[data-title="Lunch"],
-.block[data-title="Short Break"],
-.block.study-block,
-.block.lunch,
-.block.short-break{
-  --tone:#E2E2DF;
-  --tone-line:#BDBDB8;
-}
-
-
-/* Homeroom, Community, and CALM share one colour */
-.block[data-title="Homeroom"],
-.block[data-title="Community"],
-.block[data-title="CALM"],
-.block.class-calm{
-  --tone:var(--class-calm);
-  --tone-line:var(--class-calm-line);
-}
-
-
-/* Study Block must always use the same gray as Lunch and Short Break */
-.schedule .block[data-title="Study Block"],
-.schedule .block[data-name="Study Block"],
-.schedule .block.study-block,
-.schedule .block.study{
-  --tone:#848408 !important;
-  --tone-line:#BDBDB8 !important;
-  background:#E2E2DF !important;
-  border-color:#BDBDB8 !important;
-}
-
-
-/* Give the top-center header a little more breathing room */
-.top-header,
-.header,
-.hero{
-  min-height:110px;
-}
-
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
 
@@ -830,11 +786,11 @@ Week at a Glance
 <a target="_blank" href="https://classes.renertschool.ca/">Detailed</a>
 </div>
 </li>
-<li><a href="https://links.renertschool.ca/=index">Renert Links</a></li>
+<li><a target="_blank" href="https://links.renertschool.ca/">Renert Links</a></li>
 <li><a target="_blank" href="https://library.renertschool.ca/student_main">My Library Books</a></li>
 <li><a target="_blank" href="https://links.renertschool.ca/tv/timetable/3">Block Week Schedule</a></li>
 <li><a target="_blank" href="https://timetable.renertschool.ca/timetable/136">My Timetable</a></li>
-<li><a href="https://links.renertschool.ca/my/photos">My Photos</a></li>
+<li><a target="_blank" href="https://links.renertschool.ca/my/photos">My Photos</a></li>
 </ul>
 </div>
 </div>
@@ -858,7 +814,7 @@ data-tab="chart" aria-selected="false" aria-controls="panel-chart">Workload</but
 <option value="Math 9-12">Math 9-12 (AP Calculus BC)</option>
 <option value="AP Biology">AP Biology</option>
 <option value="Physics 20 Regular">Physics 20 Regular</option>
-<option value="CS3 – Advanced Topics">Computer Scinece 3</option>
+<option value="CS3 – Advanced Topics">Computer Science 3</option>
 <option value="Gr. 12 CALM">Gr. 12 CALM</option>
 <option value="Alberta Universities">Alberta Universities</option>
 <option value="Ontario Universities">Ontario Universities</option>
@@ -867,7 +823,7 @@ data-tab="chart" aria-selected="false" aria-controls="panel-chart">Workload</but
 </select>
 <div class="tracker-dates" id="tracker-dates">
 <label class="date-field">
-<span class="date-label" id="date-label-start">Due date <em>(</em></span>
+<span class="date-label" id="date-label-start">Due date <em>(leave blank for Someday)</em></span>
 <input type="date" id="assignment-date">
 </label>
 <label class="date-field" id="end-date-field" hidden>
@@ -909,6 +865,7 @@ data-tab="chart" aria-selected="false" aria-controls="panel-chart">Workload</but
 <button type="button" id="done-clear">Clear</button>
 </div>
 <div id="tracker-done" class="tracker-list" hidden></div>
+
 <div class="data-tools">
 <button type="button" id="data-sync">Sync now</button>
 <button type="button" id="data-sync-setup">Sync setup</button>
@@ -1006,7 +963,7 @@ Show as table
 <div class="cal-detail" id="calendar-detail" hidden></div>
 </div>
 
-<!-- 6. G-Suite -->
+<!-- 6. TV/Wall Displays -->
 <div class="topic desk-only">
 <div class="section_heading"><i class="bi bi-tv"></i>TV/Wall Displays</div>
 <ul class="items">
@@ -1055,9 +1012,6 @@ Text <a class="link-inline" href="sms:+15873332724">587-333-2724</a>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-
-<script src="https://links.renertschool.ca/static/js/jquery-ui-1.12.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 
 <script>
 (function () {
@@ -1457,7 +1411,7 @@ if (name.includes("ontario")) return "ontario";
 if (name.includes("english")) return "english";
 if (name.includes("social")) return "social";
 if (name.includes("calculus") || name.includes("math 9-12")) return "calculus";
-  if (name.includes("math")) return "math";
+if (name.includes("math")) return "math";
 if (name.includes("biology") || name.includes("bio")) return "biology";
 if (name.includes("physics")) return "physics";
 if (name.includes("computer") || name.includes("cs3") || name.includes("cs")) return "cs";
@@ -1466,7 +1420,7 @@ if (name.includes("personal")) return "personal";
 return "study";
 }
 
-/* AP Calculus gets its own deep orange; plain "Math" keeps the lilac. */
+/* AP Calculus and Math 9-12 are the same course, so both take the pink. */
 function scheduleClassTone(title) {
 var name = String(title || "").toLowerCase();
 if (name.includes("english")) return "english";
@@ -2511,10 +2465,8 @@ renderDone();
 
 /* ---------- Workload chart ----------
 One stacked column per day, Monday through Sunday of the shown week: height
-is difficulty load in points, each segment is a class. Colours are the
-validated categorical palette, pinned to a class by its position in
-classOrder() : so a class keeps its colour no matter what else is on
-screen. Only eight hues exist; the rest fold into "Other". */
+is difficulty load in points, each segment is a class, in that class's own
+pastel. */
 var CHART_DAYS = 7;
 var COLOR_SLOTS = 11;
 var chartSelected = null;      // ISO date opened under the chart
@@ -2536,8 +2488,6 @@ if (opt.value && !isEvent(opt.value) && names.indexOf(opt.value) === -1) names.p
 assignments.forEach(function (a) {
 if (!isEvent(a.className) && names.indexOf(a.className) === -1) names.push(a.className);
 });
-// Courses and Personal take the colour slots; the university buckets are a
-// handful of dated deadlines, so they fold into Other.
 return names.filter(function (n) { return !isUniversityClass(n); })
 .concat(names.filter(isUniversityClass));
 }
@@ -2547,7 +2497,7 @@ var i = order.indexOf(className);
 return (i > -1 && i < COLOR_SLOTS) ? className : "Other";
 }
 
-function seriesColor(key, order) {
+function seriesColor(key) {
 var tone = assignmentTone(key);
 var colors = {
 english: "var(--class-english)",
@@ -2688,7 +2638,7 @@ var el = document.getElementById("chart-legend");
 if (!el) return;
 el.innerHTML = data.series.map(function (key) {
 return '<span class="legend-item"><span class="legend-swatch" style="background:' +
-seriesColor(key, data.order) + '"></span>' + escapeHtml(key) + '</span>';
+seriesColor(key) + '"></span>' + escapeHtml(key) + '</span>';
 }).join("");
 }
 
@@ -2725,7 +2675,7 @@ if (day.items.length) {
 html += day.items.map(function (item) {
 return '<div class="chart-detail-item">' +
 '<span class="chart-detail-dot" style="background:' +
-seriesColor(seriesKey(item.className, data.order), data.order) + '"></span>' +
+seriesColor(seriesKey(item.className, data.order)) + '"></span>' +
 '<span>' + escapeHtml(item.name) +
 ' <span style="color:var(--muted)">· ' + escapeHtml(item.className) + '</span></span>' +
 '<span class="chart-detail-pts">' + DIFFICULTY[difficultyOf(item)].label +
@@ -2867,14 +2817,14 @@ var value = day.byKey[key];
 var full = (value / top) * plotH;
 var y = cursor - full;
 var h = Math.max(1.5, si === 0 ? full : full - GAP);   // gap trims the bottom of upper segments
-var fill = seriesColor(key, data.order);
+var fill = seriesColor(key);
 var attrs = ' class="chart-seg" data-date="' + day.iso + '" data-key="' + escapeHtml(key) + '"';
 var tip = '<title>' + escapeHtml(key + " : " + plural(value, "pt")) + '</title>';
 
 svg += (si === segs.length - 1)
-? '<path' + attrs + ' d="' + topRoundedRect(x, y, barW, h, 4) + '" fill="' + fill + '">' + tip + '</path>'
+? '<path' + attrs + ' d="' + topRoundedRect(x, y, barW, h, 4) + '" fill="' + fill + '" stroke="rgba(0,0,0,.07)" stroke-width="0.5">' + tip + '</path>'
 : '<rect' + attrs + ' x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) +
-'" height="' + h.toFixed(1) + '" fill="' + fill + '">' + tip + '</rect>';
+'" height="' + h.toFixed(1) + '" fill="' + fill + '" stroke="rgba(0,0,0,.07)" stroke-width="0.5">' + tip + '</rect>';
 
 cursor = y;
 });
@@ -2999,82 +2949,83 @@ try { saved = localStorage.getItem("renert_tab"); } catch (e) {}
 show(saved === "chart" ? "chart" : "list");
 })();
 
-  var SYNC_URL_KEY = "renert_sync_url", SYNC_STAMP_KEY = "renert_sync_stamp";
-  var syncTimer = null, applyingRemote = false;
+/* ---------- Cloud sync (Google Apps Script) ---------- */
+var SYNC_URL_KEY = "renert_sync_url", SYNC_STAMP_KEY = "renert_sync_stamp";
+var syncTimer = null, applyingRemote = false;
 
-  function syncUrl(){ try { return localStorage.getItem(SYNC_URL_KEY) || ""; } catch(e){ return ""; } }
-  function localStamp(){ return Number(localStorage.getItem(SYNC_STAMP_KEY) || 0); }
-  function setStamp(v){ try { localStorage.setItem(SYNC_STAMP_KEY, String(v)); } catch(e){} }
-  function saveSeeded(){ try { localStorage.setItem("renert_seeded", JSON.stringify(seeded)); } catch(e){} }
-  function syncStatus(t, bad){
-    var el = document.getElementById("sync-status");
-    if (!el) return;
-    el.textContent = t;
-    el.classList.toggle("is-bad", !!bad);
-  }
+function syncUrl(){ try { return localStorage.getItem(SYNC_URL_KEY) || ""; } catch(e){ return ""; } }
+function localStamp(){ return Number(localStorage.getItem(SYNC_STAMP_KEY) || 0); }
+function setStamp(v){ try { localStorage.setItem(SYNC_STAMP_KEY, String(v)); } catch(e){} }
+function saveSeeded(){ try { localStorage.setItem("renert_seeded", JSON.stringify(seeded)); } catch(e){} }
+function syncStatus(t, bad){
+var el = document.getElementById("sync-status");
+if (!el) return;
+el.textContent = t;
+el.classList.toggle("is-bad", !!bad);
+}
 
-  function touchLocal(){
-    if (applyingRemote || !syncUrl()) return;
-    setStamp(Date.now());
-    clearTimeout(syncTimer);
-    syncTimer = setTimeout(pushSync, 1200);
-  }
+function touchLocal(){
+if (applyingRemote || !syncUrl()) return;
+setStamp(Date.now());
+clearTimeout(syncTimer);
+syncTimer = setTimeout(pushSync, 1200);
+}
 
-  function pushSync(){
-    var url = syncUrl();
-    if (!url) return;
-    var stamp = localStamp() || Date.now();
-    setStamp(stamp);
-    syncStatus("Saving…");
-    fetch(url, {
-      method: "POST",
-      headers: {"Content-Type": "text/plain;charset=utf-8"},
-      body: JSON.stringify({updatedAt:stamp, assignments:assignments, completed:completed, seeded:seeded})
-    }).then(function(r){ return r.json(); })
-      .then(function(){ syncStatus("Saved " + new Date().toLocaleTimeString()); })
-      .catch(function(){ syncStatus("Could not reach the sync script.", true); });
-  }
+function pushSync(){
+var url = syncUrl();
+if (!url) return;
+var stamp = localStamp() || Date.now();
+setStamp(stamp);
+syncStatus("Saving…");
+fetch(url, {
+method: "POST",
+headers: {"Content-Type": "text/plain;charset=utf-8"},
+body: JSON.stringify({updatedAt:stamp, assignments:assignments, completed:completed, seeded:seeded})
+}).then(function(r){ return r.json(); })
+.then(function(){ syncStatus("Saved " + new Date().toLocaleTimeString()); })
+.catch(function(){ syncStatus("Could not reach the sync script.", true); });
+}
 
-  function pullSync(quiet){
-    var url = syncUrl();
-    if (!url) { syncStatus("Sync is off."); return; }
-    if (!quiet) syncStatus("Checking…");
-    fetch(url + (url.indexOf("?") > -1 ? "&" : "?") + "t=" + Date.now())
-      .then(function(r){ return r.json(); })
-      .then(function(remote){
-        var mine = localStamp(), theirs = Number(remote && remote.updatedAt || 0);
-        if (theirs > mine && Array.isArray(remote.assignments)) {
-          applyingRemote = true;
-          assignments = remote.assignments;
-          completed = Array.isArray(remote.completed) ? remote.completed : [];
-          seeded = Array.isArray(remote.seeded) ? remote.seeded : [];
-          normalizeAssignments();
-          saveAssignments(); saveCompleted(); saveSeeded();
-          applyingRemote = false;
-          setStamp(theirs);
-          renderTracker();
-          syncStatus("Updated from cloud " + new Date().toLocaleTimeString());
-        } else if (mine > theirs) { pushSync(); }
-        else { syncStatus("Up to date " + new Date().toLocaleTimeString()); }
-      })
-      .catch(function(){ syncStatus("Could not reach the sync script.", true); });
-  }
+function pullSync(quiet){
+var url = syncUrl();
+if (!url) { syncStatus("Sync is off."); return; }
+if (!quiet) syncStatus("Checking…");
+fetch(url + (url.indexOf("?") > -1 ? "&" : "?") + "t=" + Date.now())
+.then(function(r){ return r.json(); })
+.then(function(remote){
+var mine = localStamp(), theirs = Number(remote && remote.updatedAt || 0);
+if (theirs > mine && Array.isArray(remote.assignments)) {
+applyingRemote = true;
+assignments = remote.assignments;
+completed = Array.isArray(remote.completed) ? remote.completed : [];
+seeded = Array.isArray(remote.seeded) ? remote.seeded : [];
+normalizeAssignments();
+saveAssignments(); saveCompleted(); saveSeeded();
+applyingRemote = false;
+setStamp(theirs);
+renderTracker();
+syncStatus("Updated from cloud " + new Date().toLocaleTimeString());
+} else if (mine > theirs) { pushSync(); }
+else { syncStatus("Up to date " + new Date().toLocaleTimeString()); }
+})
+.catch(function(){ syncStatus("Could not reach the sync script.", true); });
+}
 
-  (function bindSync(){
-    var nowBtn = document.getElementById("data-sync");
-    var setup = document.getElementById("data-sync-setup");
-    if (nowBtn) nowBtn.addEventListener("click", function(){ pullSync(false); });
-    if (setup) setup.addEventListener("click", function(){
-      var url = window.prompt("Paste the Apps Script /exec URL:", syncUrl());
-      if (url === null) return;
-      try { localStorage.setItem(SYNC_URL_KEY, url.trim()); } catch(e){}
-      if (url.trim()) { setStamp(Date.now()); pullSync(false); } else { syncStatus("Sync is off."); }
-    });
-    if (syncUrl()) {
-      pullSync(true);
-      document.addEventListener("visibilitychange", function(){ if (!document.hidden) pullSync(true); });
-    }
-  })();
+(function bindSync(){
+var nowBtn = document.getElementById("data-sync");
+var setup = document.getElementById("data-sync-setup");
+if (nowBtn) nowBtn.addEventListener("click", function(){ pullSync(false); });
+if (setup) setup.addEventListener("click", function(){
+var url = window.prompt("Paste the Apps Script /exec URL:", syncUrl());
+if (url === null) return;
+try { localStorage.setItem(SYNC_URL_KEY, url.trim()); } catch(e){}
+if (url.trim()) { setStamp(Date.now()); pullSync(false); } else { syncStatus("Sync is off."); }
+});
+if (syncUrl()) {
+pullSync(true);
+document.addEventListener("visibilitychange", function(){ if (!document.hidden) pullSync(true); });
+}
+})();
 
 /* ---------- Cross-tab sync ----------
 Another tab (or the phone view in a second window) wrote to storage: pick
