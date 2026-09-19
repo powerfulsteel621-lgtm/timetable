@@ -191,6 +191,16 @@ width:100%;height:36px;padding:6px 10px;border:1px solid #d5e1ee;border-radius:8
 height:36px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:650;font-size:.9rem;cursor:pointer;transition:opacity .15s;
 }
 .tracker-form button:hover{opacity:.9}
+
+.tracker-form .testing-center-toggle{
+height:36px;border:1px solid #d98b85;border-radius:8px;background:#fbe3e1;color:#9f342e;
+font-weight:750;font-size:.9rem;cursor:pointer;transition:background .15s,border-color .15s,color .15s,box-shadow .15s;
+}
+.tracker-form .testing-center-toggle:hover{background:#f6cbc8;border-color:#c96f68}
+.tracker-form .testing-center-toggle.is-active{
+background:#d95b52;border-color:#b9443b;color:#fff;box-shadow:0 2px 7px rgba(180,55,47,.16);
+}
+.tracker-form .testing-center-toggle:focus-visible{outline:2px solid rgba(180,55,47,.25);outline-offset:1px}
 .tracker-dates{display:grid;grid-template-columns:1fr;gap:8px}
 .tracker-dates.is-range{grid-template-columns:1fr 1fr}
 .date-field{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -476,6 +486,41 @@ display:inline-block;margin-left:7px;padding:1px 7px;border-radius:99px;vertical
 background:#fdeceb;color:#8e3129;font-size:.66rem;font-weight:800;letter-spacing:.04em;
 text-transform:uppercase;
 }
+
+/* Testing Center: red, with darker reds reserved for harder tests. */
+.block.is-testing-center{
+background:#f3b7b3;
+border-color:#d98b85;border-left-color:#c96f68;
+color:#54201d;
+}
+.block.is-testing-center .block-title{color:#5a211e}
+.block.is-testing-center .block-time,.block.is-testing-center .block-meta{color:#6f332f}
+.block.is-testing-center .block-assignment-count{color:#5a211e}
+.block.is-testing-center .block-left{background:#a94a43;color:#fff}
+.block.is-testing-center.tc-none{background:#f6cbc8;border-color:#e2aaa5;border-left-color:#d9948d}
+.block.is-testing-center.tc-easy{background:#ed938c;border-color:#d97068;border-left-color:#c75b53;color:#fff}
+.block.is-testing-center.tc-easy .block-title,
+.block.is-testing-center.tc-easy .block-time,
+.block.is-testing-center.tc-easy .block-meta,
+.block.is-testing-center.tc-easy .block-assignment-count{color:#fff}
+.block.is-testing-center.tc-medium{background:#d95b52;border-color:#b9443b;border-left-color:#9f342e;color:#fff}
+.block.is-testing-center.tc-medium .block-title,
+.block.is-testing-center.tc-medium .block-time,
+.block.is-testing-center.tc-medium .block-meta,
+.block.is-testing-center.tc-medium .block-assignment-count{color:#fff}
+.block.is-testing-center.tc-hard{background:#a92f29;border-color:#85221e;border-left-color:#6a1814;color:#fff}
+.block.is-testing-center.tc-hard .block-title,
+.block.is-testing-center.tc-hard .block-time,
+.block.is-testing-center.tc-hard .block-meta,
+.block.is-testing-center.tc-hard .block-assignment-count{color:#fff}
+.testing-center-badge{
+display:inline-block;margin-left:7px;padding:1px 7px;border-radius:99px;vertical-align:1px;
+background:#fff;color:#9f342e;font-size:.66rem;font-weight:800;letter-spacing:.04em;
+text-transform:uppercase;
+}
+.block.is-testing-center.tc-hard .testing-center-badge,
+.block.is-testing-center.tc-medium .testing-center-badge,
+.block.is-testing-center.tc-easy .testing-center-badge{color:#8e241f}
 .is-dimmed .block:not(.is-now){opacity:.42;filter:saturate(.65)}
 .block.is-now{box-shadow:0 0 0 2px rgba(23,105,224,.35);opacity:1}
 
@@ -493,6 +538,7 @@ text-transform:uppercase;
 .sub-links a{min-height:42px}
 .cal-nav button{height:38px;min-width:38px}
 .tracker-form input,.tracker-form select,.tracker-form button{height:42px}
+.tracker-form .testing-center-toggle{height:42px}
 .tracker-edit-icon{padding:8px;font-size:1rem}
 .tracker-delete{padding:0 10px;font-size:1.25rem}
 .tracker-check{width:22px;height:22px;flex-basis:22px}
@@ -535,6 +581,8 @@ body[data-view="phone"] .sub-links a{min-height:42px}
 body[data-view="phone"] .tracker-form input,
 body[data-view="phone"] .tracker-form select,
 body[data-view="phone"] .tracker-form button{height:44px;font-size:16px}
+
+body[data-view="phone"] .tracker-form .testing-center-toggle{height:44px;font-size:16px}
 body[data-view="phone"] .tracker-check{width:22px;height:22px;flex-basis:22px}
 body[data-view="phone"] .tracker-edit-icon{padding:8px;font-size:1rem}
 body[data-view="phone"] .tracker-delete{padding:0 10px;font-size:1.25rem}
@@ -858,6 +906,9 @@ data-tab="chart" aria-selected="false" aria-controls="panel-chart">Workload</but
 <label><input type="radio" name="difficulty" value="hard"><span>Hard<small>3</small></span></label>
 </div>
 </fieldset>
+<button type="button" class="testing-center-toggle" id="testing-center-toggle" hidden aria-pressed="false">
+<i class="bi bi-building-check"></i> Testing Center
+</button>
 <button type="submit" id="assignment-submit">Add Assignment</button>
 </form>
 
@@ -1262,6 +1313,7 @@ if (!a.id) a.id = "a" + Date.now().toString(36) + i + Math.random().toString(36)
 if (!DIFFICULTY[String(a.difficulty || "").toLowerCase()]) a.difficulty = "medium";
 if (!Array.isArray(a.subtasks)) a.subtasks = [];
 if (typeof a.date !== "string") a.date = "";
+if (typeof a.testingCenter !== "boolean") a.testingCenter = false;
 });
 }
 
@@ -1540,6 +1592,10 @@ DIFFICULTY[key].label + ' (' + DIFFICULTY[key].points + ')</option>';
 '</select>' +
 '</div>' +
 '<div class="tracker-edit-actions">' +
+'<button type="button" class="testing-center-toggle edit-testing-center-toggle' +
+(isTcTest(item) ? ' is-active' : '') + '"' +
+(isTestOrQuiz(item) ? '' : ' hidden') +
+' aria-pressed="' + (isTcTest(item) ? 'true' : 'false') + '">Testing Center</button>' +
 '<button type="button" class="save tracker-save">Save</button>' +
 '<button type="button" class="tracker-cancel">Cancel</button>' +
 '</div>' +
@@ -1845,6 +1901,62 @@ renderNextChips();
 if (dateInput) dateInput.addEventListener("input", renderNextChips);
 })();
 
+/* Testing Center eligibility is case-insensitive and defined before the form bindings run. */
+var TC_TEST_WORDS = /\b(test|quiz)\b/i;
+
+function isTcTest(item) {
+return !!item && TC_TEST_WORDS.test(String(item.name || "")) && !!item.testingCenter;
+}
+
+function isTestOrQuiz(item) {
+return !!item && TC_TEST_WORDS.test(String(item.name || ""));
+}
+
+function testingCenterOn(iso) {
+return assignments.find(function (a) {
+return a.date === iso && isTcTest(a);
+}) || null;
+}
+
+(function bindTestingCenterForm() {
+var nameInput = document.getElementById("assignment-name");
+var tcButton = document.getElementById("testing-center-toggle");
+if (!nameInput || !tcButton) return;
+
+function refreshTcButton() {
+var eligible = isTestOrQuiz({name:nameInput.value});
+if (!eligible) {
+tcButton.hidden = true;
+tcButton.classList.remove("is-active");
+tcButton.setAttribute("aria-pressed", "false");
+} else {
+tcButton.hidden = false;
+}
+}
+
+nameInput.addEventListener("input", refreshTcButton);
+tcButton.addEventListener("click", function () {
+if (tcButton.hidden) return;
+tcButton.classList.toggle("is-active");
+tcButton.setAttribute("aria-pressed", tcButton.classList.contains("is-active") ? "true" : "false");
+});
+refreshTcButton();
+})();
+
+document.addEventListener("input", function(e) {
+var editName = e.target.closest ? e.target.closest(".edit-name") : null;
+if (!editName) return;
+var row = editName.closest(".tracker-item");
+var button = row ? row.querySelector(".edit-testing-center-toggle") : null;
+if (!button) return;
+var eligible = isTestOrQuiz({name:editName.value});
+button.hidden = !eligible;
+if (!eligible) {
+button.classList.remove("is-active");
+button.setAttribute("aria-pressed", "false");
+}
+});
+
 document.getElementById("assignment-form").addEventListener("submit", function(e) {
 e.preventDefault();
 var name = document.getElementById("assignment-name").value.trim();
@@ -1861,6 +1973,9 @@ name: name,
 className: className,
 date: date,
 difficulty: picked ? picked.value : "medium",
+testingCenter: !!(document.getElementById("testing-center-toggle") &&
+document.getElementById("testing-center-toggle").classList.contains("is-active") &&
+isTestOrQuiz({name:name})),
 subtasks: []
 };
 if (isEvent(className) && endDate) {
@@ -1876,6 +1991,12 @@ document.getElementById("end-date-field").hidden = true;
 document.getElementById("date-label-start").innerHTML = 'Due date <em>(leave blank for Someday)</em>';
 document.getElementById("difficulty-field").hidden = false;
 document.getElementById("assignment-submit").textContent = "Add Assignment";
+var tcButton = document.getElementById("testing-center-toggle");
+if (tcButton) {
+tcButton.hidden = true;
+tcButton.classList.remove("is-active");
+tcButton.setAttribute("aria-pressed", "false");
+}
 renderNextChips();
 }
 });
@@ -1984,6 +2105,14 @@ renderDone();
 return;
 }
 
+if (e.target.closest(".edit-testing-center-toggle")) {
+var tcEditButton = e.target.closest(".edit-testing-center-toggle");
+if (tcEditButton.hidden) return;
+tcEditButton.classList.toggle("is-active");
+tcEditButton.setAttribute("aria-pressed", tcEditButton.classList.contains("is-active") ? "true" : "false");
+return;
+}
+
 if (e.target.classList.contains("tracker-save")) {
 var saveIndex = assignmentIndexById(id);
 if (saveIndex === -1) return;
@@ -1996,6 +2125,8 @@ assignments[saveIndex].name = name;
 assignments[saveIndex].className = className;
 assignments[saveIndex].date = date;
 if (diffSelect && DIFFICULTY[diffSelect.value]) assignments[saveIndex].difficulty = diffSelect.value;
+var tcToggle = row.querySelector(".edit-testing-center-toggle");
+assignments[saveIndex].testingCenter = !!(tcToggle && !tcToggle.hidden && tcToggle.classList.contains("is-active") && isTestOrQuiz(name));
 if (!isEvent(className)) delete assignments[saveIndex].endDate;
 saveAssignments();
 renderTracker();
@@ -2263,7 +2394,6 @@ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];
 /* An item counts as a test when its own name says so. Anything else due that
 day (homework, a lab write-up) leaves the block alone. */
 var EXAM_WORDS = /\b(test|quiz|exam|midterm|final|assessment)s?\b/i;
-
 function examOn(course, iso) {
 if (!course) return null;
 return assignments.find(function (a) {
@@ -2308,35 +2438,61 @@ var minutes = now.getHours() * 60 + now.getMinutes();
 var blocks = blocksOn(date);
 var early = EARLY_DISMISSAL[isoDate(date)];
 
-var current = isToday ? blocks.find(function (b) {
-return minutes >= toMinutes(b.start) && minutes < toMinutes(b.end);
-}) : null;
+var current = null;
 
 var html = "";
 if (early) html += '<p class="sched-note">Early dismissal at ' + label(early.time) + ' (' + escapeHtml(early.name) + ')</p>';
 if (isToday && !current) html += '<p class="sched-note">Nothing scheduled right now.</p>';
 
 var dayIso = isoDate(date);
+var tcTest = testingCenterOn(dayIso);
+var displayBlocks = blocks.slice();
 
-blocks.forEach(function (b) {
+// A Testing Center booking occupies the after-school slot from 4–7 PM.
+// Any other after-school activity is automatically overridden for that day.
+if (tcTest) {
+displayBlocks = displayBlocks.filter(function (b) {
+return !(toMinutes(b.start) >= 15 * 60 || /after school/i.test(String(b.meta || "")));
+});
+displayBlocks.push({
+start:"16:00",
+end:"19:00",
+title:"Testing Center",
+meta:"After school ┃ 4:00–7:00 PM",
+tone:"activity",
+testingCenter:true,
+tcTest:tcTest
+});
+displayBlocks.sort(function (a, b) { return toMinutes(a.start) - toMinutes(b.start); });
+}
+
+current = isToday ? displayBlocks.find(function (b) {
+return minutes >= toMinutes(b.start) && minutes < toMinutes(b.end);
+}) : null;
+
+displayBlocks.forEach(function (b) {
 var active = b === current;
 var classTone = scheduleClassTone(b.title);
-// Only course blocks carry a count: items due by that course's next meeting.
 var owed = b.course ? dueByNextClass(b.course, date, b.end) : 0;
-// Only this course, only on the day the test is actually due.
-var exam = examOn(b.course, dayIso);
+var exam = b.course ? examOn(b.course, dayIso) : null;
+// A test being written in the Testing Center does not turn the class red.
+if (exam && exam.testingCenter) exam = null;
 var examWord = exam ? (String(exam.name).match(EXAM_WORDS) || ["test"])[0].toUpperCase() : "";
+var tcDifficulty = b.testingCenter ? difficultyOf(b.tcTest) : "";
 
 html +=
 '<div class="block tone-' + b.tone + (classTone ? " class-" + classTone : "") +
-(exam ? " is-exam" : "") + (active ? " is-now" : "") + '"' +
-(exam ? ' title="' + escapeHtml(exam.name) + '"' : '') + '>' +
+(exam ? " is-exam" : "") +
+(b.testingCenter ? " is-testing-center tc-" + tcDifficulty : "") +
+(active ? " is-now" : "") + '"' +
+((exam || b.testingCenter) ? ' title="' + escapeHtml((b.testingCenter ? b.tcTest.name : exam.name)) + '"' : '') + '>' +
 '<div class="block-time">' + label(b.start) + '<br>' + label(b.end) +
 (active ? '<span class="block-left">' + (toMinutes(b.end) - minutes) + 'm left</span>' : '') +
 '</div>' +
 '<div class="block-body">' +
 '<div class="block-title">' + escapeHtml(b.title) +
-(exam ? '<span class="exam-badge">' + escapeHtml(examWord) + '</span>' : '') + '</div>' +
+(exam ? '<span class="exam-badge">' + escapeHtml(examWord) + '</span>' : '') +
+(b.testingCenter ? '<span class="testing-center-badge">TEST</span>' : '') + '</div>' +
 (b.meta ? '<div class="block-meta">' + escapeHtml(b.meta) + '</div>' : '') +
 '</div>' +
 (owed > 0
