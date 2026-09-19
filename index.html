@@ -459,20 +459,21 @@ text-align:center;letter-spacing:-.01em;
 display:inline-block;margin-top:4px;margin-left:6px;padding:1px 8px;border-radius:99px;
 background:#6c757d;color:#fff;font-size:.74rem;font-weight:700;
 }
-/* A test or quiz for that course on that day: the block keeps its subject
-hue but is tinted toward a dark red, so it reads as "this one matters"
-without losing which class it is. */
+/* A test or quiz for that course on that day. One flat dark red for every
+subject, so an exam day is spotted by colour alone. */
 .block.is-exam{
-background-image:linear-gradient(0deg,rgba(176,38,44,.30),rgba(176,38,44,.30));
-border-color:#a33038;border-left-color:#7f232a;
-color:#3d1116;
+background-image:none;
+background:#b4453d;
+border-color:#8e3129;border-left-color:#6f241e;
+color:#fdeceb;
 }
-.block.is-exam .block-title{color:#5d1620}
-.block.is-exam .block-time,.block.is-exam .block-meta{color:#6d2a30}
-.block.is-exam .block-assignment-count{color:#5d1620}
+.block.is-exam .block-title{color:#fff}
+.block.is-exam .block-time,.block.is-exam .block-meta{color:#f6d6d2}
+.block.is-exam .block-assignment-count{color:#fff}
+.block.is-exam .block-left{background:#5f1d18;color:#fff}
 .exam-badge{
 display:inline-block;margin-left:7px;padding:1px 7px;border-radius:99px;vertical-align:1px;
-background:#8f2730;color:#fff;font-size:.66rem;font-weight:800;letter-spacing:.04em;
+background:#fdeceb;color:#8e3129;font-size:.66rem;font-weight:800;letter-spacing:.04em;
 text-transform:uppercase;
 }
 .is-dimmed .block:not(.is-now){opacity:.42;filter:saturate(.65)}
