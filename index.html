@@ -389,21 +389,26 @@ border:1px solid #d5e1ee;border-radius:99px;background:#f4f8fc;
 color:#33587f;font:inherit;font-size:.78rem;font-weight:650;cursor:pointer;
 }
 .tracker-more:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
-.tracker-item.is-editing{padding:6px 10px}
-.tracker-edit{display:flex;align-items:center;gap:7px;width:100%}
-.tracker-edit-fields{display:grid;grid-template-columns:minmax(0,1fr) 140px 135px 110px;gap:7px;flex:1}
+.tracker-item.is-editing{padding:8px 10px}
+.tracker-edit{display:flex;flex-direction:column;align-items:stretch;gap:8px;width:100%}
+.tracker-edit-fields{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(120px,1fr) minmax(130px,1fr) minmax(110px,.8fr);gap:7px;width:100%}
 .tracker-edit-fields input,.tracker-edit-fields select{
-width:100%;height:32px;padding:5px 8px;border:1px solid #cbd9e8;border-radius:7px;background:#fff;font-size:.82rem;color:var(--text);
+width:100%;height:34px;min-width:0;padding:5px 8px;border:1px solid #cbd9e8;border-radius:7px;background:#fff;font-size:.82rem;color:var(--text);
 }
-.tracker-edit-actions{display:flex;gap:4px;flex:0 0 auto}
+.tracker-edit-fields .edit-name{grid-column:1 / -1}
+.tracker-edit-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex-wrap:wrap;width:100%}
 .tracker-edit-actions button{
-height:32px;padding:0 8px;border:1px solid #cbd9e8;border-radius:7px;background:#f6f9fc;color:#40546b;font-size:.78rem;font-weight:650;cursor:pointer;
+height:32px;padding:0 9px;border:1px solid #cbd9e8;border-radius:7px;background:#f6f9fc;color:#40546b;font-size:.78rem;font-weight:650;cursor:pointer;
 }
 .tracker-edit-actions .save{background:var(--primary);border-color:var(--primary);color:#fff}
-@media (max-width:640px){
-.tracker-edit{align-items:stretch;flex-direction:column}
+@media (max-width:760px){
+.tracker-edit-fields{grid-template-columns:1fr 1fr}
+.tracker-edit-fields .edit-name{grid-column:1 / -1}
+}
+@media (max-width:480px){
 .tracker-edit-fields{grid-template-columns:1fr}
-.tracker-edit-actions{justify-content:flex-end}
+.tracker-edit-actions{justify-content:stretch}
+.tracker-edit-actions button{flex:1}
 }
 
 /* ---------- Schedule ---------- */
