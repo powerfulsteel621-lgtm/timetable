@@ -707,11 +707,12 @@ color:#93a3b5;font-size:.52rem;font-weight:700;line-height:.85;white-space:nowra
 .diff-dots.is-hard{color:#5a6b7f}
 
 /* Assignment completion: revealed by clicking the assignment body. */
-.completion-control{display:flex;align-items:center;gap:8px;width:100%;margin-top:5px;padding:0}
-.completion-slider{flex:1 1 auto;width:100%;min-width:180px;accent-color:var(--primary);cursor:pointer}
-.completion-number{width:54px;height:27px;padding:2px 5px;border:1px solid #d5e1ee;border-radius:6px;background:#fff;color:var(--text);font:inherit;font-size:.74rem;font-weight:700;text-align:center}
+.completion-control{display:none;align-items:center;gap:10px;width:100%;margin-top:7px;padding:0}
+.tracker-item.is-open .completion-control{display:flex}
+.completion-slider{flex:1 1 auto;width:100%;min-width:0;height:7px;accent-color:var(--primary);cursor:pointer}
+.completion-number{flex:0 0 58px;width:58px;height:29px;padding:2px 5px;border:1px solid #d5e1ee;border-radius:6px;background:#fff;color:var(--text);font:inherit;font-size:.74rem;font-weight:700;text-align:center}
 .completion-number:focus{outline:2px solid rgba(23,105,224,.25);outline-offset:1px;border-color:#7eafea}
-.completion-percent{min-width:38px;text-align:right;color:#40546b;font-size:.76rem;font-weight:800;font-variant-numeric:tabular-nums}
+.completion-percent{flex:0 0 auto;min-width:42px;text-align:right;color:#40546b;font-size:.76rem;font-weight:800;font-variant-numeric:tabular-nums}
 .tracker-item-info[role="button"]{cursor:pointer;min-width:0}
 .tracker-item-info .completion-control{pointer-events:auto}
 .tracker-item-info .completion-slider,.tracker-item-info .completion-number{cursor:pointer}
@@ -1770,12 +1771,12 @@ DIFFICULTY[diff].dots.split("").map(function (dot) { return '<span aria-hidden="
 '<span class="tracker-item-meta">' + escapeHtml(item.className) + ' ┃ ' +
 '<span class="' + due.cls + '">' + escapeHtml(due.text) + '</span>' +
 '</span>' +
+'<span class="completion-percent" aria-label="' + item.completion + '% completed">' + item.completion + '%</span>' +
 '<div class="completion-control" title="Completion" onclick="event.stopPropagation()">' +
 '<input class="completion-slider" type="range" min="0" max="100" step="1" value="' + item.completion +
 '" data-id="' + escapeHtml(item.id) + '" aria-label="Percent completed">' +
 '<input class="completion-number" type="number" min="0" max="100" step="1" value="' + item.completion +
 '" data-id="' + escapeHtml(item.id) + '" aria-label="Percent completed number">' +
-'<span class="completion-percent">' + item.completion + '%</span>' +
 '</div>' +
 '</div>' +
 '<button type="button" class="tracker-edit-icon" data-id="' + escapeHtml(item.id) +
@@ -2050,9 +2051,11 @@ item.completion = value;
 });
 var control = e.target.closest(".completion-control");
 var slider = control ? control.querySelector(".completion-slider") : null;
-var label = control ? control.querySelector(".completion-percent") : null;
+var row = e.target.closest(".tracker-item");
+var label = row ? row.querySelector(".completion-percent") : null;
 if (slider) slider.value = value;
 if (label) label.textContent = value + "%";
+if (label) label.setAttribute("aria-label", value + "% completed");
 });
 
 document.addEventListener("click", function(e) {
@@ -2081,9 +2084,12 @@ item.completion = completionValue;
 });
 var control = completionSlider.closest(".completion-control");
 var completionNumber = control ? control.querySelector(".completion-number") : null;
-var completionLabel = control ? control.querySelector(".completion-percent") : null;
+var completionLabel = row ? row.querySelector(".completion-percent") : null;
 if (completionNumber) completionNumber.value = completionValue;
-if (completionLabel) completionLabel.textContent = completionValue + "%";
+if (completionLabel) {
+completionLabel.textContent = completionValue + "%";
+completionLabel.setAttribute("aria-label", completionValue + "% completed");
+}
 return;
 }
 
