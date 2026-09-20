@@ -469,18 +469,35 @@ text-align:center;letter-spacing:-.01em;
 display:inline-block;margin-top:4px;margin-left:6px;padding:1px 8px;border-radius:99px;
 background:#6c757d;color:#fff;font-size:.74rem;font-weight:700;
 }
-/* A test or quiz for that course on that day. One flat dark red for every
-subject, so an exam day is spotted by colour alone. */
+/* Tests and quizzes during school use the exact same red difficulty
+palette as Testing Center. Difficulty 0 is the lightest red; harder tests
+use progressively deeper reds. */
 .block.is-exam{
 background-image:none;
-background:#eb6f66;
-border-color:#c96f68;border-left-color:#c96f68;
-color:#fdeceb;
+background:#f6cbc8;
+border-color:#e2aaa5;border-left-color:#d9948d;
+color:#54201d;
 }
-.block.is-exam .block-title{color:#fff}
-.block.is-exam .block-time,.block.is-exam .block-meta{color:#f6d6d2}
-.block.is-exam .block-assignment-count{color:#fff}
-.block.is-exam .block-left{background:#5f1d18;color:#fff}
+.block.is-exam .block-title{color:#5a211e}
+.block.is-exam .block-time,.block.is-exam .block-meta{color:#6f332f}
+.block.is-exam .block-assignment-count{color:#5a211e}
+.block.is-exam .block-left{background:#a94a43;color:#fff}
+.block.is-exam.tc-none{background:#f6cbc8;border-color:#e2aaa5;border-left-color:#d9948d;color:#54201d}
+.block.is-exam.tc-easy{background:#ed938c;border-color:#d97068;border-left-color:#c75b53;color:#fff}
+.block.is-exam.tc-medium{background:#d95b52;border-color:#b9443b;border-left-color:#9f342e;color:#fff}
+.block.is-exam.tc-hard{background:#a92f29;border-color:#85221e;border-left-color:#6a1814;color:#fff}
+.block.is-exam.tc-easy .block-title,
+.block.is-exam.tc-easy .block-time,
+.block.is-exam.tc-easy .block-meta,
+.block.is-exam.tc-easy .block-assignment-count,
+.block.is-exam.tc-medium .block-title,
+.block.is-exam.tc-medium .block-time,
+.block.is-exam.tc-medium .block-meta,
+.block.is-exam.tc-medium .block-assignment-count,
+.block.is-exam.tc-hard .block-title,
+.block.is-exam.tc-hard .block-time,
+.block.is-exam.tc-hard .block-meta,
+.block.is-exam.tc-hard .block-assignment-count{color:#fff}
 .exam-badge{
 display:inline-block;margin-left:7px;padding:1px 7px;border-radius:99px;vertical-align:1px;
 background:#fdeceb;color:#8e3129;font-size:.66rem;font-weight:800;letter-spacing:.04em;
@@ -489,7 +506,7 @@ text-transform:uppercase;
 
 /* Testing Center: red, with darker reds reserved for harder tests. */
 .block.is-testing-center{
-background:#eb6f66;
+background:#f3b7b3;
 border-color:#d98b85;border-left-color:#c96f68;
 color:#54201d;
 }
@@ -2479,10 +2496,11 @@ var exam = b.course ? examOn(b.course, dayIso) : null;
 if (exam && exam.testingCenter) exam = null;
 var examWord = exam ? (String(exam.name).match(EXAM_WORDS) || ["test"])[0].toUpperCase() : "";
 var tcDifficulty = b.testingCenter ? difficultyOf(b.tcTest) : "";
+var examDifficulty = exam ? difficultyOf(exam) : "";
 
 html +=
 '<div class="block tone-' + b.tone + (classTone ? " class-" + classTone : "") +
-(exam ? " is-exam" : "") +
+(exam ? " is-exam tc-" + examDifficulty : "") +
 (b.testingCenter ? " is-testing-center tc-" + tcDifficulty : "") +
 (active ? " is-now" : "") + '"' +
 ((exam || b.testingCenter) ? ' title="' + escapeHtml((b.testingCenter ? b.tcTest.name : exam.name)) + '"' : '') + '>' +
