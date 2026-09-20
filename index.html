@@ -707,11 +707,14 @@ color:#93a3b5;font-size:.52rem;font-weight:700;line-height:.85;white-space:nowra
 .diff-dots.is-hard{color:#5a6b7f}
 
 /* Assignment completion: revealed by clicking the assignment body. */
-.completion-control{display:none;align-items:center;gap:5px;flex:0 0 126px;align-self:center;padding:0 2px}
-.tracker-item.show-completion .completion-control{display:flex}
-.completion-slider{width:86px;accent-color:var(--primary);cursor:pointer}
-.completion-percent{min-width:30px;text-align:right;color:var(--muted);font-size:.72rem;font-weight:750;font-variant-numeric:tabular-nums}
-.tracker-item-info[role="button"]{cursor:pointer}
+.completion-control{display:flex;align-items:center;gap:8px;width:100%;margin-top:5px;padding:0}
+.completion-slider{flex:1 1 auto;width:100%;min-width:180px;accent-color:var(--primary);cursor:pointer}
+.completion-number{width:54px;height:27px;padding:2px 5px;border:1px solid #d5e1ee;border-radius:6px;background:#fff;color:var(--text);font:inherit;font-size:.74rem;font-weight:700;text-align:center}
+.completion-number:focus{outline:2px solid rgba(23,105,224,.25);outline-offset:1px;border-color:#7eafea}
+.completion-percent{min-width:38px;text-align:right;color:#40546b;font-size:.76rem;font-weight:800;font-variant-numeric:tabular-nums}
+.tracker-item-info[role="button"]{cursor:pointer;min-width:0}
+.tracker-item-info .completion-control{pointer-events:auto}
+.tracker-item-info .completion-slider,.tracker-item-info .completion-number{cursor:pointer}
 
 /* ---------- Next-class chips ----------
 Scoped under .tracker-form so they outrank ".tracker-form button", which
@@ -1741,8 +1744,6 @@ return '<div class="subtasks">' + rows +
 function assignmentRow(item, today, initials) {
 var due = dueMeta(item, today);
 var diff = difficultyOf(item);
-var subs = subtasksOf(item);
-var done = subtasksDone(item);
 var open = !!openSubtasks[item.id];
 
 var el = document.createElement("div");
@@ -1764,33 +1765,23 @@ DIFFICULTY[diff].dots.split("").map(function (dot) { return '<span aria-hidden="
 : '') +
 '<input class="tracker-check" type="checkbox" data-id="' + escapeHtml(item.id) +
 '" aria-label="Mark ' + escapeHtml(item.name) + ' complete">' +
-'<div class="tracker-item-info" role="button" tabindex="0" aria-expanded="false" title="Click to set completion">' +
+'<div class="tracker-item-info" role="button" tabindex="0" aria-expanded="' + (open ? "true" : "false") + '" title="Click to add a step">' +
 '<span class="tracker-item-title">' + escapeHtml(item.name) + '</span>' +
 '<span class="tracker-item-meta">' + escapeHtml(item.className) + ' ┃ ' +
 '<span class="' + due.cls + '">' + escapeHtml(due.text) + '</span>' +
 '</span>' +
-'</div>';
-
-if (!isEvent(item.className)) {
-html +=
-'<button class="subs-btn" data-id="' + escapeHtml(item.id) + '" aria-expanded="' + (open ? "true" : "false") +
-'" aria-label="' + (subs.length ? done + " of " + subs.length + " steps done" : "Add steps") +
-'" title="' + (subs.length ? "Steps: " + done + " of " + subs.length + " done" : "Add steps") + '">' +
-(subs.length
-? progressRing(done, subs.length) + '<span>' + done + '/' + subs.length + '</span>'
-: '<span>+</span>') +
-'</button>';
-}
-
-html += '<div class="completion-control" title="Completion">' +
+'<div class="completion-control" title="Completion" onclick="event.stopPropagation()">' +
 '<input class="completion-slider" type="range" min="0" max="100" step="1" value="' + item.completion +
 '" data-id="' + escapeHtml(item.id) + '" aria-label="Percent completed">' +
+'<input class="completion-number" type="number" min="0" max="100" step="1" value="' + item.completion +
+'" data-id="' + escapeHtml(item.id) + '" aria-label="Percent completed number">' +
 '<span class="completion-percent">' + item.completion + '%</span>' +
+'</div>' +
 '</div>' +
 '<button type="button" class="tracker-edit-icon" data-id="' + escapeHtml(item.id) +
 '" aria-label="Edit ' + escapeHtml(item.name) + '" title="Edit assignment"><i class="bi bi-pencil"></i></button>';
 
-if (open) html += subtaskPanel(item);
+if (open && !isEvent(item.className)) html += subtaskPanel(item);
 
 el.innerHTML = html;
 return el;
@@ -2045,9 +2036,23 @@ if (e.key !== "Enter" && e.key !== " ") return;
 var info = e.target.closest ? e.target.closest(".tracker-item-info") : null;
 var row = info ? info.closest(".tracker-item") : null;
 if (!info || !row || !row.getAttribute("data-id")) return;
+if (e.target.closest(".completion-control")) return;
 e.preventDefault();
-row.classList.toggle("show-completion");
-info.setAttribute("aria-expanded", row.classList.contains("show-completion") ? "true" : "false");
+openSubtasks[row.getAttribute("data-id")] = !openSubtasks[row.getAttribute("data-id")];
+renderTracker();
+});
+
+document.addEventListener("input", function(e) {
+if (!e.target.classList.contains("completion-number")) return;
+var value = Math.max(0, Math.min(100, Math.round(Number(e.target.value) || 0)));
+withAssignment(e.target.getAttribute("data-id"), function (item) {
+item.completion = value;
+});
+var control = e.target.closest(".completion-control");
+var slider = control ? control.querySelector(".completion-slider") : null;
+var label = control ? control.querySelector(".completion-percent") : null;
+if (slider) slider.value = value;
+if (label) label.textContent = value + "%";
 });
 
 document.addEventListener("click", function(e) {
@@ -2070,19 +2075,25 @@ var id = row ? row.getAttribute("data-id") : null;
 // --- Assignment completion ---
 var completionSlider = e.target.closest(".completion-slider");
 if (completionSlider) {
-var completionValue = Number(completionSlider.value);
+var completionValue = Math.max(0, Math.min(100, Math.round(Number(completionSlider.value) || 0)));
 withAssignment(completionSlider.getAttribute("data-id"), function (item) {
-item.completion = Math.max(0, Math.min(100, Math.round(completionValue)));
+item.completion = completionValue;
 });
-var completionLabel = completionSlider.parentElement.querySelector(".completion-percent");
+var control = completionSlider.closest(".completion-control");
+var completionNumber = control ? control.querySelector(".completion-number") : null;
+var completionLabel = control ? control.querySelector(".completion-percent") : null;
+if (completionNumber) completionNumber.value = completionValue;
 if (completionLabel) completionLabel.textContent = completionValue + "%";
 return;
 }
 
+var completionNumber = e.target.closest(".completion-number");
+if (completionNumber) return;
+
 var assignmentInfo = e.target.closest(".tracker-item-info");
-if (assignmentInfo && row && !e.target.closest("button") && !e.target.closest("input")) {
-row.classList.toggle("show-completion");
-assignmentInfo.setAttribute("aria-expanded", row.classList.contains("show-completion") ? "true" : "false");
+if (assignmentInfo && row && !e.target.closest("button") && !e.target.closest("input") && !e.target.closest(".completion-control")) {
+openSubtasks[id] = !openSubtasks[id];
+renderTracker();
 return;
 }
 
@@ -2360,8 +2371,6 @@ html += '<div class="cal-detail-item tone-' + assignmentTone(item.className) + '
 '</div>';
 });
 }
-html += '<button type="button" class="cal-add-assignment" id="cal-add-assignment">' +
-'<i class="bi bi-plus-lg"></i> Add assignment on this date</button>';
 
 panel.innerHTML = html;
 panel.hidden = false;
@@ -2410,21 +2419,6 @@ renderCalendar();
 return;
 }
 
-var addAssignmentButton = e.target.closest("#cal-add-assignment");
-if (addAssignmentButton && selectedDate) {
-var form = document.getElementById("assignment-form");
-var dateInput = document.getElementById("assignment-date");
-var classSelect = document.getElementById("assignment-class");
-var nameInput = document.getElementById("assignment-name");
-if (dateInput) dateInput.value = selectedDate;
-if (classSelect) {
-classSelect.value = "";
-classSelect.dispatchEvent(new Event("change"));
-}
-if (nameInput) nameInput.focus();
-if (form) form.scrollIntoView({behavior:"smooth", block:"center"});
-renderNextChips();
-}
 });
 })();
 
@@ -3381,3 +3375,4 @@ renderChart();
 </script>
 </body>
 </html>
+<style>.tracker-item > .subs-btn{display:none !important}</style>
