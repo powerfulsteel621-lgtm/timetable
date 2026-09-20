@@ -700,10 +700,18 @@ color:#40546b;font-size:.86rem;font-weight:650;cursor:pointer;
 .diff-seg input:focus-visible + span{outline:2px solid rgba(23,105,224,.35);outline-offset:1px}
 /* Difficulty on a row: filled/hollow dots, so it never relies on colour alone. */
 .diff-dots{
-align-self:center;flex:0 0 auto;color:#93a3b5;
-font-size:.6rem;font-weight:700;letter-spacing:1px;white-space:nowrap;
+flex:0 0 10px;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+color:#93a3b5;font-size:.52rem;font-weight:700;line-height:.85;white-space:nowrap;
 }
+.diff-dots span{display:block;height:6px;line-height:6px}
 .diff-dots.is-hard{color:#5a6b7f}
+
+/* Assignment completion: revealed by clicking the assignment body. */
+.completion-control{display:none;align-items:center;gap:5px;flex:0 0 126px;align-self:center;padding:0 2px}
+.tracker-item.show-completion .completion-control{display:flex}
+.completion-slider{width:86px;accent-color:var(--primary);cursor:pointer}
+.completion-percent{min-width:30px;text-align:right;color:var(--muted);font-size:.72rem;font-weight:750;font-variant-numeric:tabular-nums}
+.tracker-item-info[role="button"]{cursor:pointer}
 
 /* ---------- Next-class chips ----------
 Scoped under .tracker-form so they outrank ".tracker-form button", which
@@ -1336,6 +1344,8 @@ if (!DIFFICULTY[String(a.difficulty || "").toLowerCase()]) a.difficulty = "mediu
 if (!Array.isArray(a.subtasks)) a.subtasks = [];
 if (typeof a.date !== "string") a.date = "";
 if (typeof a.testingCenter !== "boolean") a.testingCenter = false;
+if (typeof a.completion !== "number" || !isFinite(a.completion)) a.completion = 0;
+a.completion = Math.max(0, Math.min(100, Math.round(a.completion)));
 });
 }
 
@@ -1745,9 +1755,16 @@ var html =
 '<span class="tracker-tag" title="' + escapeHtml(item.className) + '">' +
 escapeHtml(initials[item.className] || firstWord(item.className).charAt(0).toUpperCase()) +
 '</span>' +
+(!isEvent(item.className)
+? '<span class="diff-dots' + (diff === "hard" ? " is-hard" : "") +
+'" title="' + DIFFICULTY[diff].label + ' : ' + plural(DIFFICULTY[diff].points, "pt") +
+'" aria-label="Difficulty ' + DIFFICULTY[diff].label + '">' +
+DIFFICULTY[diff].dots.split("").map(function (dot) { return '<span aria-hidden="true">' + dot + '</span>'; }).join("") +
+'</span>'
+: '') +
 '<input class="tracker-check" type="checkbox" data-id="' + escapeHtml(item.id) +
 '" aria-label="Mark ' + escapeHtml(item.name) + ' complete">' +
-'<div class="tracker-item-info">' +
+'<div class="tracker-item-info" role="button" tabindex="0" aria-expanded="false" title="Click to set completion">' +
 '<span class="tracker-item-title">' + escapeHtml(item.name) + '</span>' +
 '<span class="tracker-item-meta">' + escapeHtml(item.className) + ' ┃ ' +
 '<span class="' + due.cls + '">' + escapeHtml(due.text) + '</span>' +
@@ -1756,9 +1773,6 @@ escapeHtml(initials[item.className] || firstWord(item.className).charAt(0).toUpp
 
 if (!isEvent(item.className)) {
 html +=
-'<span class="diff-dots' + (diff === "hard" ? " is-hard" : "") +
-'" title="' + DIFFICULTY[diff].label + ' : ' + plural(DIFFICULTY[diff].points, "pt") +
-'" aria-label="Difficulty ' + DIFFICULTY[diff].label + '">' + DIFFICULTY[diff].dots + '</span>' +
 '<button class="subs-btn" data-id="' + escapeHtml(item.id) + '" aria-expanded="' + (open ? "true" : "false") +
 '" aria-label="' + (subs.length ? done + " of " + subs.length + " steps done" : "Add steps") +
 '" title="' + (subs.length ? "Steps: " + done + " of " + subs.length + " done" : "Add steps") + '">' +
@@ -1768,10 +1782,13 @@ html +=
 '</button>';
 }
 
-html += '<button type="button" class="tracker-edit-icon" data-id="' + escapeHtml(item.id) +
-'" aria-label="Edit ' + escapeHtml(item.name) + '" title="Edit assignment"><i class="bi bi-pencil"></i></button>' +
-'<button class="tracker-delete" data-id="' + escapeHtml(item.id) +
-'" aria-label="Delete assignment">&times;</button>';
+html += '<div class="completion-control" title="Completion">' +
+'<input class="completion-slider" type="range" min="0" max="100" step="1" value="' + item.completion +
+'" data-id="' + escapeHtml(item.id) + '" aria-label="Percent completed">' +
+'<span class="completion-percent">' + item.completion + '%</span>' +
+'</div>' +
+'<button type="button" class="tracker-edit-icon" data-id="' + escapeHtml(item.id) +
+'" aria-label="Edit ' + escapeHtml(item.name) + '" title="Edit assignment"><i class="bi bi-pencil"></i></button>';
 
 if (open) html += subtaskPanel(item);
 
@@ -2023,6 +2040,16 @@ renderNextChips();
 }
 });
 
+document.addEventListener("keydown", function(e) {
+if (e.key !== "Enter" && e.key !== " ") return;
+var info = e.target.closest ? e.target.closest(".tracker-item-info") : null;
+var row = info ? info.closest(".tracker-item") : null;
+if (!info || !row || !row.getAttribute("data-id")) return;
+e.preventDefault();
+row.classList.toggle("show-completion");
+info.setAttribute("aria-expanded", row.classList.contains("show-completion") ? "true" : "false");
+});
+
 document.addEventListener("click", function(e) {
 var nextChip = e.target.closest(".next-chip");
 if (nextChip) {
@@ -2039,6 +2066,25 @@ return;
 
 var row = e.target.closest(".tracker-item");
 var id = row ? row.getAttribute("data-id") : null;
+
+// --- Assignment completion ---
+var completionSlider = e.target.closest(".completion-slider");
+if (completionSlider) {
+var completionValue = Number(completionSlider.value);
+withAssignment(completionSlider.getAttribute("data-id"), function (item) {
+item.completion = Math.max(0, Math.min(100, Math.round(completionValue)));
+});
+var completionLabel = completionSlider.parentElement.querySelector(".completion-percent");
+if (completionLabel) completionLabel.textContent = completionValue + "%";
+return;
+}
+
+var assignmentInfo = e.target.closest(".tracker-item-info");
+if (assignmentInfo && row && !e.target.closest("button") && !e.target.closest("input")) {
+row.classList.toggle("show-completion");
+assignmentInfo.setAttribute("aria-expanded", row.classList.contains("show-completion") ? "true" : "false");
+return;
+}
 
 // --- Subtasks ---
 var subsBtn = e.target.closest(".subs-btn");
