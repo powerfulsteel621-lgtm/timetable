@@ -712,7 +712,7 @@ color:#93a3b5;font-size:.52rem;font-weight:700;line-height:.85;white-space:nowra
 .completion-slider{flex:1 1 auto;width:100%;min-width:0;height:7px;accent-color:var(--primary);cursor:pointer}
 .completion-number{flex:0 0 58px;width:58px;height:29px;padding:2px 5px;border:1px solid #d5e1ee;border-radius:6px;background:#fff;color:var(--text);font:inherit;font-size:.74rem;font-weight:700;text-align:center}
 .completion-number:focus{outline:2px solid rgba(23,105,224,.25);outline-offset:1px;border-color:#7eafea}
-.completion-percent{flex:0 0 auto;min-width:42px;text-align:right;color:#40546b;font-size:.76rem;font-weight:800;font-variant-numeric:tabular-nums}
+.completion-percent{flex:0 0 auto;min-width:52px;align-self:center;text-align:center;color:#40546b;font-size:.98rem;font-weight:850;font-variant-numeric:tabular-nums;line-height:1}
 .tracker-item-info[role="button"]{cursor:pointer;min-width:0}
 .tracker-item-info .completion-control{pointer-events:auto}
 .tracker-item-info .completion-slider,.tracker-item-info .completion-number{cursor:pointer}
@@ -1771,7 +1771,6 @@ DIFFICULTY[diff].dots.split("").map(function (dot) { return '<span aria-hidden="
 '<span class="tracker-item-meta">' + escapeHtml(item.className) + ' ┃ ' +
 '<span class="' + due.cls + '">' + escapeHtml(due.text) + '</span>' +
 '</span>' +
-'<span class="completion-percent" aria-label="' + item.completion + '% completed">' + item.completion + '%</span>' +
 '<div class="completion-control" title="Completion" onclick="event.stopPropagation()">' +
 '<input class="completion-slider" type="range" min="0" max="100" step="1" value="' + item.completion +
 '" data-id="' + escapeHtml(item.id) + '" aria-label="Percent completed">' +
@@ -1779,6 +1778,7 @@ DIFFICULTY[diff].dots.split("").map(function (dot) { return '<span aria-hidden="
 '" data-id="' + escapeHtml(item.id) + '" aria-label="Percent completed number">' +
 '</div>' +
 '</div>' +
+'<span class="completion-percent" aria-label="' + item.completion + '% completed">' + item.completion + '%</span>' +
 '<button type="button" class="tracker-edit-icon" data-id="' + escapeHtml(item.id) +
 '" aria-label="Edit ' + escapeHtml(item.name) + '" title="Edit assignment"><i class="bi bi-pencil"></i></button>';
 
