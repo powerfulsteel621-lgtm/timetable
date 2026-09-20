@@ -96,6 +96,21 @@ background:linear-gradient(115deg,#dceeff 0%,#eef8ff 58%,#ffffff 100%);
 .my-heading{margin:0;font-size:clamp(1.1rem,1.6vw,1.4rem);line-height:1.15;text-align:center;letter-spacing:-.02em}
 .my-heading a{color:#152941;font-weight:750;text-decoration:none}
 
+.daily-briefing{padding:0;overflow:hidden}
+.daily-briefing-body{padding:12px 14px 14px}
+.briefing-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:10px}
+.briefing-stat{padding:8px 6px;border:1px solid #dbe4ef;border-radius:9px;background:#f8fbfe;text-align:center}
+.briefing-stat strong{display:block;font-size:1.15rem;line-height:1.05;color:var(--text)}
+.briefing-stat span{display:block;margin-top:3px;color:var(--muted);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.briefing-message{margin:4px 0 10px;color:#40546b;font-size:.82rem;font-weight:600}
+.what-should-i-do{width:100%;min-height:38px;padding:7px 12px;border:1px solid #cbd9e8;border-radius:9px;background:#f4f8fc;color:#33587f;font:inherit;font-size:.84rem;font-weight:750;cursor:pointer}
+.what-should-i-do:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
+.what-should-i-do:focus-visible{outline:2px solid rgba(23,105,224,.3);outline-offset:2px}
+.briefing-recommendation{margin-top:9px;padding:9px 10px;border-radius:9px;background:#fff;border:1px solid #dbe4ef;font-size:.8rem;color:#40546b}
+.briefing-recommendation strong{display:block;color:var(--text);font-size:.88rem;margin-bottom:2px}
+.briefing-recommendation small{display:block;color:var(--muted);line-height:1.35}
+@media (max-width:480px){.briefing-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.briefing-stat{padding:7px 3px}.briefing-stat strong{font-size:1.05rem}}
+
 /* ---------- Shell ---------- */
 .container-fluid{width:min(1400px,calc(100% - 40px));max-width:1400px;margin:0 auto;padding:14px 0 48px}
 
@@ -201,6 +216,10 @@ font-weight:750;font-size:.9rem;cursor:pointer;transition:background .15s,border
 background:#d95b52;border-color:#b9443b;color:#fff;box-shadow:0 2px 7px rgba(180,55,47,.16);
 }
 .tracker-form .testing-center-toggle:focus-visible{outline:2px solid rgba(180,55,47,.25);outline-offset:1px}
+.tracker-edit-actions .edit-testing-center-toggle{height:36px;padding:0 12px;border:1px solid #d98b85;border-radius:8px;background:#fbe3e1;color:#9f342e;font:inherit;font-size:.86rem;font-weight:750;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.tracker-edit-actions .edit-testing-center-toggle:hover{background:#f6cbc8;border-color:#c96f68}
+.tracker-edit-actions .edit-testing-center-toggle.is-active{background:#d95b52;border-color:#b9443b;color:#fff}
+.tc-edit-state{margin-left:5px;font-size:.7rem;opacity:.78}
 .tracker-dates{display:grid;grid-template-columns:1fr;gap:8px}
 .tracker-dates.is-range{grid-template-columns:1fr 1fr}
 .date-field{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -213,6 +232,11 @@ display:flex;align-items:stretch;gap:8px;min-height:42px;
 padding:6px 10px 6px 0;border:1px solid #d5e1ee;border-radius:8px;background:#fff;font-size:.88rem;
 }
 .tracker-item.overdue{background:#fde8e8;border-color:#f5c6cb}
+
+.tracker-item.priority-green{background:#edf8ef;border-color:#b9ddc0}
+.tracker-item.priority-orange{background:#fff4df;border-color:#edc77d}
+.tracker-item.priority-red{background:#fde9e7;border-color:#e7aaa4}
+.tracker-item.priority-green .tracker-item-meta,.tracker-item.priority-orange .tracker-item-meta,.tracker-item.priority-red .tracker-item-meta{color:#536579}
 
 /* Thick subject tag carrying the course initial(s). */
 .tracker-tag{
@@ -869,6 +893,20 @@ background:#f4f8fc;color:#33587f;font:inherit;font-size:.78rem;font-weight:650;c
 </div>
 <div class="now-next" id="now-next" hidden></div>
 </header>
+
+<div class="topic daily-briefing" id="daily-briefing-card">
+<div class="section_heading"><i class="bi bi-sunrise"></i>Daily Briefing</div>
+<div class="daily-briefing-body">
+<div class="briefing-summary">
+<div class="briefing-stat"><strong id="briefing-due">0</strong><span>Due today</span></div>
+<div class="briefing-stat"><strong id="briefing-tests">0</strong><span>Tests / Quizzes</span></div>
+<div class="briefing-stat"><strong id="briefing-week">0</strong><span>This week</span></div>
+</div>
+<p class="briefing-message" id="briefing-message">Checking your workload…</p>
+<button type="button" class="what-should-i-do" id="what-should-i-do">What should I do?</button>
+<div class="briefing-recommendation" id="briefing-recommendation" hidden></div>
+</div>
+</div>
 
 <div class="topic desk-only" id="week-card">
 <div class="section_heading">
@@ -1631,7 +1669,7 @@ DIFFICULTY[key].label + ' (' + DIFFICULTY[key].points + ')</option>';
 '<button type="button" class="testing-center-toggle edit-testing-center-toggle' +
 (isTcTest(item) ? ' is-active' : '') + '"' +
 (isTestOrQuiz(item) ? '' : ' hidden') +
-' aria-pressed="' + (isTcTest(item) ? 'true' : 'false') + '">Testing Center</button>' +
+' data-enabled="' + (isTcTest(item) ? 'true' : 'false') + '" aria-pressed="' + (isTcTest(item) ? 'true' : 'false') + '">Testing Center <span class="tc-edit-state">' + (isTcTest(item) ? 'ON' : 'OFF') + '</span></button>' +
 '<button type="button" class="save tracker-save">Save</button>' +
 '<button type="button" class="tracker-cancel">Cancel</button>' +
 '</div>' +
@@ -1701,6 +1739,110 @@ if (days <= 3) return {text:"Due in " + days + " days", cls:"due-soon"};
 return {text:"Due " + formatAssignmentDate(item.date), cls:""};
 }
 
+function assignmentPriority(item, today) {
+if (!item || isEvent(item.className)) return "";
+var score = 0;
+var completion = Math.max(0, Math.min(100, Number(item.completion) || 0));
+var isTest = isTestOrQuiz(item);
+if (isTest) score += 45;
+
+if (!item.date) {
+score += completion < 30 ? 10 : 0;
+} else {
+var due = new Date(item.date + "T00:00:00");
+if (!isNaN(due)) {
+var days = daysBetween(today || startOfToday(), due);
+if (days < 0) score += 40;
+else if (days === 0) score += 35;
+else if (days === 1) score += 25;
+else if (days <= 3) score += 15;
+else if (days <= 7) score += 8;
+}
+}
+
+if (completion < 25) score += 15;
+else if (completion < 60) score += 8;
+else if (completion >= 90) score -= 10;
+
+if (score >= 60) return "red";
+if (score >= 30) return "orange";
+return "green";
+}
+
+function briefingData() {
+var today = startOfToday();
+var todayIso = isoDate(today);
+var weekEnd = new Date(today);
+weekEnd.setDate(weekEnd.getDate() + 7);
+var active = assignments.filter(function(item){ return !isEvent(item.className) && !item.completed; });
+var dueToday = active.filter(function(item){ return item.date === todayIso; });
+var testsToday = dueToday.filter(isTestOrQuiz);
+var testsWeek = active.filter(function(item){
+if (!item.date) return false;
+var d = new Date(item.date + "T00:00:00");
+return !isNaN(d) && d >= today && d <= weekEnd && isTestOrQuiz(item);
+});
+var weekItems = active.filter(function(item){
+if (!item.date) return false;
+var d = new Date(item.date + "T00:00:00");
+return !isNaN(d) && d >= today && d <= weekEnd;
+});
+return {today:today, active:active, dueToday:dueToday, testsToday:testsToday, testsWeek:testsWeek, weekItems:weekItems};
+}
+
+function renderDailyBriefing() {
+var dueEl = document.getElementById("briefing-due");
+var testsEl = document.getElementById("briefing-tests");
+var weekEl = document.getElementById("briefing-week");
+var msg = document.getElementById("briefing-message");
+if (!dueEl || !testsEl || !weekEl || !msg) return;
+var data = briefingData();
+dueEl.textContent = data.dueToday.length;
+testsEl.textContent = data.testsWeek.length;
+weekEl.textContent = data.weekItems.length;
+
+if (data.dueToday.length === 0 && data.weekItems.length === 0) msg.textContent = "Nothing is due in the next week. You’re clear.";
+else if (data.testsToday.length) msg.textContent = data.testsToday.length === 1 ? "You have a test or quiz due today." : "You have " + data.testsToday.length + " tests or quizzes due today.";
+else if (data.dueToday.length) msg.textContent = data.dueToday.length + " item" + (data.dueToday.length === 1 ? "" : "s") + " due today.";
+else if (data.testsWeek.length) msg.textContent = "You have " + data.testsWeek.length + " test" + (data.testsWeek.length === 1 ? "" : "s") + " or quiz" + (data.testsWeek.length === 1 ? "" : "zes") + " coming up this week.";
+else msg.textContent = data.weekItems.length + " item" + (data.weekItems.length === 1 ? "" : "s") + " due this week.";
+}
+
+function recommendedAssignment() {
+var data = briefingData();
+var candidates = data.active.filter(function(item){ return item.date || isTestOrQuiz(item); });
+if (!candidates.length) return null;
+return candidates.slice().sort(function(a,b){
+var pa = assignmentPriority(a, data.today);
+var pb = assignmentPriority(b, data.today);
+var rank = {red:3, orange:2, green:1};
+var r = (rank[pb] || 0) - (rank[pa] || 0);
+if (r) return r;
+var da = a.date ? new Date(a.date + "T00:00:00") : new Date("2999-12-31T00:00:00");
+var db = b.date ? new Date(b.date + "T00:00:00") : new Date("2999-12-31T00:00:00");
+return da - db;
+})[0];
+}
+
+(function bindWhatShouldIDo(){
+var btn = document.getElementById("what-should-i-do");
+var out = document.getElementById("briefing-recommendation");
+if (!btn || !out) return;
+btn.addEventListener("click", function(){
+var item = recommendedAssignment();
+if (!item) {
+out.hidden = false;
+out.innerHTML = "<strong>You’re clear.</strong><small>There are no active dated assignments to prioritize right now.</small>";
+return;
+}
+var priority = assignmentPriority(item, startOfToday());
+var due = dueMeta(item, startOfToday());
+out.hidden = false;
+out.innerHTML = "<strong>Work on: " + escapeHtml(item.name) + "</strong>" +
+"<small>" + escapeHtml(item.className) + " · " + escapeHtml(due.text) + " · " + item.completion + "% complete · " + priority.toUpperCase() + " priority</small>";
+});
+})();
+
 function subtasksOf(item) {
 return Array.isArray(item.subtasks) ? item.subtasks : [];
 }
@@ -1746,11 +1888,14 @@ function assignmentRow(item, today, initials) {
 var due = dueMeta(item, today);
 var diff = difficultyOf(item);
 var open = !!openSubtasks[item.id];
+var priority = assignmentPriority(item, today);
 
 var el = document.createElement("div");
 el.className = "tracker-item tone-" + assignmentTone(item.className) +
 (due.cls === "due-late" ? " overdue" : "") +
+(priority ? " priority-" + priority : "") +
 (open ? " is-open" : "");
+el.setAttribute("data-priority", priority || "");
 el.setAttribute("data-id", item.id);
 
 var html =
@@ -1860,6 +2005,7 @@ lists[key].innerHTML = '<small style="color:var(--muted);padding:4px 0;">' + SEC
 });
 
 renderDone();
+renderDailyBriefing();
 renderSchedule();
 renderNowNext();
 renderCalendar();
@@ -2222,8 +2368,12 @@ return;
 if (e.target.closest(".edit-testing-center-toggle")) {
 var tcEditButton = e.target.closest(".edit-testing-center-toggle");
 if (tcEditButton.hidden) return;
-tcEditButton.classList.toggle("is-active");
-tcEditButton.setAttribute("aria-pressed", tcEditButton.classList.contains("is-active") ? "true" : "false");
+var tcOn = tcEditButton.getAttribute("data-enabled") !== "true";
+tcEditButton.setAttribute("data-enabled", tcOn ? "true" : "false");
+tcEditButton.classList.toggle("is-active", tcOn);
+tcEditButton.setAttribute("aria-pressed", tcOn ? "true" : "false");
+var tcState = tcEditButton.querySelector(".tc-edit-state");
+if (tcState) tcState.textContent = tcOn ? "ON" : "OFF";
 return;
 }
 
@@ -2240,7 +2390,7 @@ assignments[saveIndex].className = className;
 assignments[saveIndex].date = date;
 if (diffSelect && DIFFICULTY[diffSelect.value]) assignments[saveIndex].difficulty = diffSelect.value;
 var tcToggle = row.querySelector(".edit-testing-center-toggle");
-assignments[saveIndex].testingCenter = !!(tcToggle && !tcToggle.hidden && tcToggle.classList.contains("is-active") && isTestOrQuiz(name));
+assignments[saveIndex].testingCenter = !!(tcToggle && !tcToggle.hidden && tcToggle.getAttribute("data-enabled") === "true" && isTestOrQuiz({name:name}));
 if (!isEvent(className)) delete assignments[saveIndex].endDate;
 saveAssignments();
 renderTracker();
