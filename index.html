@@ -745,7 +745,7 @@ color:#5a6b7f;font:inherit;font-size:.7rem;font-weight:700;cursor:pointer;
 }
 .subs-btn:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
 .subs-btn svg{display:block;width:14px;height:14px;flex:0 0 14px}
-.subtasks{flex:1 0 100%;margin:6px 0 2px;padding:8px 4px 2px 44px;border-top:1px dashed #e2eaf3}
+.subtasks{flex:1 0 100%;margin:2px 0 2px;padding:4px 4px 2px 44px;border-top:1px dashed #e2eaf3}
 .subtask{display:flex;align-items:center;gap:6px;padding:2px 0;font-size:.84rem}
 .subtask label{display:flex;align-items:center;gap:8px;flex:1;min-width:0;cursor:pointer}
 .subtask input[type="checkbox"]{width:15px;height:15px;flex:0 0 15px;margin:0;accent-color:var(--primary);cursor:pointer}
@@ -753,7 +753,7 @@ color:#5a6b7f;font:inherit;font-size:.7rem;font-weight:700;cursor:pointer;
 .subtask.is-done span{color:var(--muted);text-decoration:line-through}
 .subtask button{padding:0 2px;border:none;background:none;color:#b7c3d1;font-size:.9rem;cursor:pointer}
 .subtask button:hover{color:#dc3545}
-.subtask-add{display:flex;gap:6px;margin-top:6px}
+.subtask-add{display:flex;gap:6px;margin-top:2px}
 .subtask-add input{
 flex:1;min-width:0;height:30px;padding:4px 8px;border:1px solid #d5e1ee;border-radius:7px;
 background:#fff;font-size:.82rem;color:var(--text);
@@ -2044,18 +2044,60 @@ renderTracker();
 });
 
 document.addEventListener("input", function(e) {
-if (!e.target.classList.contains("completion-number")) return;
-var value = Math.max(0, Math.min(100, Math.round(Number(e.target.value) || 0)));
-withAssignment(e.target.getAttribute("data-id"), function (item) {
-item.completion = value;
-});
+if (e.target.classList.contains("completion-number")) {
+// Do not redraw while typing. Redrawing on every keystroke prevents multi-digit edits.
+var raw = e.target.value;
+var numeric = Number(raw);
 var control = e.target.closest(".completion-control");
 var slider = control ? control.querySelector(".completion-slider") : null;
 var row = e.target.closest(".tracker-item");
 var label = row ? row.querySelector(".completion-percent") : null;
+if (raw === "") return;
+if (!Number.isFinite(numeric)) return;
+var value = Math.max(0, Math.min(100, Math.round(numeric)));
 if (slider) slider.value = value;
-if (label) label.textContent = value + "%";
-if (label) label.setAttribute("aria-label", value + "% completed");
+if (label) {
+label.textContent = value + "%";
+label.setAttribute("aria-label", value + "% completed");
+}
+return;
+}
+
+if (e.target.classList.contains("completion-slider")) {
+var sliderValue = Math.max(0, Math.min(100, Math.round(Number(e.target.value) || 0)));
+var sliderRow = e.target.closest(".tracker-item");
+var sliderLabel = sliderRow ? sliderRow.querySelector(".completion-percent") : null;
+var numberInput = e.target.closest(".completion-control") ? e.target.closest(".completion-control").querySelector(".completion-number") : null;
+if (numberInput) numberInput.value = sliderValue;
+if (sliderLabel) {
+sliderLabel.textContent = sliderValue + "%";
+sliderLabel.setAttribute("aria-label", sliderValue + "% completed");
+}
+var sliderIndex = assignmentIndexById(e.target.getAttribute("data-id"));
+if (sliderIndex !== -1) {
+assignments[sliderIndex].completion = sliderValue;
+saveAssignments();
+}
+}
+});
+
+document.addEventListener("change", function(e) {
+if (!e.target.classList.contains("completion-number")) return;
+var raw = e.target.value;
+var value = Math.max(0, Math.min(100, Math.round(Number(raw) || 0)));
+e.target.value = value;
+var id = e.target.getAttribute("data-id");
+var index = assignmentIndexById(id);
+if (index !== -1) {
+assignments[index].completion = value;
+saveAssignments();
+}
+var row = e.target.closest(".tracker-item");
+var label = row ? row.querySelector(".completion-percent") : null;
+if (label) {
+label.textContent = value + "%";
+label.setAttribute("aria-label", value + "% completed");
+}
 });
 
 document.addEventListener("click", function(e) {
@@ -2076,23 +2118,10 @@ var row = e.target.closest(".tracker-item");
 var id = row ? row.getAttribute("data-id") : null;
 
 // --- Assignment completion ---
+// Completion controls are handled by the input/change listeners above so the
+// row is not rebuilt while the user is dragging or typing.
 var completionSlider = e.target.closest(".completion-slider");
-if (completionSlider) {
-var completionValue = Math.max(0, Math.min(100, Math.round(Number(completionSlider.value) || 0)));
-withAssignment(completionSlider.getAttribute("data-id"), function (item) {
-item.completion = completionValue;
-});
-var control = completionSlider.closest(".completion-control");
-var completionNumber = control ? control.querySelector(".completion-number") : null;
-var completionLabel = row ? row.querySelector(".completion-percent") : null;
-if (completionNumber) completionNumber.value = completionValue;
-if (completionLabel) {
-completionLabel.textContent = completionValue + "%";
-completionLabel.setAttribute("aria-label", completionValue + "% completed");
-}
-return;
-}
-
+if (completionSlider) return;
 var completionNumber = e.target.closest(".completion-number");
 if (completionNumber) return;
 
