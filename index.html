@@ -325,16 +325,16 @@ margin:0;color:#2d5286;font-size:.92rem;font-weight:700;text-align:center;
   .card-grid > #calendar-card{
     grid-area:calendar;
     min-width:0;
-    margin-top:0;
+    margin-top:-12px;
   }
 
   /* Let the three lower utility cards participate directly in the main grid. */
   .card-grid > .col-stack.tight{display:contents;}
-  .card-grid > .col-stack.tight > .topic:nth-child(1){grid-area:printing;}
-  .card-grid > .col-stack.tight > .topic:nth-child(2){grid-area:postsecondary;}
-  .card-grid > .col-stack.tight > .topic:nth-child(3){grid-area:exams;}
-  .card-grid > .topic.desk-only:not(#guidance-card){grid-area:tv;}
-  .card-grid > #guidance-card{grid-area:guidance; min-width:0;}
+  .card-grid > .col-stack.tight > .topic:nth-child(1){grid-area:printing; align-self:stretch; height:100%;}
+  .card-grid > .col-stack.tight > .topic:nth-child(2){grid-area:postsecondary; align-self:stretch; height:100%;}
+  .card-grid > .col-stack.tight > .topic:nth-child(3){grid-area:exams; align-self:stretch; height:100%;}
+  .card-grid > .topic.desk-only:not(#guidance-card){grid-area:tv; align-self:stretch; height:100%;}
+  .card-grid > #guidance-card{grid-area:guidance; min-width:0; align-self:stretch; height:100%;}
 
   /* Compact middle stack, matching the reference proportions. */
   .intro-header{min-height:52px;padding:10px 12px;gap:5px;}
@@ -1151,6 +1151,7 @@ Show as table
 <ul class="items">
 <li><a target="_blank" href="https://myap.collegeboard.org/">AP Classroom</a></li>
 <li><a target="_blank" href="https://www.collegeboard.org/">College Board</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="https://calculus.flippedmath.com/version-1.html">Flipped Math Calculus</a></li>
 <li class="has-subs">
 <a target="_blank" href="https://www.alberta.ca/diploma-exams">Diploma Exams</a>
 <div class="sub-links">
