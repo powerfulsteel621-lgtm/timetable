@@ -226,12 +226,6 @@ background:#d95b52;border-color:#b9443b;color:#fff;box-shadow:0 2px 7px rgba(180
 .date-label{color:var(--muted);font-size:.72rem;font-weight:650}
 .tracker-section-title{font-size:.85rem;font-weight:700;color:var(--muted);margin:8px 0 4px;text-transform:uppercase;letter-spacing:.03em}
 .tracker-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
-.week-day-group{display:flex;flex-direction:column;gap:6px;margin:10px 0 14px}
-.week-day-heading{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:8px;background:#eef3f8;color:#4f6072;font-size:.8rem;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
-.week-day-heading.is-today{background:#dfeaf7;color:#274c72}
-.week-day-heading .week-day-date{font-weight:650;color:var(--muted);text-transform:none}
-.week-day-empty{padding:2px 4px 4px;color:var(--muted);font-size:.78rem;font-style:italic}
-.week-day-group.is-today{margin-top:5px}
 .tracker-item{
 position:relative;overflow:hidden;
 display:flex;align-items:stretch;gap:8px;min-height:42px;
@@ -2008,8 +2002,7 @@ var initials = courseInitials();
 var today = startOfToday();
 
 var oneWeek = new Date(today);
-// Rolling seven-day window: today through six days from today.
-oneWeek.setDate(oneWeek.getDate() + 6);
+oneWeek.setDate(oneWeek.getDate() + 7);
 
 var oneMonth = new Date(today);
 oneMonth.setMonth(oneMonth.getMonth() + 1);
@@ -2028,12 +2021,10 @@ else if (due <= oneMonth) key = "month";
 else key = "future";
 
 buckets[key].push(item);
-// Keep today's items in the normal Due Today section while also including
-// them in the rolling Due This Week view.
-if (due && due >= today && due <= oneWeek && key === "today") buckets.week.push(item);
-if (key !== "week") lists[key].appendChild(assignmentRow(item, today, initials));
+lists[key].appendChild(assignmentRow(item, today, initials));
 });
 
+<<<<<<< HEAD
 // Due This Week is a rolling seven-day window starting today.
 // Render every day separately so the user can immediately see what is due
 // on each date, including an explicit [TODAY] marker on the current day.
@@ -2073,8 +2064,10 @@ lists.week.appendChild(group);
 lists.week.innerHTML = '<small style="color:var(--muted);padding:4px 0;">' + SECTION_EMPTY.week + '</small>';
 }
 
+=======
+>>>>>>> parent of 51166f1 (Update index.html)
 keys.forEach(function (key) {
-if (key !== "week") collapseSection(lists[key], key);
+collapseSection(lists[key], key);
 
 var pill = document.getElementById("count-" + key);
 if (pill) {
