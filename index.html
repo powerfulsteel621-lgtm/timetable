@@ -902,6 +902,9 @@ background:#f4f8fc;color:#33587f;font:inherit;font-size:.78rem;font-weight:650;c
 <div class="briefing-stat"><strong id="briefing-tests">0</strong><span>Tests / Quizzes</span></div>
 <div class="briefing-stat"><strong id="briefing-week">0</strong><span>This week</span></div>
 </div>
+<p class="briefing-message" id="briefing-message">Checking your workload…</p>
+<button type="button" class="what-should-i-do" id="what-should-i-do">What should I do?</button>
+<div class="briefing-recommendation" id="briefing-recommendation" hidden></div>
 </div>
 </div>
 
@@ -1738,32 +1741,19 @@ return {text:"Due " + formatAssignmentDate(item.date), cls:""};
 
 function assignmentPriority(item, today) {
 if (!item || isEvent(item.className)) return "";
-var score = 0;
 var completion = Math.max(0, Math.min(100, Number(item.completion) || 0));
-var isTest = isTestOrQuiz(item);
-if (isTest) score += 45;
-
-if (!item.date) {
-score += completion < 30 ? 10 : 0;
-} else {
-var due = new Date(item.date + "T00:00:00");
-if (!isNaN(due)) {
-var days = daysBetween(today || startOfToday(), due);
-if (days < 0) score += 40;
-else if (days === 0) score += 35;
-else if (days === 1) score += 25;
-else if (days <= 3) score += 15;
-else if (days <= 7) score += 8;
-}
-}
-
-if (completion < 25) score += 15;
-else if (completion < 60) score += 8;
-else if (completion >= 90) score -= 10;
-
-if (score >= 60) return "red";
-if (score >= 30) return "orange";
+if (completion <= 20) return "red";
+if (completion <= 80) return "orange";
 return "green";
+}
+
+function applyAssignmentPriority(row, completion) {
+if (!row) return;
+var value = Math.max(0, Math.min(100, Math.round(Number(completion) || 0)));
+row.classList.remove("priority-red", "priority-orange", "priority-green");
+var priority = value <= 20 ? "red" : (value <= 80 ? "orange" : "green");
+row.classList.add("priority-" + priority);
+row.setAttribute("data-priority", priority);
 }
 
 function briefingData() {
@@ -2203,6 +2193,7 @@ if (label) {
 label.textContent = value + "%";
 label.setAttribute("aria-label", value + "% completed");
 }
+applyAssignmentPriority(row, value);
 return;
 }
 
@@ -2216,6 +2207,7 @@ if (sliderLabel) {
 sliderLabel.textContent = sliderValue + "%";
 sliderLabel.setAttribute("aria-label", sliderValue + "% completed");
 }
+applyAssignmentPriority(sliderRow, sliderValue);
 var sliderIndex = assignmentIndexById(e.target.getAttribute("data-id"));
 if (sliderIndex !== -1) {
 assignments[sliderIndex].completion = sliderValue;
@@ -2241,6 +2233,7 @@ if (label) {
 label.textContent = value + "%";
 label.setAttribute("aria-label", value + "% completed");
 }
+applyAssignmentPriority(row, value);
 });
 
 document.addEventListener("click", function(e) {
