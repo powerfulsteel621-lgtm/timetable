@@ -233,10 +233,20 @@ padding:6px 10px 6px 0;border:1px solid #d5e1ee;border-radius:8px;background:#ff
 }
 .tracker-item.overdue{background:#fde8e8;border-color:#f5c6cb}
 
-.tracker-item.priority-green{background:#edf8ef;border-color:#b9ddc0}
-.tracker-item.priority-orange{background:#fff4df;border-color:#edc77d}
-.tracker-item.priority-red{background:#fde9e7;border-color:#e7aaa4}
-.tracker-item.priority-green .tracker-item-meta,.tracker-item.priority-orange .tracker-item-meta,.tracker-item.priority-red .tracker-item-meta{color:#536579}
+/* ---------- Completion bands ----------
+Ten steps of 10% each: red at 0-9%, yellow around the halfway mark, green at
+90-100%. Fills stay pastel so the class tag and text keep their contrast. */
+.tracker-item.band-0{background:#fbdcd8;border-color:#e3a69e}
+.tracker-item.band-1{background:#fce1d4;border-color:#e6b096}
+.tracker-item.band-2{background:#fde7d0;border-color:#e8bb8a}
+.tracker-item.band-3{background:#fdeecd;border-color:#e5c47e}
+.tracker-item.band-4{background:#fcf4ca;border-color:#dccb74}
+.tracker-item.band-5{background:#f4f5c9;border-color:#cbcf76}
+.tracker-item.band-6{background:#e9f2ca;border-color:#b6c97c}
+.tracker-item.band-7{background:#def0cd;border-color:#a2c485}
+.tracker-item.band-8{background:#d7eed3;border-color:#94c190}
+.tracker-item.band-9{background:#d2ecd9;border-color:#87bd98}
+.tracker-item[data-band] .tracker-item-meta{color:#536579}
 
 /* Thick subject tag carrying the course initial(s). */
 .tracker-tag{
@@ -498,75 +508,41 @@ text-align:center;letter-spacing:-.01em;
 display:inline-block;margin-top:4px;margin-left:6px;padding:1px 8px;border-radius:99px;
 background:#6c757d;color:#fff;font-size:.74rem;font-weight:700;
 }
-/* Tests and quizzes during school use the exact same red difficulty
-palette as Testing Center. Difficulty 0 is the lightest red; harder tests
-use progressively deeper reds. */
-.block.is-exam{
+
+/* ---------- Test shading (difficulty 0-5) ----------
+Tests and quizzes in class and Testing Center bookings share one red scale.
+Each difficulty level sets its own fill, borders, ink and time-chip colour;
+levels 0-2 carry dark text, 3-5 white. */
+.block.tc-0{--tc-bg:#f9dcda;--tc-border:#ebb9b4;--tc-line:#dfa19a;--tc-ink:#5a211e;--tc-chip:#a94a43}
+.block.tc-1{--tc-bg:#f5c4c0;--tc-border:#e4a39d;--tc-line:#d68c85;--tc-ink:#5a211e;--tc-chip:#a94a43}
+.block.tc-2{--tc-bg:#efa39d;--tc-border:#dc8078;--tc-line:#cc6a62;--tc-ink:#4a1a17;--tc-chip:#9a3d36}
+.block.tc-3{--tc-bg:#dd6a61;--tc-border:#c3524a;--tc-line:#a9403a;--tc-ink:#ffffff;--tc-chip:#7e2a24}
+.block.tc-4{--tc-bg:#c1443c;--tc-border:#a1342d;--tc-line:#852821;--tc-ink:#ffffff;--tc-chip:#6a1c17}
+.block.tc-5{--tc-bg:#962620;--tc-border:#771c17;--tc-line:#5c130f;--tc-ink:#ffffff;--tc-chip:#4a0e0b}
+
+.block.is-exam,.block.is-testing-center{
 background-image:none;
-background:#f6cbc8;
-border-color:#e2aaa5;border-left-color:#d9948d;
-color:#54201d;
+background:var(--tc-bg,#f5c4c0);
+border-color:var(--tc-border,#e4a39d);
+border-left-color:var(--tc-line,#d68c85);
+color:var(--tc-ink,#5a211e);
 }
-.block.is-exam .block-title{color:#5a211e}
-.block.is-exam .block-time,.block.is-exam .block-meta{color:#6f332f}
-.block.is-exam .block-assignment-count{color:#5a211e}
-.block.is-exam .block-left{background:#a94a43;color:#fff}
-.block.is-exam.tc-none{background:#f6cbc8;border-color:#e2aaa5;border-left-color:#d9948d;color:#54201d}
-.block.is-exam.tc-easy{background:#ed938c;border-color:#d97068;border-left-color:#c75b53;color:#fff}
-.block.is-exam.tc-medium{background:#d95b52;border-color:#b9443b;border-left-color:#9f342e;color:#fff}
-.block.is-exam.tc-hard{background:#a92f29;border-color:#85221e;border-left-color:#6a1814;color:#fff}
-.block.is-exam.tc-easy .block-title,
-.block.is-exam.tc-easy .block-time,
-.block.is-exam.tc-easy .block-meta,
-.block.is-exam.tc-easy .block-assignment-count,
-.block.is-exam.tc-medium .block-title,
-.block.is-exam.tc-medium .block-time,
-.block.is-exam.tc-medium .block-meta,
-.block.is-exam.tc-medium .block-assignment-count,
-.block.is-exam.tc-hard .block-title,
-.block.is-exam.tc-hard .block-time,
-.block.is-exam.tc-hard .block-meta,
-.block.is-exam.tc-hard .block-assignment-count{color:#fff}
+.block.is-exam .block-title,.block.is-exam .block-time,.block.is-exam .block-meta,.block.is-exam .block-assignment-count,
+.block.is-testing-center .block-title,.block.is-testing-center .block-time,.block.is-testing-center .block-meta,.block.is-testing-center .block-assignment-count{
+color:var(--tc-ink,#5a211e);
+}
+.block.is-exam .block-left,.block.is-testing-center .block-left{background:var(--tc-chip,#a94a43);color:#fff}
+
 .exam-badge{
 display:inline-block;margin-left:7px;padding:1px 7px;border-radius:99px;vertical-align:1px;
 background:#fdeceb;color:#8e3129;font-size:.66rem;font-weight:800;letter-spacing:.04em;
 text-transform:uppercase;
 }
-
-/* Testing Center: red, with darker reds reserved for harder tests. */
-.block.is-testing-center{
-background:#f3b7b3;
-border-color:#d98b85;border-left-color:#c96f68;
-color:#54201d;
-}
-.block.is-testing-center .block-title{color:#5a211e}
-.block.is-testing-center .block-time,.block.is-testing-center .block-meta{color:#6f332f}
-.block.is-testing-center .block-assignment-count{color:#5a211e}
-.block.is-testing-center .block-left{background:#a94a43;color:#fff}
-.block.is-testing-center.tc-none{background:#f6cbc8;border-color:#e2aaa5;border-left-color:#d9948d}
-.block.is-testing-center.tc-easy{background:#ed938c;border-color:#d97068;border-left-color:#c75b53;color:#fff}
-.block.is-testing-center.tc-easy .block-title,
-.block.is-testing-center.tc-easy .block-time,
-.block.is-testing-center.tc-easy .block-meta,
-.block.is-testing-center.tc-easy .block-assignment-count{color:#fff}
-.block.is-testing-center.tc-medium{background:#d95b52;border-color:#b9443b;border-left-color:#9f342e;color:#fff}
-.block.is-testing-center.tc-medium .block-title,
-.block.is-testing-center.tc-medium .block-time,
-.block.is-testing-center.tc-medium .block-meta,
-.block.is-testing-center.tc-medium .block-assignment-count{color:#fff}
-.block.is-testing-center.tc-hard{background:#a92f29;border-color:#85221e;border-left-color:#6a1814;color:#fff}
-.block.is-testing-center.tc-hard .block-title,
-.block.is-testing-center.tc-hard .block-time,
-.block.is-testing-center.tc-hard .block-meta,
-.block.is-testing-center.tc-hard .block-assignment-count{color:#fff}
 .testing-center-badge{
 display:inline-block;margin-left:7px;padding:1px 7px;border-radius:99px;vertical-align:1px;
-background:#fff;color:#9f342e;font-size:.66rem;font-weight:800;letter-spacing:.04em;
+background:#fff;color:#8e241f;font-size:.66rem;font-weight:800;letter-spacing:.04em;
 text-transform:uppercase;
 }
-.block.is-testing-center.tc-hard .testing-center-badge,
-.block.is-testing-center.tc-medium .testing-center-badge,
-.block.is-testing-center.tc-easy .testing-center-badge{color:#8e241f}
 .is-dimmed .block:not(.is-now){opacity:.42;filter:saturate(.65)}
 .block.is-now{box-shadow:0 0 0 2px rgba(23,105,224,.35);opacity:1}
 
@@ -710,24 +686,22 @@ font-size:.72rem;font-weight:700;letter-spacing:0;text-transform:none;font-varia
 .date-label em{font-style:normal;font-weight:600;color:#9aabbd}
 .difficulty{margin:0;padding:0;border:0;min-width:0}
 .difficulty legend{padding:0;margin-bottom:3px}
-.diff-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.diff-seg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
 .diff-seg label{display:block;min-width:0}
 .diff-seg input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .diff-seg span{
-display:flex;align-items:center;justify-content:center;gap:5px;height:36px;
+display:flex;align-items:center;justify-content:center;height:36px;
 border:1px solid #d5e1ee;border-radius:8px;background:#f9fbfe;
-color:#40546b;font-size:.86rem;font-weight:650;cursor:pointer;
+color:#40546b;font-size:.9rem;font-weight:750;cursor:pointer;font-variant-numeric:tabular-nums;
 }
-.diff-seg small{color:var(--muted);font-size:.7rem;font-weight:700}
 .diff-seg input:checked + span{border-color:var(--primary);background:var(--primary-soft);color:#125dcc}
-.diff-seg input:checked + span small{color:#125dcc}
 .diff-seg input:focus-visible + span{outline:2px solid rgba(23,105,224,.35);outline-offset:1px}
-/* Difficulty on a row: filled/hollow dots, so it never relies on colour alone. */
+/* Difficulty on a row: five filled/hollow dots, so it never relies on colour alone. */
 .diff-dots{
-flex:0 0 10px;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
-color:#93a3b5;font-size:.52rem;font-weight:700;line-height:.85;white-space:nowrap;
+flex:0 0 10px;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+color:#93a3b5;font-size:.48rem;font-weight:700;line-height:.8;white-space:nowrap;
 }
-.diff-dots span{display:block;height:6px;line-height:6px}
+.diff-dots span{display:block;height:5px;line-height:5px}
 .diff-dots.is-hard{color:#5a6b7f}
 
 /* Assignment completion: revealed by clicking the assignment body. */
@@ -769,6 +743,7 @@ color:#5a6b7f;font:inherit;font-size:.7rem;font-weight:700;cursor:pointer;
 }
 .subs-btn:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
 .subs-btn svg{display:block;width:14px;height:14px;flex:0 0 14px}
+.tracker-item > .subs-btn{display:none !important}
 .subtasks{flex:1 0 100%;margin:2px 0 2px;padding:4px 4px 2px 44px;border-top:1px dashed #e2eaf3}
 .subtask{display:flex;align-items:center;gap:6px;padding:2px 0;font-size:.84rem}
 .subtask label{display:flex;align-items:center;gap:8px;flex:1;min-width:0;cursor:pointer}
@@ -970,12 +945,14 @@ data-tab="chart" aria-selected="false" aria-controls="panel-chart">Workload</but
 </div>
 <div class="next-chips" id="next-chips" role="group" aria-label="Set the due date to a class meeting" hidden></div>
 <fieldset class="difficulty" id="difficulty-field">
-<legend class="date-label">Difficulty</legend>
+<legend class="date-label">Difficulty <em>(0 none, 5 hardest)</em></legend>
 <div class="diff-seg">
-<label><input type="radio" name="difficulty" value="none"><span>None<small>0</small></span></label>
-<label><input type="radio" name="difficulty" value="easy"><span>Easy<small>1</small></span></label>
-<label><input type="radio" name="difficulty" value="medium" checked><span>Medium<small>2</small></span></label>
-<label><input type="radio" name="difficulty" value="hard"><span>Hard<small>3</small></span></label>
+<label title="None"><input type="radio" name="difficulty" value="0"><span>0</span></label>
+<label title="Very easy"><input type="radio" name="difficulty" value="1"><span>1</span></label>
+<label title="Easy"><input type="radio" name="difficulty" value="2"><span>2</span></label>
+<label title="Medium"><input type="radio" name="difficulty" value="3" checked><span>3</span></label>
+<label title="Hard"><input type="radio" name="difficulty" value="4"><span>4</span></label>
+<label title="Very hard"><input type="radio" name="difficulty" value="5"><span>5</span></label>
 </div>
 </fieldset>
 <button type="button" class="testing-center-toggle" id="testing-center-toggle" hidden aria-pressed="false">
@@ -1315,14 +1292,30 @@ return null;
 
 var viewOffset = 0;        // days from today shown in the schedule card
 
-/* Difficulty is stored on the item and turned into "load points", which drive
-the section counts and the workload chart. */
-var DIFFICULTY = {
-none:   {label:"None",   points:0, dots:"○○○"},
-easy:   {label:"Easy",   points:1, dots:"●○○"},
-medium: {label:"Medium", points:2, dots:"●●○"},
-hard:   {label:"Hard",   points:3, dots:"●●●"}
+/* ---------- Difficulty (0-5) ----------
+Stored on each item as a whole number. The level is also its load in
+points, which drive the section counts and the workload chart. Items saved
+under the old four-step scale are converted on load. */
+var DIFFICULTY_MAX = 5;
+var DEFAULT_DIFFICULTY = 3;
+var DIFFICULTY = ["None", "Very easy", "Easy", "Medium", "Hard", "Very hard"].map(function (label, level) {
+return {
+label: label,
+points: level,
+dots: new Array(level + 1).join("●") + new Array(DIFFICULTY_MAX - level + 1).join("○")
 };
+});
+var LEGACY_DIFFICULTY = {none:0, easy:2, medium:3, hard:5};
+
+function difficultyLevel(value) {
+if (value === null || value === undefined || value === "") return DEFAULT_DIFFICULTY;
+if (typeof value === "string" && Object.prototype.hasOwnProperty.call(LEGACY_DIFFICULTY, value.toLowerCase())) {
+return LEGACY_DIFFICULTY[value.toLowerCase()];
+}
+var n = Number(value);
+if (!isFinite(n)) return DEFAULT_DIFFICULTY;
+return Math.max(0, Math.min(DIFFICULTY_MAX, Math.round(n)));
+}
 
 // --- Assignment Tracker ---
 var defaultAssignments = [
@@ -1382,7 +1375,7 @@ localStorage.setItem("renert_seeded", JSON.stringify(seeded));
 function normalizeAssignments() {
 assignments.forEach(function (a, i) {
 if (!a.id) a.id = "a" + Date.now().toString(36) + i + Math.random().toString(36).slice(2, 7);
-if (!DIFFICULTY[String(a.difficulty || "").toLowerCase()]) a.difficulty = "medium";
+a.difficulty = difficultyLevel(a.difficulty);
 if (!Array.isArray(a.subtasks)) a.subtasks = [];
 if (typeof a.date !== "string") a.date = "";
 if (typeof a.testingCenter !== "boolean") a.testingCenter = false;
@@ -1436,6 +1429,7 @@ var index = completed.findIndex(function (c) { return c.id === id; });
 if (index === -1) return;
 var item = completed.splice(index, 1)[0];
 delete item.completedAt;
+item.difficulty = difficultyLevel(item.difficulty);
 assignments.push(item);
 saveAssignments();
 saveCompleted();
@@ -1647,6 +1641,7 @@ return assignments.findIndex(function(a) { return a.id === id; });
 function renderAssignmentEdit(el, index) {
 var item = assignments[index];
 if (!item) return;
+var level = difficultyOf(item);
 el.classList.add("is-editing");
 el.innerHTML =
 '<div class="tracker-edit">' +
@@ -1659,9 +1654,9 @@ return '<option value="' + escapeHtml(opt.value) + '"' + (opt.value === item.cla
 '</select>' +
 '<input class="edit-date" type="date" value="' + escapeHtml(item.date) + '" aria-label="Due date">' +
 '<select class="edit-diff" aria-label="Difficulty">' +
-Object.keys(DIFFICULTY).map(function (key) {
-return '<option value="' + key + '"' + (key === difficultyOf(item) ? ' selected' : '') + '>' +
-DIFFICULTY[key].label + ' (' + DIFFICULTY[key].points + ')</option>';
+DIFFICULTY.map(function (d, n) {
+return '<option value="' + n + '"' + (n === level ? ' selected' : '') + '>' +
+n + ' · ' + d.label + '</option>';
 }).join("") +
 '</select>' +
 '</div>' +
@@ -1678,8 +1673,7 @@ DIFFICULTY[key].label + ' (' + DIFFICULTY[key].points + ')</option>';
 
 /* ---------- Difficulty, dates and subtasks ---------- */
 function difficultyOf(item) {
-var key = String((item && item.difficulty) || "medium").toLowerCase();
-return DIFFICULTY[key] ? key : "medium";
+return difficultyLevel(item ? item.difficulty : null);
 }
 
 function pointsOf(item) {
@@ -1739,6 +1733,7 @@ if (days <= 3) return {text:"Due in " + days + " days", cls:"due-soon"};
 return {text:"Due " + formatAssignmentDate(item.date), cls:""};
 }
 
+/* Coarse tier, used only to rank the "What should I do?" pick. */
 function assignmentPriority(item, today) {
 if (!item || isEvent(item.className)) return "";
 var completion = Math.max(0, Math.min(100, Number(item.completion) || 0));
@@ -1747,13 +1742,20 @@ if (completion <= 80) return "orange";
 return "green";
 }
 
+/* Row colour: ten 10% steps from red (0) through yellow to green (9). */
+function completionBand(completion) {
+var value = Math.max(0, Math.min(100, Math.round(Number(completion) || 0)));
+return Math.min(9, Math.floor(value / 10));
+}
+
 function applyAssignmentPriority(row, completion) {
 if (!row) return;
 var value = Math.max(0, Math.min(100, Math.round(Number(completion) || 0)));
-row.classList.remove("priority-red", "priority-orange", "priority-green");
-var priority = value <= 20 ? "red" : (value <= 80 ? "orange" : "green");
-row.classList.add("priority-" + priority);
-row.setAttribute("data-priority", priority);
+for (var b = 0; b < 10; b++) row.classList.remove("band-" + b);
+var band = completionBand(value);
+row.classList.add("band-" + band);
+row.setAttribute("data-band", String(band));
+row.setAttribute("data-priority", assignmentPriority({completion:value}));
 }
 
 function briefingData() {
@@ -1876,13 +1878,15 @@ var due = dueMeta(item, today);
 var diff = difficultyOf(item);
 var open = !!openSubtasks[item.id];
 var priority = assignmentPriority(item, today);
+var band = isEvent(item.className) ? null : completionBand(item.completion);
 
 var el = document.createElement("div");
 el.className = "tracker-item tone-" + assignmentTone(item.className) +
 (due.cls === "due-late" ? " overdue" : "") +
-(priority ? " priority-" + priority : "") +
+(band !== null ? " band-" + band : "") +
 (open ? " is-open" : "");
 el.setAttribute("data-priority", priority || "");
+if (band !== null) el.setAttribute("data-band", String(band));
 el.setAttribute("data-id", item.id);
 
 var html =
@@ -1890,9 +1894,10 @@ var html =
 escapeHtml(initials[item.className] || firstWord(item.className).charAt(0).toUpperCase()) +
 '</span>' +
 (!isEvent(item.className)
-? '<span class="diff-dots' + (diff === "hard" ? " is-hard" : "") +
-'" title="' + DIFFICULTY[diff].label + ' : ' + plural(DIFFICULTY[diff].points, "pt") +
-'" aria-label="Difficulty ' + DIFFICULTY[diff].label + '">' +
+? '<span class="diff-dots' + (diff >= 4 ? " is-hard" : "") +
+'" title="Difficulty ' + diff + '/' + DIFFICULTY_MAX + ' (' + DIFFICULTY[diff].label + ') : ' +
+plural(DIFFICULTY[diff].points, "pt") +
+'" aria-label="Difficulty ' + diff + ' of ' + DIFFICULTY_MAX + '">' +
 DIFFICULTY[diff].dots.split("").map(function (dot) { return '<span aria-hidden="true">' + dot + '</span>'; }).join("") +
 '</span>'
 : '') +
@@ -2136,10 +2141,11 @@ id: "a" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
 name: name,
 className: className,
 date: date,
-difficulty: picked ? picked.value : "medium",
+difficulty: picked ? difficultyLevel(picked.value) : DEFAULT_DIFFICULTY,
 testingCenter: !!(document.getElementById("testing-center-toggle") &&
 document.getElementById("testing-center-toggle").classList.contains("is-active") &&
 isTestOrQuiz({name:name})),
+completion: 0,
 subtasks: []
 };
 if (isEvent(className) && endDate) {
@@ -2378,7 +2384,7 @@ if (name && className && (date || !isEvent(className))) {
 assignments[saveIndex].name = name;
 assignments[saveIndex].className = className;
 assignments[saveIndex].date = date;
-if (diffSelect && DIFFICULTY[diffSelect.value]) assignments[saveIndex].difficulty = diffSelect.value;
+if (diffSelect) assignments[saveIndex].difficulty = difficultyLevel(diffSelect.value);
 var tcToggle = row.querySelector(".edit-testing-center-toggle");
 assignments[saveIndex].testingCenter = !!(tcToggle && !tcToggle.hidden && tcToggle.getAttribute("data-enabled") === "true" && isTestOrQuiz({name:name}));
 if (!isEvent(className)) delete assignments[saveIndex].endDate;
@@ -2715,15 +2721,16 @@ var exam = b.course ? examOn(b.course, dayIso) : null;
 // A test being written in the Testing Center does not turn the class red.
 if (exam && exam.testingCenter) exam = null;
 var examWord = exam ? (String(exam.name).match(EXAM_WORDS) || ["test"])[0].toUpperCase() : "";
-var tcDifficulty = b.testingCenter ? difficultyOf(b.tcTest) : "";
-var examDifficulty = exam ? difficultyOf(exam) : "";
+var tcDifficulty = b.testingCenter ? difficultyOf(b.tcTest) : 0;
+var examDifficulty = exam ? difficultyOf(exam) : 0;
 
 html +=
 '<div class="block tone-' + b.tone + (classTone ? " class-" + classTone : "") +
 (exam ? " is-exam tc-" + examDifficulty : "") +
 (b.testingCenter ? " is-testing-center tc-" + tcDifficulty : "") +
 (active ? " is-now" : "") + '"' +
-((exam || b.testingCenter) ? ' title="' + escapeHtml((b.testingCenter ? b.tcTest.name : exam.name)) + '"' : '') + '>' +
+((exam || b.testingCenter) ? ' title="' + escapeHtml((b.testingCenter ? b.tcTest.name : exam.name) +
+" (difficulty " + (b.testingCenter ? tcDifficulty : examDifficulty) + "/" + DIFFICULTY_MAX + ")") + '"' : '') + '>' +
 '<div class="block-time">' + label(b.start) + '<br>' + label(b.end) +
 (active ? '<span class="block-left">' + (toMinutes(b.end) - minutes) + 'm left</span>' : '') +
 '</div>' +
@@ -3108,8 +3115,8 @@ return '<div class="chart-detail-item">' +
 seriesColor(seriesKey(item.className, data.order)) + '"></span>' +
 '<span>' + escapeHtml(item.name) +
 ' <span style="color:var(--muted)">· ' + escapeHtml(item.className) + '</span></span>' +
-'<span class="chart-detail-pts">' + DIFFICULTY[difficultyOf(item)].label +
-" · " + pointsOf(item) + ' pts</span>' +
+'<span class="chart-detail-pts">' + difficultyOf(item) + '/' + DIFFICULTY_MAX + ' ' +
+DIFFICULTY[difficultyOf(item)].label + " · " + pointsOf(item) + ' pts</span>' +
 '</div>';
 }).join("");
 }
@@ -3151,7 +3158,7 @@ rows += '<tr' + (day.iso === todayIso ? ' class="is-today"' : '') + '>' +
 : "") + '</td>' +
 '<td>' + escapeHtml(item.name) + '</td>' +
 '<td>' + escapeHtml(item.className) + '</td>' +
-'<td>' + DIFFICULTY[difficultyOf(item)].label + '</td>' +
+'<td>' + difficultyOf(item) + ' · ' + DIFFICULTY[difficultyOf(item)].label + '</td>' +
 '<td class="num">' + pointsOf(item) + '</td>' +
 '</tr>';
 });
@@ -3282,7 +3289,7 @@ return a.date === iso && !isEvent(a.className) && seriesKey(a.className, order) 
 });
 return '<strong>' + escapeHtml(key) + " : " + plural(sumPoints(items), "pt") + '</strong>' +
 items.map(function (a) {
-return '<em>' + escapeHtml(a.name) + '</em> · ' + DIFFICULTY[difficultyOf(a)].label;
+return '<em>' + escapeHtml(a.name) + '</em> · ' + difficultyOf(a) + '/' + DIFFICULTY_MAX;
 }).join("<br>");
 }
 
@@ -3550,4 +3557,3 @@ renderChart();
 </script>
 </body>
 </html>
-<style>.tracker-item > .subs-btn{display:none !important}</style>
