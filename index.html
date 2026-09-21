@@ -298,11 +298,19 @@ margin:0;color:#2d5286;font-size:.92rem;font-weight:700;text-align:center;
 .week-day-group.is-drag-over .week-day-heading{background:#d9eafa;color:#1f4e7a}
 .week-day-drop-hint{font-size:.7rem;color:var(--muted);font-weight:650;padding:0 4px}
 
+/* The schedule scrolls inside its own card on desktop, so its height never
+pushes the calendar row down. */
+#schedule-body{position:relative}
+#periods.is-locked{display:flex;flex-direction:column}
+#periods.is-locked #schedule-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+
 @media (min-width:1050px){
   /* Desktop layout mirrors the dashboard reference:
      Schedule | Title/Briefing/Week | Assignment Tracker
      Calendar spans the first two columns directly underneath the middle stack.
-     The lower utility cards form three equal columns. */
+     The schedule card is locked to the middle stack's height by script, so
+     the first row ends where the middle stack ends and the calendar sits
+     right under it. The lower utility cards form three equal columns. */
   .card-grid{
     grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.38fr);
     grid-template-areas:
@@ -586,6 +594,7 @@ display:block;margin-top:5px;padding:3px 0;border-radius:0;
 background:var(--primary);color:#fff;font-size:.7rem;font-weight:700;
 text-align:center;letter-spacing:-.01em;
 }
+.block-left.is-passing{background:#8f98a2}
 .block-badge{
 display:inline-block;margin-top:4px;margin-left:6px;padding:1px 8px;border-radius:99px;
 background:#6c757d;color:#fff;font-size:.74rem;font-weight:700;
@@ -718,8 +727,16 @@ min-width:0;font-size:.88rem;font-weight:750;color:var(--text);
 overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .nn-left{flex:0 0 auto;color:var(--primary);font-size:.82rem;font-weight:750;font-variant-numeric:tabular-nums}
-.nn-track{height:6px;border-radius:99px;background:#dbe6f3;overflow:hidden}
-.nn-fill{display:block;height:100%;border-radius:99px;background:var(--primary);transition:width .4s ease}
+.nn-left.is-passing{color:#6f7985}
+
+/* Progress bar: the class portion fills blue; the last five minutes are the
+passing period, shown as a grey zone that fills darker grey once it starts. */
+.nn-track{display:flex;height:6px;border-radius:99px;background:#dbe6f3;overflow:hidden}
+.nn-seg{display:block;height:100%;flex:0 0 auto}
+.nn-seg-class{background:#dbe6f3}
+.nn-seg-pass{background:#d3d7dc;box-shadow:inset 1px 0 0 #fff}
+.nn-fill{display:block;height:100%;background:var(--primary);transition:width .4s ease}
+.nn-fill-pass{display:block;height:100%;background:#8f98a2;transition:width .4s ease}
 .nn-next{color:var(--muted);font-size:.78rem;font-weight:600;line-height:1.35;text-align:center}
 
 /* ---------- Completed archive ---------- */
@@ -1293,6 +1310,22 @@ at("15:20","15:35",HOMEROOM),
 var DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 var MONTHS = ["January","February","March","April","May","June","July",
 "August","September","October","November","December"];
+
+/* ---------- Passing periods ----------
+The last five minutes of every class block are the transition to the next
+room. Breaks, lunch and after-school activities have no passing period. */
+var PASSING_MINUTES = 5;
+
+function hasPassing(b) {
+if (!b || b.tone === "break" || b.tone === "activity" || b.testingCenter) return false;
+return toMinutes(b.end) - toMinutes(b.start) > PASSING_MINUTES * 2;
+}
+
+/* Minute of the day when a block's passing period begins (its end when it
+has none). */
+function passingStart(b) {
+return toMinutes(b.end) - (hasPassing(b) ? PASSING_MINUTES : 0);
+}
 
 /* ---------- School calendar 2026-27 ----------
 Taken from the school's year calendar. "off" days empty the schedule and
@@ -2860,6 +2893,11 @@ d.setDate(d.getDate() + viewOffset);
 return d;
 }
 
+/* The schedule card scrolls on desktop, so keep the current block in view.
+Only re-scrolled when the day or the current block changes, so a manual
+scroll is left alone between redraws. */
+var scheduleScrollKey = null;
+
 function renderSchedule() {
 var body = document.getElementById("schedule-body");
 if (!body) return;
@@ -2876,6 +2914,8 @@ var hint = '<div class="sched-hint"><button type="button" class="sched-step" dat
 if (day === 0 || day === 6) {
 body.classList.remove("is-dimmed");
 body.innerHTML = '<p class="weekend">Enjoy the weekend.<span>No classes scheduled.</span></p>' + hint;
+scheduleScrollKey = isoDate(date) + "|";
+body.scrollTop = 0;
 return;
 }
 
@@ -2883,6 +2923,8 @@ var off = dayOff(date);
 if (off) {
 body.classList.remove("is-dimmed");
 body.innerHTML = '<p class="weekend">No classes' + (isToday ? " today" : "") + '.<span>' + escapeHtml(off) + '</span></p>' + hint;
+scheduleScrollKey = isoDate(date) + "|";
+body.scrollTop = 0;
 return;
 }
 
@@ -2933,6 +2975,15 @@ var examWord = exam ? (String(exam.name).match(EXAM_WORDS) || ["test"])[0].toUpp
 var tcDifficulty = b.testingCenter ? difficultyOf(b.tcTest) : 0;
 var examDifficulty = exam ? difficultyOf(exam) : 0;
 
+// Time left counts down to the passing period, not the bell.
+var leftChip = "";
+if (active) {
+var passAt = passingStart(b);
+leftChip = minutes < passAt
+? '<span class="block-left">' + (passAt - minutes) + 'm left</span>'
+: '<span class="block-left is-passing">Passing</span>';
+}
+
 html +=
 '<div class="block tone-' + b.tone + (classTone ? " class-" + classTone : "") +
 (exam ? " is-exam tc-" + examDifficulty : "") +
@@ -2941,7 +2992,7 @@ html +=
 ((exam || b.testingCenter) ? ' title="' + escapeHtml((b.testingCenter ? b.tcTest.name : exam.name) +
 " (difficulty " + (b.testingCenter ? tcDifficulty : examDifficulty) + "/" + DIFFICULTY_MAX + ")") + '"' : '') + '>' +
 '<div class="block-time">' + label(b.start) + '<br>' + label(b.end) +
-(active ? '<span class="block-left">' + (toMinutes(b.end) - minutes) + 'm left</span>' : '') +
+leftChip +
 '</div>' +
 '<div class="block-body">' +
 '<div class="block-title">' + escapeHtml(b.title) +
@@ -2957,6 +3008,13 @@ html +=
 
 body.innerHTML = html + hint;
 body.classList.toggle("is-dimmed", !!current);
+
+var key = dayIso + "|" + (current ? current.start : "");
+if (key !== scheduleScrollKey) {
+scheduleScrollKey = key;
+var nowEl = body.querySelector(".block.is-now");
+body.scrollTop = nowEl ? Math.max(0, nowEl.offsetTop - 10) : 0;
+}
 }
 
 function stepScheduleDay(delta) {
@@ -3062,14 +3120,39 @@ else if (!next && toMinutes(b.start) > minutes) next = b;
 
 var html = "";
 if (current) {
-var span = toMinutes(current.end) - toMinutes(current.start);
-var pct = Math.max(0, Math.min(100, ((minutes - toMinutes(current.start)) / span) * 100));
-var left = Math.max(0, Math.ceil(toMinutes(current.end) - minutes));
+var start = toMinutes(current.start);
+var end = toMinutes(current.end);
+var span = end - start;
+var passAt = passingStart(current);
+var classSpan = passAt - start;
+var passSpan = end - passAt;
+var inPassing = minutes >= passAt;
+
+// Widths of the two zones, as a share of the whole block.
+var classPct = (classSpan / span) * 100;
+var passPct = 100 - classPct;
+// How far each zone has filled.
+var classFill = inPassing ? 100 : Math.max(0, Math.min(100, ((minutes - start) / classSpan) * 100));
+var passFill = inPassing && passSpan > 0 ? Math.max(0, Math.min(100, ((minutes - passAt) / passSpan) * 100)) : 0;
+
+var leftLabel = inPassing
+? '<span class="nn-left is-passing">Passing period</span>'
+: '<span class="nn-left">' + Math.max(0, Math.ceil(passAt - minutes)) + 'm left</span>';
+
 html += '<div class="nn-line">' +
 '<span class="nn-title">Now: ' + escapeHtml(current.title) + '</span>' +
-'<span class="nn-left">' + left + 'm left</span>' +
+leftLabel +
 '</div>' +
-'<div class="nn-track"><span class="nn-fill" style="width:' + pct.toFixed(1) + '%"></span></div>';
+'<div class="nn-track" role="progressbar" aria-label="Progress through ' + escapeHtml(current.title) + '">' +
+'<span class="nn-seg nn-seg-class" style="width:' + classPct.toFixed(2) + '%">' +
+'<span class="nn-fill" style="width:' + classFill.toFixed(1) + '%"></span>' +
+'</span>' +
+(passPct > 0
+? '<span class="nn-seg nn-seg-pass" style="width:' + passPct.toFixed(2) + '%">' +
+'<span class="nn-fill-pass" style="width:' + passFill.toFixed(1) + '%"></span>' +
+'</span>'
+: '') +
+'</div>';
 } else {
 html += '<div class="nn-line"><span class="nn-title">' +
 (minutes < toMinutes(blocks[0].start) ? "Before school"
@@ -3692,6 +3775,37 @@ normalizeAssignments();
 renderTracker();
 });
 
+/* ---------- Schedule height lock (desktop) ----------
+The first grid row is as tall as its tallest card. Locking the schedule to
+the middle stack's height means the row ends where Week at a Glance ends, so
+the calendar sits directly beneath it; the schedule scrolls inside instead. */
+var DESKTOP_GRID = window.matchMedia("(min-width:1050px)");
+
+function syncScheduleHeight() {
+var sched = document.getElementById("periods");
+var middle = document.querySelector(".card-grid > .col-stack:not(.tight)");
+if (!sched || !middle) return;
+
+var desktop = DESKTOP_GRID.matches && document.body.getAttribute("data-view") !== "phone";
+if (!desktop) {
+sched.classList.remove("is-locked");
+sched.style.height = "";
+return;
+}
+
+sched.classList.add("is-locked");
+sched.style.height = Math.round(middle.getBoundingClientRect().height) + "px";
+}
+
+(function bindScheduleHeight() {
+var middle = document.querySelector(".card-grid > .col-stack:not(.tight)");
+if (middle && typeof ResizeObserver === "function") {
+new ResizeObserver(syncScheduleHeight).observe(middle);
+}
+window.addEventListener("resize", syncScheduleHeight);
+if (DESKTOP_GRID.addEventListener) DESKTOP_GRID.addEventListener("change", syncScheduleHeight);
+})();
+
 /* View toggle: phone layout by default on a small screen, remembered after that. */
 (function bindViewToggle() {
 var btn = document.getElementById("view-toggle");
@@ -3703,6 +3817,7 @@ function apply(v) {
 document.body.setAttribute("data-view", v);
 if (btn) btn.textContent = v === "phone" ? "Switch to desktop view" : "Switch to phone view";
 try { localStorage.setItem("renert_view", v); } catch (e) {}
+syncScheduleHeight();
 }
 apply(view);
 
@@ -3742,6 +3857,7 @@ updateGradCountdown();
 setInterval(updateGradCountdown, 3600000);
 
 renderTracker();
+syncScheduleHeight();
 
 document.addEventListener("keydown", function(e) {
 if (isTyping(document.activeElement)) return;
