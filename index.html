@@ -318,6 +318,10 @@ pushes the calendar row down. */
       "calendar calendar tracker"
       "printing postsecondary exams"
       "tv guidance guidance";
+    /* Row 2 is flexible so the tall tracker (which spans rows 1-2) grows row 2
+       only. With both rows "auto", the grid split the tracker's extra height
+       across both rows and stretched row 1, leaving a gap above the calendar. */
+    grid-template-rows:auto 1fr auto auto;
     column-gap:16px;
     row-gap:12px;
     align-items:start;
