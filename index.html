@@ -226,6 +226,12 @@ background:#d95b52;border-color:#b9443b;color:#fff;box-shadow:0 2px 7px rgba(180
 .date-label{color:var(--muted);font-size:.72rem;font-weight:650}
 .tracker-section-title{font-size:.85rem;font-weight:700;color:var(--muted);margin:8px 0 4px;text-transform:uppercase;letter-spacing:.03em}
 .tracker-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.week-day-group{display:flex;flex-direction:column;gap:6px;margin:10px 0 14px}
+.week-day-heading{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:8px;background:#eef3f8;color:#4f6072;font-size:.8rem;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
+.week-day-heading.is-today{background:#dfeaf7;color:#274c72}
+.week-day-heading .week-day-date{font-weight:650;color:var(--muted);text-transform:none}
+.week-day-empty{padding:2px 4px 4px;color:var(--muted);font-size:.78rem;font-style:italic}
+.week-day-group.is-today{margin-top:5px}
 .tracker-item{
 position:relative;overflow:hidden;
 display:flex;align-items:stretch;gap:8px;min-height:42px;
@@ -293,28 +299,63 @@ margin:0;color:#2d5286;font-size:.92rem;font-weight:700;text-align:center;
 .week-day-drop-hint{font-size:.7rem;color:var(--muted);font-weight:650;padding:0 4px}
 
 @media (min-width:1050px){
-  /* Keep the middle column content on the left, while the calendar below it
-     occupies the same two-column width it had before. */
+  /* Desktop layout mirrors the dashboard reference:
+     Schedule | Title/Briefing/Week | Assignment Tracker
+     Calendar spans the first two columns directly underneath the middle stack.
+     The lower utility cards form three equal columns. */
+  .card-grid{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.38fr);
+    grid-template-areas:
+      "schedule middle tracker"
+      "calendar calendar tracker"
+      "printing postsecondary exams"
+      "tv guidance guidance";
+    column-gap:16px;
+    row-gap:12px;
+    align-items:start;
+  }
+
+  .card-grid > #periods{grid-area:schedule;}
   .card-grid > .col-stack:not(.tight){
-    grid-column:2 / span 2;
-    grid-row:1;
-    gap:18px;
+    grid-area:middle;
+    gap:12px;
+    min-width:0;
   }
-  .card-grid > .col-stack:not(.tight) > .intro-header,
-  .card-grid > .col-stack:not(.tight) > #daily-briefing-card,
-  .card-grid > .col-stack:not(.tight) > #week-card{
-    width:calc((100% - 18px) / 2);
+  .card-grid > #tracker-card{grid-area:tracker; min-width:0;}
+  .card-grid > #calendar-card{
+    grid-area:calendar;
+    min-width:0;
+    margin-top:0;
   }
-  .card-grid > .col-stack:not(.tight) > #calendar-card{
-    width:100%;
-    margin-top:-18px;
-    border-top-left-radius:0;
-    border-top-right-radius:0;
-  }
-  .card-grid > #tracker-card{
-    grid-column:1;
-    grid-row:2;
-  }
+
+  /* Let the three lower utility cards participate directly in the main grid. */
+  .card-grid > .col-stack.tight{display:contents;}
+  .card-grid > .col-stack.tight > .topic:nth-child(1){grid-area:printing;}
+  .card-grid > .col-stack.tight > .topic:nth-child(2){grid-area:postsecondary;}
+  .card-grid > .col-stack.tight > .topic:nth-child(3){grid-area:exams;}
+  .card-grid > .topic.desk-only:not(#guidance-card){grid-area:tv;}
+  .card-grid > #guidance-card{grid-area:guidance; min-width:0;}
+
+  /* Compact middle stack, matching the reference proportions. */
+  .intro-header{min-height:52px;padding:10px 12px;gap:5px;}
+  .my-heading{font-size:1rem;}
+  .grad-countdown{font-size:.75rem;}
+  .header-clock{padding:0;gap:12px;}
+  .clock-strip span{font-size:.72rem;gap:5px;}
+  .daily-briefing-body{padding:8px 10px 9px;}
+  .briefing-summary{gap:5px;margin-bottom:7px;}
+  .briefing-stat{padding:5px 3px;}
+  .briefing-stat strong{font-size:.95rem;}
+  .briefing-stat span{font-size:.58rem;}
+  .briefing-message{font-size:.72rem;margin:3px 0 6px;}
+  .what-should-i-do{min-height:30px;padding:4px 8px;font-size:.72rem;}
+  #week-card .section_heading{min-height:42px;padding:9px 12px;font-size:.88rem;}
+  #week-card ul{padding:5px 8px 7px;}
+  #week-card li a.card-link,#week-card .items > li > a{font-size:.78rem;min-height:28px;margin:3px 0;padding:5px 8px;}
+
+  /* Keep the calendar exactly two columns wide, directly below Week at a Glance. */
+  #calendar-card{width:100%;}
+  #calendar-card .section_heading{min-height:42px;padding:9px 12px;font-size:.9rem;}
 }
 
 @media (max-width:1049px){
@@ -901,7 +942,7 @@ background:#f4f8fc;color:#33587f;font:inherit;font-size:.78rem;font-weight:650;c
 <div class="col-stack">
 
 <header class="topic intro-header" id="top">
-<h1 class="my-heading"><a href="https://links.renertschool.ca/">Renert School Links (but better)</a></h1>
+<h1 class="my-heading"><a href="https://links.renertschool.ca/">Renert School Links (But Better)</a></h1>
 <p class="grad-countdown" id="grad-countdown"></p>
 <div class="clock-strip header-clock">
 <span><i class="bi bi-clock"></i><strong id="current_time">--:--</strong></span>
@@ -947,6 +988,8 @@ Week at a Glance
 </ul>
 </div>
 
+</div>
+
 <!-- 5. Calendar -->
 <div class="topic" id="calendar-card">
 <div class="section_heading"><i class="bi bi-calendar-month"></i>Calendar</div>
@@ -964,7 +1007,6 @@ Week at a Glance
 </div>
 <div class="cal-grid" id="calendar-grid"></div>
 <div class="cal-detail" id="calendar-detail" hidden></div>
-</div>
 </div>
 
 <!-- 3. Assignment Tracker -->
@@ -2002,7 +2044,8 @@ var initials = courseInitials();
 var today = startOfToday();
 
 var oneWeek = new Date(today);
-oneWeek.setDate(oneWeek.getDate() + 7);
+// Rolling seven-day window: today through six days from today.
+oneWeek.setDate(oneWeek.getDate() + 6);
 
 var oneMonth = new Date(today);
 oneMonth.setMonth(oneMonth.getMonth() + 1);
@@ -2021,10 +2064,12 @@ else if (due <= oneMonth) key = "month";
 else key = "future";
 
 buckets[key].push(item);
-lists[key].appendChild(assignmentRow(item, today, initials));
+// Keep today's items in the normal Due Today section while also including
+// them in the rolling Due This Week view.
+if (due && due >= today && due <= oneWeek && key === "today") buckets.week.push(item);
+if (key !== "week") lists[key].appendChild(assignmentRow(item, today, initials));
 });
 
-<<<<<<< HEAD
 // Due This Week is a rolling seven-day window starting today.
 // Render every day separately so the user can immediately see what is due
 // on each date, including an explicit [TODAY] marker on the current day.
@@ -2064,10 +2109,8 @@ lists.week.appendChild(group);
 lists.week.innerHTML = '<small style="color:var(--muted);padding:4px 0;">' + SECTION_EMPTY.week + '</small>';
 }
 
-=======
->>>>>>> parent of 51166f1 (Update index.html)
 keys.forEach(function (key) {
-collapseSection(lists[key], key);
+if (key !== "week") collapseSection(lists[key], key);
 
 var pill = document.getElementById("count-" + key);
 if (pill) {
