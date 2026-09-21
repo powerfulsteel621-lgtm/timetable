@@ -289,6 +289,47 @@ margin:0;color:#2d5286;font-size:.92rem;font-weight:700;text-align:center;
 /* ---------- Calendar ---------- */
 #calendar-card,#guidance-card{grid-column:auto}
 @media (min-width:700px){#calendar-card,#guidance-card{grid-column:span 2}}
+
+/* ---------- Rolling-week drag and dashboard layout ---------- */
+.tracker-item[draggable="true"]{cursor:grab}
+.tracker-item[draggable="true"]:active{cursor:grabbing}
+.week-day-group{transition:background .12s,border-color .12s}
+.week-day-group.is-drag-over{background:#eef6ff;border-radius:9px;outline:2px dashed #8db9ed;outline-offset:2px}
+.week-day-group.is-drag-over .week-day-heading{background:#d9eafa;color:#1f4e7a}
+.week-day-drop-hint{font-size:.7rem;color:var(--muted);font-weight:650;padding:0 4px}
+
+@media (min-width:1050px){
+  /* Keep the middle column content on the left, while the calendar below it
+     occupies the same two-column width it had before. */
+  .card-grid > .col-stack:not(.tight){
+    grid-column:2 / span 2;
+    grid-row:1;
+    gap:18px;
+  }
+  .card-grid > .col-stack:not(.tight) > .intro-header,
+  .card-grid > .col-stack:not(.tight) > #daily-briefing-card,
+  .card-grid > .col-stack:not(.tight) > #week-card{
+    width:calc((100% - 18px) / 2);
+  }
+  .card-grid > .col-stack:not(.tight) > #calendar-card{
+    width:100%;
+    margin-top:-18px;
+    border-top-left-radius:0;
+    border-top-right-radius:0;
+  }
+  .card-grid > #tracker-card{
+    grid-column:1;
+    grid-row:2;
+  }
+}
+
+@media (max-width:1049px){
+  .col-stack:not(.tight) > #calendar-card{
+    margin-top:-18px;
+    border-top-left-radius:0;
+    border-top-right-radius:0;
+  }
+}
 #guidance-card li:last-child{columns:1}
 @media (min-width:700px){#guidance-card li:last-child{columns:2;column-gap:20px}}
 #guidance-card .resource{break-inside:avoid}
@@ -911,6 +952,25 @@ Week at a Glance
 <li><a target="_blank" href="https://links.renertschool.ca/my/photos">My Photos</a></li>
 </ul>
 </div>
+
+<!-- 5. Calendar -->
+<div class="topic" id="calendar-card">
+<div class="section_heading"><i class="bi bi-calendar-month"></i>Calendar</div>
+<div class="cal-nav">
+<button type="button" id="cal-today">Today</button>
+<div class="cal-month">
+<button type="button" id="cal-prev" aria-label="Previous month">&#8249;</button>
+<strong id="calendar-label"></strong>
+<button type="button" id="cal-next" aria-label="Next month">&#8250;</button>
+</div>
+<span></span>
+</div>
+<div class="cal-weekdays">
+<span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+</div>
+<div class="cal-grid" id="calendar-grid"></div>
+<div class="cal-detail" id="calendar-detail" hidden></div>
+</div>
 </div>
 
 <!-- 3. Assignment Tracker -->
@@ -1067,24 +1127,7 @@ Show as table
 
 </div>
 
-<!-- 5. Calendar -->
-<div class="topic" id="calendar-card">
-<div class="section_heading"><i class="bi bi-calendar-month"></i>Calendar</div>
-<div class="cal-nav">
-<button type="button" id="cal-today">Today</button>
-<div class="cal-month">
-<button type="button" id="cal-prev" aria-label="Previous month">&#8249;</button>
-<strong id="calendar-label"></strong>
-<button type="button" id="cal-next" aria-label="Next month">&#8250;</button>
-</div>
-<span></span>
-</div>
-<div class="cal-weekdays">
-<span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-</div>
-<div class="cal-grid" id="calendar-grid"></div>
-<div class="cal-detail" id="calendar-detail" hidden></div>
-</div>
+
 
 <!-- 6. TV/Wall Displays -->
 <div class="topic desk-only">
@@ -1894,6 +1937,7 @@ el.className = "tracker-item tone-" + assignmentTone(item.className) +
 el.setAttribute("data-priority", priority || "");
 if (band !== null) el.setAttribute("data-band", String(band));
 el.setAttribute("data-id", item.id);
+el.setAttribute("draggable", item.date ? "true" : "false");
 
 var html =
 '<span class="tracker-tag" title="' + escapeHtml(item.className) + '">' +
@@ -2005,6 +2049,7 @@ var dayItems = buckets.week.filter(function (item) { return item.date === dayKey
 
 var group = document.createElement("div");
 group.className = "week-day-group" + (dayOffset === 0 ? " is-today" : "");
+group.setAttribute("data-date", dayKey);
 
 var heading = document.createElement("div");
 heading.className = "week-day-heading" + (dayOffset === 0 ? " is-today" : "");
@@ -2017,14 +2062,12 @@ if (dayItems.length) {
 dayItems.forEach(function (item) {
  group.appendChild(assignmentRow(item, today, initials));
 });
-} else {
-var empty = document.createElement("div");
-empty.className = "week-day-empty";
-empty.textContent = "Nothing due.";
-group.appendChild(empty);
-}
-
+var hint = document.createElement("div");
+hint.className = "week-day-drop-hint";
+hint.textContent = "Drag an assignment here to change its due date";
+group.appendChild(hint);
 lists.week.appendChild(group);
+}
 }
 } else {
 lists.week.innerHTML = '<small style="color:var(--muted);padding:4px 0;">' + SECTION_EMPTY.week + '</small>';
@@ -2292,7 +2335,86 @@ label.setAttribute("aria-label", value + "% completed");
 applyAssignmentPriority(row, value);
 });
 
+var draggedAssignmentId = null;
+var justDraggedAssignment = false;
+
+document.addEventListener("dragstart", function(e) {
+var row = e.target.closest('.tracker-item[draggable="true"]');
+if (!row) return;
+
+if (e.target.closest("input, button, select, textarea, a, .completion-control")) {
+e.preventDefault();
+return;
+}
+
+draggedAssignmentId = row.getAttribute("data-id");
+row.classList.add("is-dragging");
+if (e.dataTransfer) {
+e.dataTransfer.effectAllowed = "move";
+e.dataTransfer.setData("text/plain", draggedAssignmentId);
+}
+});
+
+document.addEventListener("dragover", function(e) {
+var group = e.target.closest(".week-day-group[data-date]");
+if (!group || !draggedAssignmentId) return;
+e.preventDefault();
+if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+document.querySelectorAll(".week-day-group.is-drag-over").forEach(function(el) {
+if (el !== group) el.classList.remove("is-drag-over");
+});
+group.classList.add("is-drag-over");
+});
+
+document.addEventListener("dragenter", function(e) {
+var group = e.target.closest(".week-day-group[data-date]");
+if (group && draggedAssignmentId) group.classList.add("is-drag-over");
+});
+
+document.addEventListener("dragleave", function(e) {
+var group = e.target.closest(".week-day-group[data-date]");
+if (!group) return;
+if (!group.contains(e.relatedTarget)) group.classList.remove("is-drag-over");
+});
+
+document.addEventListener("drop", function(e) {
+var group = e.target.closest(".week-day-group[data-date]");
+if (!group || !draggedAssignmentId) return;
+e.preventDefault();
+
+var targetDate = group.getAttribute("data-date");
+var id = draggedAssignmentId;
+var index = assignmentIndexById(id);
+
+document.querySelectorAll(".week-day-group.is-drag-over").forEach(function(el) {
+el.classList.remove("is-drag-over");
+});
+document.querySelectorAll(".tracker-item.is-dragging").forEach(function(el) {
+el.classList.remove("is-dragging");
+});
+
+if (index !== -1 && targetDate && assignments[index].date !== targetDate) {
+assignments[index].date = targetDate;
+saveAssignments();
+justDraggedAssignment = true;
+renderTracker();
+setTimeout(function() { justDraggedAssignment = false; }, 0);
+}
+
+draggedAssignmentId = null;
+});
+
+document.addEventListener("dragend", function(e) {
+var row = e.target.closest(".tracker-item");
+if (row) row.classList.remove("is-dragging");
+document.querySelectorAll(".week-day-group.is-drag-over").forEach(function(el) {
+el.classList.remove("is-drag-over");
+});
+draggedAssignmentId = null;
+});
+
 document.addEventListener("click", function(e) {
+if (justDraggedAssignment) return;
 var nextChip = e.target.closest(".next-chip");
 if (nextChip) {
 document.getElementById("assignment-date").value = nextChip.getAttribute("data-date");
