@@ -896,6 +896,8 @@ flex:0 0 auto;color:var(--muted);font-size:.72rem;font-weight:700;text-decoratio
 /* A dated step shown as its own row in the list: the parent task's name in
 large type, the step underneath, no difficulty, class or due date. */
 .tracker-item.sub-row .tracker-item-title{font-size:1rem;font-weight:800;line-height:1.2}
+/* Step rows are always yellow, whatever their progress. */
+.tracker-item.sub-row{background:#fcf4ca;border-color:#dccb74}
 .sub-row-text{display:block;margin-top:1px;color:#40546b;font-size:.8rem;font-weight:600;overflow-wrap:anywhere}
 
 .subtask-add button{
@@ -1030,14 +1032,17 @@ body{line-height:1.5}
 
 /* Tracker list */
 .tracker-section-title{margin:20px 0 10px}
-.tracker-list{gap:10px;margin-bottom:12px}
-.tracker-item{min-height:54px;gap:12px;padding:11px 14px 11px 0}
-.tracker-tag{flex-basis:40px;margin:-11px 4px -11px -1px}
-.tracker-item-meta{margin-top:3px}
-.tracker-item.sub-row .tracker-item-title{font-size:1.05rem}
-.sub-row-text{margin-top:3px}
-.completion-control{gap:12px;margin-top:10px}
-.week-day-group{gap:10px;margin:16px 0 20px}
+.tracker-list{gap:6px;margin-bottom:10px}
+/* Rows are kept compact on purpose: the tracker is a long list. */
+.tracker-item{min-height:40px;gap:10px;padding:5px 12px 5px 0}
+.tracker-item-title,.tracker-item-meta,.sub-row-text{line-height:1.25}
+.completion-percent{font-size:.92rem}
+.tracker-tag{flex-basis:36px;margin:-5px 3px -5px -1px}
+.tracker-item-meta{margin-top:1px}
+.tracker-item.sub-row .tracker-item-title{font-size:.98rem}
+.sub-row-text{margin-top:1px}
+.completion-control{gap:12px;margin-top:6px}
+.week-day-group{gap:6px;margin:12px 0 14px}
 .week-day-group.is-today{margin-top:8px}
 .week-day-heading{padding:10px 14px}
 .week-day-drop-hint{padding:2px 6px}
@@ -1254,9 +1259,6 @@ data-tab="chart" aria-selected="false" aria-controls="panel-chart">Workload</but
 </button>
 <button type="submit" id="assignment-submit">Add Assignment</button>
 </form>
-
-<div class="tracker-section-title">Due Today <span class="count-pill" id="count-today"></span></div>
-<div id="tracker-today" class="tracker-list"></div>
 
 <div class="tracker-section-title">Due This Week <span class="count-pill" id="count-week"></span></div>
 <div id="tracker-week" class="tracker-list"></div>
@@ -2056,6 +2058,7 @@ return Math.min(9, Math.floor(value / 10));
 function applyAssignmentPriority(row, completion) {
 if (!row) return;
 var value = Math.max(0, Math.min(100, Math.round(Number(completion) || 0)));
+if (row.hasAttribute("data-sub-id")) return;          // step rows stay yellow
 for (var b = 0; b < 10; b++) row.classList.remove("band-" + b);
 var index = assignmentIndexById(row.getAttribute("data-id"));
 var isSubRow = row.hasAttribute("data-sub-id");
@@ -2253,16 +2256,12 @@ return el;
 }
 
 /* A dated step as its own list row. It carries the parent's class colour tag
-and follows the same completion colour bands, but shows no difficulty,
-class name or due date. */
+and is always yellow, and shows no difficulty, class name or due date. */
 function subtaskRow(parent, sub, today, initials) {
 var open = !!openSubRows[sub.id];
-var band = completionBand(sub.completion, null);
-
 var el = document.createElement("div");
 el.className = "tracker-item sub-row tone-" + assignmentTone(parent.className) +
-" band-" + band + (open ? " is-open" : "");
-el.setAttribute("data-band", String(band));
+(open ? " is-open" : "");
 el.setAttribute("data-id", parent.id);
 el.setAttribute("data-sub-id", sub.id);
 el.setAttribute("draggable", open ? "false" : "true");
@@ -2297,7 +2296,6 @@ someday: "Nothing parked here."
 
 function renderTracker() {
 var lists = {
-today: document.getElementById("tracker-today"),
 week: document.getElementById("tracker-week"),
 month: document.getElementById("tracker-month"),
 future: document.getElementById("tracker-future"),
@@ -2326,7 +2324,7 @@ oneWeek.setDate(oneWeek.getDate() + 6);
 var oneMonth = new Date(today);
 oneMonth.setMonth(oneMonth.getMonth() + 1);
 
-var buckets = {today:[], week:[], month:[], future:[], someday:[]};
+var buckets = {week:[], month:[], future:[], someday:[]};
 
 /* Every list row is an entry: an assignment, or a dated step of one that is
 not done yet. Both are sorted and bucketed by their own date. */
@@ -2356,16 +2354,13 @@ entries.forEach(function (entry) {
 var item = entry;
 var due = entry.date ? new Date(entry.date + "T00:00:00") : null;
 var key;
+// Today and anything overdue go in the week's [TODAY] group.
 if (!due || isNaN(due)) key = "someday";
-else if (due <= today) key = "today";          // today, plus anything overdue
 else if (due <= oneWeek) key = "week";
 else if (due <= oneMonth) key = "month";
 else key = "future";
 
 buckets[key].push(item);
-// Keep today's items in the normal Due Today section while also including
-// them in the rolling Due This Week view.
-if (due && due >= today && due <= oneWeek && key === "today") buckets.week.push(item);
 if (key !== "week") lists[key].appendChild(entryRow(entry));
 });
 
@@ -2380,7 +2375,10 @@ dayDate.setDate(cursor.getDate() + dayOffset);
 var dayKey = dayDate.getFullYear() + "-" +
 String(dayDate.getMonth() + 1).padStart(2, "0") + "-" +
 String(dayDate.getDate()).padStart(2, "0");
-var dayItems = buckets.week.filter(function (entry) { return entry.date === dayKey; });
+// The [TODAY] group also holds overdue items, listed first.
+var dayItems = buckets.week.filter(function (entry) {
+return dayOffset === 0 ? entry.date <= dayKey : entry.date === dayKey;
+});
 
 var group = document.createElement("div");
 group.className = "week-day-group" + (dayOffset === 0 ? " is-today" : "");
