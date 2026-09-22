@@ -884,6 +884,14 @@ flex:0 0 132px;width:132px;height:28px;padding:2px 6px;border:1px solid #d5e1ee;
 background:#fff;font:inherit;font-size:.76rem;color:var(--text);
 }
 .subtask .sub-date{height:26px}
+.subtask{flex-wrap:wrap}
+.subtask .sub-date-wrap,.subtask-add .sub-date-wrap{
+flex:0 0 auto;display:flex;align-items:center;gap:6px;cursor:pointer;
+}
+.subtask .sub-date-wrap span,.subtask-add .sub-date-wrap span{
+flex:0 0 auto;color:var(--muted);font-size:.72rem;font-weight:700;text-decoration:none;
+}
+.subtask-hint{display:flex;align-items:center;gap:6px;margin:0 0 6px;color:var(--muted);font-size:.74rem;font-weight:600}
 
 /* A dated step shown as its own row in the list: the parent task's name in
 large type, the step underneath, no difficulty, class or due date. */
@@ -2167,17 +2175,23 @@ return '<div class="subtask' + (s.done ? " is-done" : "") + '">' +
 (s.done ? " checked" : "") + '>' +
 '<span>' + escapeHtml(s.text) + '</span>' +
 '</label>' +
+'<label class="sub-date-wrap"><span>Date</span>' +
 '<input type="date" class="sub-date" data-id="' + escapeHtml(item.id) + '" data-i="' + i +
 '" value="' + escapeHtml(s.date || "") + '" aria-label="Date for this step" title="Give this step a date to list it on its own">' +
+'</label>' +
 '<button type="button" class="sub-del" data-id="' + escapeHtml(item.id) + '" data-i="' + i +
 '" aria-label="Remove step">&times;</button>' +
 '</div>';
 }).join("");
 
-return '<div class="subtasks">' + rows +
+return '<div class="subtasks">' +
+'<div class="subtask-hint"><i class="bi bi-calendar-event"></i>Give a step a date to list it on its own under that day.</div>' +
+rows +
 '<div class="subtask-add">' +
 '<input class="sub-new" data-id="' + escapeHtml(item.id) + '" placeholder="Add a step…" aria-label="New step">' +
+'<label class="sub-date-wrap"><span>Date</span>' +
 '<input type="date" class="sub-new-date" data-id="' + escapeHtml(item.id) + '" aria-label="Date for the new step (optional)">' +
+'</label>' +
 '<button type="button" class="sub-add" data-id="' + escapeHtml(item.id) + '">Add</button>' +
 '</div>' +
 '</div>';
@@ -2198,7 +2212,9 @@ el.className = "tracker-item tone-" + assignmentTone(item.className) +
 el.setAttribute("data-priority", priority || "");
 if (band !== null) el.setAttribute("data-band", String(band));
 el.setAttribute("data-id", item.id);
-el.setAttribute("draggable", item.date ? "true" : "false");
+// An open row stops being draggable: Firefox won't let you click into date
+// boxes or text fields inside a draggable element.
+el.setAttribute("draggable", item.date && !open ? "true" : "false");
 
 var html =
 '<span class="tracker-tag" title="' + escapeHtml(item.className) + '">' +
@@ -2249,7 +2265,7 @@ el.className = "tracker-item sub-row tone-" + assignmentTone(parent.className) +
 el.setAttribute("data-band", String(band));
 el.setAttribute("data-id", parent.id);
 el.setAttribute("data-sub-id", sub.id);
-el.setAttribute("draggable", "true");
+el.setAttribute("draggable", open ? "false" : "true");
 
 el.innerHTML =
 '<span class="tracker-tag" title="' + escapeHtml(parent.className) + '">' +
