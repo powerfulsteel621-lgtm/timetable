@@ -304,20 +304,25 @@ margin:0;color:#2d5286;font-size:.92rem;font-weight:700;text-align:center;
   /* Desktop layout mirrors the dashboard reference:
      Schedule | Title/Briefing/Week | Assignment Tracker
      Calendar spans the first two columns directly underneath the middle stack.
-     The lower utility cards form three equal columns. */
+     Under the calendar, one joined stack with no gaps:
+     Post-Secondary | Exams & AP, then Guidance, then a slim Printing strip,
+     then TV/Wall Displays. The tracker runs down the whole right column. */
   .card-grid{
     grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.38fr);
     grid-template-areas:
       "schedule middle tracker"
       "calendar calendar tracker"
-      "printing postsecondary exams"
-      "tv guidance guidance";
-    /* Row 2 is flexible so the tall tracker (which spans rows 1-2) grows row 2
-       only. With both rows "auto", the grid split the tracker's extra height
-       across both rows and stretched row 1, leaving a gap above the calendar. */
-    grid-template-rows:auto 1fr auto auto;
+      "postsecondary exams tracker"
+      "guidance guidance tracker"
+      "printing printing tracker"
+      "tv tv tracker"
+      ". . tracker";
+    /* The last row is flexible and empty on the left, so the tall tracker
+       (which spans every row) grows that row only instead of stretching the
+       rows above it and opening gaps between the left-hand cards. */
+    grid-template-rows:auto auto auto auto auto auto 1fr;
     column-gap:16px;
-    row-gap:12px;
+    row-gap:0;
     align-items:start;
   }
 
@@ -331,16 +336,35 @@ margin:0;color:#2d5286;font-size:.92rem;font-weight:700;text-align:center;
   .card-grid > #calendar-card{
     grid-area:calendar;
     min-width:0;
-    margin-top:-12px;
   }
 
-  /* Let the three lower utility cards participate directly in the main grid. */
+  /* Let the utility cards inside the tight stack join the main grid directly. */
   .card-grid > .col-stack.tight{display:contents;}
-  .card-grid > .col-stack.tight > .topic:nth-child(1){grid-area:printing; align-self:stretch; height:100%;}
-  .card-grid > .col-stack.tight > .topic:nth-child(2){grid-area:postsecondary; align-self:stretch; height:100%;}
-  .card-grid > .col-stack.tight > .topic:nth-child(3){grid-area:exams; align-self:stretch; height:100%;}
-  .card-grid > .topic.desk-only:not(#guidance-card){grid-area:tv; align-self:stretch; height:100%;}
-  .card-grid > #guidance-card{grid-area:guidance; min-width:0; align-self:stretch; height:100%;}
+  .card-grid #postsec-card{grid-area:postsecondary; align-self:stretch; min-width:0;}
+  .card-grid #exams-card{grid-area:exams; align-self:stretch; min-width:0;}
+  .card-grid > #guidance-card{grid-area:guidance; min-width:0;}
+  .card-grid #printing-card{grid-area:printing; min-width:0;}
+  .card-grid > #tv-card{grid-area:tv; min-width:0;}
+
+  /* One joined stack under the calendar: square the corners where cards meet
+     and overlap the 1px borders so no double lines appear. */
+  .card-grid > #calendar-card{border-bottom-left-radius:0;border-bottom-right-radius:0;}
+  .card-grid #postsec-card,
+  .card-grid #exams-card,
+  .card-grid > #guidance-card,
+  .card-grid #printing-card{border-radius:0;margin-top:-1px;}
+  .card-grid > #tv-card{border-top-left-radius:0;border-top-right-radius:0;margin-top:-1px;}
+
+  /* Printing as a single slim strip: heading and both links on one line. */
+  .card-grid #printing-card{display:flex;align-items:stretch;}
+  .card-grid #printing-card .section_heading{
+    flex:0 0 auto;min-height:0;padding:5px 12px;gap:7px;
+    border-bottom:0;border-right:1px solid var(--border);font-size:.84rem;
+  }
+  .card-grid #printing-card .section_heading i{width:22px;height:22px;flex-basis:22px;font-size:.8rem;border-radius:6px;}
+  .card-grid #printing-card ul{display:flex;align-items:center;gap:6px;flex:1 1 auto;padding:4px 8px;}
+  .card-grid #printing-card li{flex:1 1 0;min-width:0;}
+  .card-grid #printing-card a.card-link{margin:0;min-height:26px;padding:3px 10px;font-size:.78rem;justify-content:center;}
 
   /* Compact middle stack, matching the reference proportions. */
   .intro-header{min-height:52px;padding:10px 12px;gap:5px;}
@@ -1129,7 +1153,7 @@ Show as table
 
 <!-- 4. Printing + Guidance (joined, no gap) -->
 <div class="col-stack tight desk-only">
-<div class="topic">
+<div class="topic" id="printing-card">
 <div class="section_heading"><i class="bi bi-printer"></i>Printing</div>
 <ul class="items">
 <li><a href="https://links.renertschool.ca/printer/new-job">Print PDF</a></li>
@@ -1137,7 +1161,7 @@ Show as table
 </ul>
 </div>
 
-<div class="topic">
+<div class="topic" id="postsec-card">
 <div class="section_heading"><i class="bi bi-mortarboard"></i>Post-Secondary</div>
 <ul class="items">
 <li><a target="_blank" href="https://www.applyalberta.ca/">ApplyAlberta</a></li>
@@ -1161,7 +1185,7 @@ Show as table
 </ul>
 </div>
 
-<div class="topic">
+<div class="topic" id="exams-card">
 <div class="section_heading"><i class="bi bi-journal-check"></i>Exams &amp; AP</div>
 <ul class="items">
 <li><a target="_blank" href="https://myap.collegeboard.org/">AP Classroom</a></li>
@@ -1182,7 +1206,7 @@ Show as table
 
 
 <!-- 6. TV/Wall Displays -->
-<div class="topic desk-only">
+<div class="topic desk-only" id="tv-card">
 <div class="section_heading"><i class="bi bi-tv"></i>TV/Wall Displays</div>
 <ul class="items">
 <li><a target="_blank" href="https://links.renertschool.ca/tv/clock">Clock Page</a></li>
