@@ -878,6 +878,18 @@ color:#5a6b7f;font:inherit;font-size:.7rem;font-weight:700;cursor:pointer;
 flex:1;min-width:0;height:30px;padding:4px 8px;border:1px solid #d5e1ee;border-radius:7px;
 background:#fff;font-size:.82rem;color:var(--text);
 }
+/* Date box on each step, and on the "add a step" row. */
+.subtask .sub-date,.subtask-add .sub-new-date{
+flex:0 0 132px;width:132px;height:28px;padding:2px 6px;border:1px solid #d5e1ee;border-radius:7px;
+background:#fff;font:inherit;font-size:.76rem;color:var(--text);
+}
+.subtask .sub-date{height:26px}
+
+/* A dated step shown as its own row in the list: the parent task's name in
+large type, the step underneath, no difficulty, class or due date. */
+.tracker-item.sub-row .tracker-item-title{font-size:1rem;font-weight:800;line-height:1.2}
+.sub-row-text{display:block;margin-top:1px;color:#40546b;font-size:.8rem;font-weight:600;overflow-wrap:anywhere}
+
 .subtask-add button{
 height:30px;padding:0 10px;border:1px solid #d5e1ee;border-radius:7px;background:#f4f8fc;
 color:#33587f;font:inherit;font-size:.78rem;font-weight:650;cursor:pointer;
@@ -958,6 +970,139 @@ background:#f4f8fc;color:#33587f;font:inherit;font-size:.78rem;font-weight:650;c
 .data-tools button:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
 .sync-status{margin:6px 2px 0;color:var(--muted);font-size:.74rem}
 .sync-status.is-bad{color:#c0392b}
+
+/* ---------- Spacious pass ----------
+Loosens padding, gaps and control heights across the page. Scoped to 700px
+and wider so the dense phone and small-screen layouts stay as they were;
+the desktop block underneath replaces the old compact middle column. */
+@media (min-width:700px){
+body{line-height:1.5}
+.container-fluid{width:min(1480px,calc(100% - 48px));max-width:1480px;padding:24px 0 60px}
+.card-grid{gap:22px}
+
+.section_heading{min-height:60px;padding:15px 18px;gap:12px}
+.topic ul{padding:12px 16px 16px}
+.topic a.card-link{min-height:42px;margin:8px 0;padding:10px 14px}
+.sub-links a{min-height:38px;padding:9px 10px}
+.sub-label{min-height:42px;padding:10px 14px}
+.resource{margin:10px 0 14px}
+
+/* Header strip */
+.now-next{gap:8px;padding:12px 16px;margin-top:4px}
+.nn-track{height:7px}
+
+/* Daily Briefing */
+.daily-briefing-body{padding:16px 18px 18px}
+.briefing-summary{gap:10px;margin-bottom:14px}
+.briefing-stat{padding:11px 8px}
+.briefing-message{margin:6px 0 12px}
+.what-should-i-do{min-height:42px;padding:9px 14px}
+.briefing-recommendation{margin-top:12px;padding:12px 14px}
+
+/* Schedule */
+#schedule-body{padding:14px 16px 18px}
+.block{gap:14px;padding:12px 14px;margin:10px 0}
+.block-time{flex-basis:66px}
+.block-meta{margin-top:4px}
+.block-left{margin-top:7px;padding:4px 0}
+.sched-note{margin:2px 0 10px}
+.sched-hint{margin-top:14px}
+
+/* Tracker form */
+.tracker-body{padding:16px 18px 18px}
+.tracker-form{gap:12px;margin-bottom:18px;padding-bottom:18px}
+.tracker-form input,.tracker-form select{height:42px;padding:8px 12px}
+.tracker-form button,.tracker-form .testing-center-toggle{height:42px}
+.tracker-dates{gap:10px}
+.date-field{gap:5px}
+.diff-seg{gap:8px}
+.diff-seg span{height:42px}
+.next-chips{gap:8px}
+.tracker-form .next-chip{min-height:34px;padding:6px 13px}
+
+/* Tracker list */
+.tracker-section-title{margin:20px 0 10px}
+.tracker-list{gap:10px;margin-bottom:12px}
+.tracker-item{min-height:54px;gap:12px;padding:11px 14px 11px 0}
+.tracker-tag{flex-basis:40px;margin:-11px 4px -11px -1px}
+.tracker-item-meta{margin-top:3px}
+.tracker-item.sub-row .tracker-item-title{font-size:1.05rem}
+.sub-row-text{margin-top:3px}
+.completion-control{gap:12px;margin-top:10px}
+.week-day-group{gap:10px;margin:16px 0 20px}
+.week-day-group.is-today{margin-top:8px}
+.week-day-heading{padding:10px 14px}
+.week-day-drop-hint{padding:2px 6px}
+.subtasks{padding:10px 6px 6px 54px;margin:6px 0 2px}
+.subtask{gap:8px;padding:5px 0}
+.subtask-add{gap:8px;margin-top:6px}
+.subtask-add input,.subtask-add button{height:34px}
+.subtask .sub-date{height:30px}
+.tracker-more{margin-top:4px;padding:6px 14px}
+.done-head{margin-top:12px}
+.data-tools{gap:10px;margin-top:18px;padding-top:16px}
+.data-tools button{min-height:38px}
+.sync-status{margin-top:8px}
+.tracker-edit{gap:10px}
+.tracker-edit-fields{gap:9px}
+.tracker-edit-fields input,.tracker-edit-fields select{height:38px}
+.tracker-edit-actions button{height:36px;padding:0 12px}
+
+/* Workload chart */
+.chart-body{padding:16px 18px 18px}
+.chart-week-nav{gap:8px;margin-bottom:14px}
+.chart-week-nav button{min-height:30px;padding:4px 12px}
+.chart-summary{margin-bottom:14px}
+.chart-legend{gap:8px 16px;margin-top:14px}
+.chart-detail{margin-top:14px;padding-top:12px}
+.chart-detail-item{padding:6px 0}
+
+/* Calendar */
+.cal-nav{gap:10px;padding:12px 16px}
+.cal-nav button{height:34px}
+.cal-weekdays{padding:12px 12px 4px}
+.cal-grid{gap:6px;padding:6px 12px 14px}
+.cal-day{min-height:104px;padding:6px}
+.cal-bars{gap:3px;margin-top:5px}
+.cal-bar{height:18px;line-height:14px}
+.cal-detail{padding:14px 18px 18px}
+.cal-detail-item{padding:10px 12px;margin:8px 0}
+
+/* Tracker tabs */
+.tracker-tab{min-height:44px}
+}
+
+@media (min-width:1050px){
+.card-grid{column-gap:22px}
+.card-grid > .col-stack:not(.tight){gap:18px}
+
+/* Space between the top row and the calendar; the stack under the calendar
+stays joined with no gaps. */
+.card-grid > #calendar-card{margin-top:22px}
+
+/* The middle column was compacted before; give it normal breathing room. */
+.intro-header{min-height:0;padding:20px 18px;gap:9px}
+.my-heading{font-size:1.18rem}
+.grad-countdown{font-size:.86rem}
+.header-clock{gap:18px}
+.clock-strip span{font-size:.84rem;gap:7px}
+.daily-briefing-body{padding:16px 18px 18px}
+.briefing-summary{gap:10px;margin-bottom:14px}
+.briefing-stat{padding:10px 6px}
+.briefing-stat strong{font-size:1.12rem}
+.briefing-stat span{font-size:.64rem}
+.briefing-message{font-size:.82rem;margin:6px 0 12px}
+.what-should-i-do{min-height:40px;padding:8px 12px;font-size:.84rem}
+#week-card .section_heading,#calendar-card .section_heading{min-height:56px;padding:14px 18px;font-size:1rem}
+#week-card ul{padding:10px 16px 16px}
+#week-card li a.card-link,#week-card .items > li > a{font-size:.88rem;min-height:38px;margin:7px 0;padding:9px 13px}
+
+/* Printing stays a single strip, just less tight. */
+.card-grid #printing-card .section_heading{padding:10px 18px;font-size:.92rem}
+.card-grid #printing-card .section_heading i{width:26px;height:26px;flex-basis:26px}
+.card-grid #printing-card ul{gap:10px;padding:9px 14px}
+.card-grid #printing-card a.card-link{min-height:36px;padding:6px 12px;font-size:.84rem}
+}
 
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
@@ -1518,6 +1663,14 @@ assignments.forEach(function (a, i) {
 if (!a.id) a.id = "a" + Date.now().toString(36) + i + Math.random().toString(36).slice(2, 7);
 a.difficulty = difficultyLevel(a.difficulty);
 if (!Array.isArray(a.subtasks)) a.subtasks = [];
+a.subtasks = a.subtasks.filter(function (sub) { return sub && typeof sub.text === "string"; });
+a.subtasks.forEach(function (sub, j) {
+if (!sub.id) sub.id = "s" + Date.now().toString(36) + i + "-" + j + Math.random().toString(36).slice(2, 6);
+if (typeof sub.date !== "string") sub.date = "";
+if (typeof sub.completion !== "number" || !isFinite(sub.completion)) sub.completion = sub.done ? 100 : 0;
+sub.completion = Math.max(0, Math.min(100, Math.round(sub.completion)));
+sub.done = !!sub.done;
+});
 if (typeof a.date !== "string") a.date = "";
 if (typeof a.testingCenter !== "boolean") a.testingCenter = false;
 if (typeof a.completion !== "number" || !isFinite(a.completion)) a.completion = 0;
@@ -1897,7 +2050,8 @@ if (!row) return;
 var value = Math.max(0, Math.min(100, Math.round(Number(completion) || 0)));
 for (var b = 0; b < 10; b++) row.classList.remove("band-" + b);
 var index = assignmentIndexById(row.getAttribute("data-id"));
-var band = completionBand(value, index !== -1 ? difficultyOf(assignments[index]) : null);
+var isSubRow = row.hasAttribute("data-sub-id");
+var band = completionBand(value, !isSubRow && index !== -1 ? difficultyOf(assignments[index]) : null);
 row.classList.add("band-" + band);
 row.setAttribute("data-band", String(band));
 row.setAttribute("data-priority", assignmentPriority({completion:value}));
@@ -1996,6 +2150,14 @@ return '<svg viewBox="0 0 16 16" aria-hidden="true">' +
 }
 
 var openSubtasks = {};        // id -> true while its checklist is expanded
+var openSubRows = {};         // step id -> true while its progress slider is open
+
+/* Find one step by its parent's id and its own id. */
+function findSub(parentId, subId) {
+var index = assignmentIndexById(parentId);
+if (index === -1) return null;
+return subtasksOf(assignments[index]).find(function (sub) { return sub.id === subId; }) || null;
+}
 
 function subtaskPanel(item) {
 var rows = subtasksOf(item).map(function (s, i) {
@@ -2005,6 +2167,8 @@ return '<div class="subtask' + (s.done ? " is-done" : "") + '">' +
 (s.done ? " checked" : "") + '>' +
 '<span>' + escapeHtml(s.text) + '</span>' +
 '</label>' +
+'<input type="date" class="sub-date" data-id="' + escapeHtml(item.id) + '" data-i="' + i +
+'" value="' + escapeHtml(s.date || "") + '" aria-label="Date for this step" title="Give this step a date to list it on its own">' +
 '<button type="button" class="sub-del" data-id="' + escapeHtml(item.id) + '" data-i="' + i +
 '" aria-label="Remove step">&times;</button>' +
 '</div>';
@@ -2013,6 +2177,7 @@ return '<div class="subtask' + (s.done ? " is-done" : "") + '">' +
 return '<div class="subtasks">' + rows +
 '<div class="subtask-add">' +
 '<input class="sub-new" data-id="' + escapeHtml(item.id) + '" placeholder="Add a step…" aria-label="New step">' +
+'<input type="date" class="sub-new-date" data-id="' + escapeHtml(item.id) + '" aria-label="Date for the new step (optional)">' +
 '<button type="button" class="sub-add" data-id="' + escapeHtml(item.id) + '">Add</button>' +
 '</div>' +
 '</div>';
@@ -2071,6 +2236,41 @@ el.innerHTML = html;
 return el;
 }
 
+/* A dated step as its own list row. It carries the parent's class colour tag
+and follows the same completion colour bands, but shows no difficulty,
+class name or due date. */
+function subtaskRow(parent, sub, today, initials) {
+var open = !!openSubRows[sub.id];
+var band = completionBand(sub.completion, null);
+
+var el = document.createElement("div");
+el.className = "tracker-item sub-row tone-" + assignmentTone(parent.className) +
+" band-" + band + (open ? " is-open" : "");
+el.setAttribute("data-band", String(band));
+el.setAttribute("data-id", parent.id);
+el.setAttribute("data-sub-id", sub.id);
+el.setAttribute("draggable", "true");
+
+el.innerHTML =
+'<span class="tracker-tag" title="' + escapeHtml(parent.className) + '">' +
+escapeHtml(initials[parent.className] || firstWord(parent.className).charAt(0).toUpperCase()) +
+'</span>' +
+'<input class="tracker-check sub-row-check" type="checkbox" data-id="' + escapeHtml(parent.id) +
+'" data-sub-id="' + escapeHtml(sub.id) + '" aria-label="Mark step ' + escapeHtml(sub.text) + ' done">' +
+'<div class="tracker-item-info" role="button" tabindex="0" aria-expanded="' + (open ? "true" : "false") + '" title="Click to set progress">' +
+'<span class="tracker-item-title">' + escapeHtml(parent.name) + '</span>' +
+'<span class="sub-row-text">' + escapeHtml(sub.text) + '</span>' +
+'<div class="completion-control" title="Completion" onclick="event.stopPropagation()">' +
+'<input class="completion-slider" type="range" min="0" max="100" step="1" value="' + sub.completion +
+'" data-id="' + escapeHtml(parent.id) + '" data-sub-id="' + escapeHtml(sub.id) + '" aria-label="Percent completed">' +
+'<input class="completion-number" type="number" min="0" max="100" step="1" value="' + sub.completion +
+'" data-id="' + escapeHtml(parent.id) + '" data-sub-id="' + escapeHtml(sub.id) + '" aria-label="Percent completed number">' +
+'</div>' +
+'</div>' +
+'<span class="completion-percent" aria-label="' + sub.completion + '% completed">' + sub.completion + '%</span>';
+return el;
+}
+
 var SECTION_EMPTY = {
 today: "Nothing due today.",
 week: "Nothing due this week.",
@@ -2112,10 +2312,33 @@ oneMonth.setMonth(oneMonth.getMonth() + 1);
 
 var buckets = {today:[], week:[], month:[], future:[], someday:[]};
 
+/* Every list row is an entry: an assignment, or a dated step of one that is
+not done yet. Both are sorted and bucketed by their own date. */
+var entries = [];
 assignments.forEach(function (item) {
 if (isEvent(item.className) && eventOver(item, today)) return;
+entries.push({kind:"task", item:item, date:item.date});
+if (isEvent(item.className)) return;
+subtasksOf(item).forEach(function (sub) {
+if (sub.date && !sub.done) entries.push({kind:"sub", item:item, sub:sub, date:sub.date});
+});
+});
+entries.sort(function (a, b) {
+if (!a.date && !b.date) return 0;
+if (!a.date) return 1;
+if (!b.date) return -1;
+return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+});
 
-var due = item.date ? new Date(item.date + "T00:00:00") : null;
+function entryRow(entry) {
+return entry.kind === "sub"
+? subtaskRow(entry.item, entry.sub, today, initials)
+: assignmentRow(entry.item, today, initials);
+}
+
+entries.forEach(function (entry) {
+var item = entry;
+var due = entry.date ? new Date(entry.date + "T00:00:00") : null;
 var key;
 if (!due || isNaN(due)) key = "someday";
 else if (due <= today) key = "today";          // today, plus anything overdue
@@ -2127,7 +2350,7 @@ buckets[key].push(item);
 // Keep today's items in the normal Due Today section while also including
 // them in the rolling Due This Week view.
 if (due && due >= today && due <= oneWeek && key === "today") buckets.week.push(item);
-if (key !== "week") lists[key].appendChild(assignmentRow(item, today, initials));
+if (key !== "week") lists[key].appendChild(entryRow(entry));
 });
 
 // Due This Week is a rolling seven-day window starting today.
@@ -2141,7 +2364,7 @@ dayDate.setDate(cursor.getDate() + dayOffset);
 var dayKey = dayDate.getFullYear() + "-" +
 String(dayDate.getMonth() + 1).padStart(2, "0") + "-" +
 String(dayDate.getDate()).padStart(2, "0");
-var dayItems = buckets.week.filter(function (item) { return item.date === dayKey; });
+var dayItems = buckets.week.filter(function (entry) { return entry.date === dayKey; });
 
 var group = document.createElement("div");
 group.className = "week-day-group" + (dayOffset === 0 ? " is-today" : "");
@@ -2155,8 +2378,8 @@ heading.innerHTML = escapeHtml(DAY_NAMES[dayDate.getDay()]) +
 group.appendChild(heading);
 
 if (dayItems.length) {
-dayItems.forEach(function (item) {
- group.appendChild(assignmentRow(item, today, initials));
+dayItems.forEach(function (entry) {
+group.appendChild(entryRow(entry));
 });
 var hint = document.createElement("div");
 hint.className = "week-day-drop-hint";
@@ -2174,7 +2397,9 @@ if (key !== "week") collapseSection(lists[key], key);
 
 var pill = document.getElementById("count-" + key);
 if (pill) {
-var points = sumPoints(buckets[key]);
+var points = sumPoints(buckets[key]
+.filter(function (entry) { return entry.kind === "task"; })
+.map(function (entry) { return entry.item; }));
 pill.textContent = buckets[key].length
 ? buckets[key].length + (points ? " · " + points + " pts" : "")
 : "";
@@ -2367,7 +2592,12 @@ var row = info ? info.closest(".tracker-item") : null;
 if (!info || !row || !row.getAttribute("data-id")) return;
 if (e.target.closest(".completion-control")) return;
 e.preventDefault();
+if (row.hasAttribute("data-sub-id")) {
+var keySub = row.getAttribute("data-sub-id");
+openSubRows[keySub] = !openSubRows[keySub];
+} else {
 openSubtasks[row.getAttribute("data-id")] = !openSubtasks[row.getAttribute("data-id")];
+}
 renderTracker();
 });
 
@@ -2403,10 +2633,19 @@ sliderLabel.textContent = sliderValue + "%";
 sliderLabel.setAttribute("aria-label", sliderValue + "% completed");
 }
 applyAssignmentPriority(sliderRow, sliderValue);
+var sliderSubId = e.target.getAttribute("data-sub-id");
+if (sliderSubId) {
+var sliderSub = findSub(e.target.getAttribute("data-id"), sliderSubId);
+if (sliderSub) {
+sliderSub.completion = sliderValue;
+saveAssignments();
+}
+} else {
 var sliderIndex = assignmentIndexById(e.target.getAttribute("data-id"));
 if (sliderIndex !== -1) {
 assignments[sliderIndex].completion = sliderValue;
 saveAssignments();
+}
 }
 }
 });
@@ -2417,10 +2656,19 @@ var raw = e.target.value;
 var value = Math.max(0, Math.min(100, Math.round(Number(raw) || 0)));
 e.target.value = value;
 var id = e.target.getAttribute("data-id");
+var numberSubId = e.target.getAttribute("data-sub-id");
+if (numberSubId) {
+var numberSub = findSub(id, numberSubId);
+if (numberSub) {
+numberSub.completion = value;
+saveAssignments();
+}
+} else {
 var index = assignmentIndexById(id);
 if (index !== -1) {
 assignments[index].completion = value;
 saveAssignments();
+}
 }
 var row = e.target.closest(".tracker-item");
 var label = row ? row.querySelector(".completion-percent") : null;
@@ -2431,7 +2679,19 @@ label.setAttribute("aria-label", value + "% completed");
 applyAssignmentPriority(row, value);
 });
 
+/* Setting or clearing a step's date moves it onto or off the list. */
+document.addEventListener("change", function (e) {
+if (!e.target.classList.contains("sub-date")) return;
+var dateIdx = Number(e.target.getAttribute("data-i"));
+var newDate = e.target.value;
+withAssignment(e.target.getAttribute("data-id"), function (item) {
+var sub = subtasksOf(item)[dateIdx];
+if (sub) sub.date = newDate;
+});
+});
+
 var draggedAssignmentId = null;
+var draggedSubId = null;
 var justDraggedAssignment = false;
 
 document.addEventListener("dragstart", function(e) {
@@ -2444,6 +2704,7 @@ return;
 }
 
 draggedAssignmentId = row.getAttribute("data-id");
+draggedSubId = row.getAttribute("data-sub-id");
 row.classList.add("is-dragging");
 if (e.dataTransfer) {
 e.dataTransfer.effectAllowed = "move";
@@ -2489,7 +2750,16 @@ document.querySelectorAll(".tracker-item.is-dragging").forEach(function(el) {
 el.classList.remove("is-dragging");
 });
 
-if (index !== -1 && targetDate && assignments[index].date !== targetDate) {
+if (draggedSubId) {
+var droppedSub = findSub(id, draggedSubId);
+if (droppedSub && targetDate && droppedSub.date !== targetDate) {
+droppedSub.date = targetDate;
+saveAssignments();
+justDraggedAssignment = true;
+renderTracker();
+setTimeout(function() { justDraggedAssignment = false; }, 0);
+}
+} else if (index !== -1 && targetDate && assignments[index].date !== targetDate) {
 assignments[index].date = targetDate;
 saveAssignments();
 justDraggedAssignment = true;
@@ -2498,6 +2768,7 @@ setTimeout(function() { justDraggedAssignment = false; }, 0);
 }
 
 draggedAssignmentId = null;
+draggedSubId = null;
 });
 
 document.addEventListener("dragend", function(e) {
@@ -2507,6 +2778,7 @@ document.querySelectorAll(".week-day-group.is-drag-over").forEach(function(el) {
 el.classList.remove("is-drag-over");
 });
 draggedAssignmentId = null;
+draggedSubId = null;
 });
 
 document.addEventListener("click", function(e) {
@@ -2537,6 +2809,12 @@ if (completionNumber) return;
 
 var assignmentInfo = e.target.closest(".tracker-item-info");
 if (assignmentInfo && row && !e.target.closest("button") && !e.target.closest("input") && !e.target.closest(".completion-control")) {
+if (row.hasAttribute("data-sub-id")) {
+var openId = row.getAttribute("data-sub-id");
+openSubRows[openId] = !openSubRows[openId];
+renderTracker();
+return;
+}
 openSubtasks[id] = !openSubtasks[id];
 renderTracker();
 return;
@@ -2572,7 +2850,8 @@ return;
 if (e.target.classList.contains("sub-add")) {
 var addWrap = e.target.closest(".subtask-add");
 var addInput = addWrap ? addWrap.querySelector(".sub-new") : null;
-if (addInput) addSubtask(addInput.getAttribute("data-id"), addInput.value);
+var addDate = addWrap ? addWrap.querySelector(".sub-new-date") : null;
+if (addInput) addSubtask(addInput.getAttribute("data-id"), addInput.value, addDate ? addDate.value : "");
 return;
 }
 
@@ -2601,6 +2880,29 @@ assignments.splice(deleteIndex, 1);
 saveAssignments();
 renderTracker();
 }
+return;
+}
+
+if (e.target.classList.contains("sub-row-check")) {
+var doneParentId = e.target.getAttribute("data-id");
+var doneSubId = e.target.getAttribute("data-sub-id");
+var doneRow = e.target.closest(".tracker-item");
+if (doneRow) doneRow.classList.add("is-completed");
+setTimeout(function() {
+var doneSub = findSub(doneParentId, doneSubId);
+if (!doneSub) return;
+doneSub.done = true;
+saveAssignments();
+renderTracker();
+showToast("Step done: “" + doneSub.text + "”", "Undo", function () {
+var again = findSub(doneParentId, doneSubId);
+if (again) {
+again.done = false;
+saveAssignments();
+renderTracker();
+}
+});
+}, 600);
 return;
 }
 
@@ -2680,11 +2982,17 @@ saveAssignments();
 renderTracker();
 }
 
-function addSubtask(id, text) {
+function addSubtask(id, text, date) {
 var trimmed = String(text || "").trim();
 if (!trimmed) return;
 withAssignment(id, function (item) {
-item.subtasks.push({text: trimmed, done: false});
+item.subtasks.push({
+id: "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+text: trimmed,
+done: false,
+date: date || "",
+completion: 0
+});
 });
 focusSubtaskInput(id);          // the row was rebuilt, so re-focus the box
 }
@@ -2698,7 +3006,9 @@ if (input) input.focus();
 document.addEventListener("keydown", function (e) {
 if (e.key !== "Enter" || !e.target.classList.contains("sub-new")) return;
 e.preventDefault();
-addSubtask(e.target.getAttribute("data-id"), e.target.value);
+var enterWrap = e.target.closest(".subtask-add");
+var enterDate = enterWrap ? enterWrap.querySelector(".sub-new-date") : null;
+addSubtask(e.target.getAttribute("data-id"), e.target.value, enterDate ? enterDate.value : "");
 });
 
 /* ---------- Calendar ---------- */
