@@ -1883,8 +1883,11 @@ if (completion <= 80) return "orange";
 return "green";
 }
 
-/* Row colour: ten 10% steps from red (0) through yellow to green (9). */
-function completionBand(completion) {
+/* Row colour: ten 10% steps from red (0) through yellow to green (9).
+A difficulty-0 item needs no real work, so it always takes the greenest band
+whatever its completion. */
+function completionBand(completion, difficulty) {
+if (difficulty === 0) return 9;
 var value = Math.max(0, Math.min(100, Math.round(Number(completion) || 0)));
 return Math.min(9, Math.floor(value / 10));
 }
@@ -1893,7 +1896,8 @@ function applyAssignmentPriority(row, completion) {
 if (!row) return;
 var value = Math.max(0, Math.min(100, Math.round(Number(completion) || 0)));
 for (var b = 0; b < 10; b++) row.classList.remove("band-" + b);
-var band = completionBand(value);
+var index = assignmentIndexById(row.getAttribute("data-id"));
+var band = completionBand(value, index !== -1 ? difficultyOf(assignments[index]) : null);
 row.classList.add("band-" + band);
 row.setAttribute("data-band", String(band));
 row.setAttribute("data-priority", assignmentPriority({completion:value}));
@@ -2019,7 +2023,7 @@ var due = dueMeta(item, today);
 var diff = difficultyOf(item);
 var open = !!openSubtasks[item.id];
 var priority = assignmentPriority(item, today);
-var band = isEvent(item.className) ? null : completionBand(item.completion);
+var band = isEvent(item.className) ? null : completionBand(item.completion, diff);
 
 var el = document.createElement("div");
 el.className = "tracker-item tone-" + assignmentTone(item.className) +
