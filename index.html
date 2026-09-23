@@ -1118,6 +1118,26 @@ stays joined with no gaps. */
 }
 
 
+/* ---------- Widgets: drag, resize, hide ---------- */
+.card-grid.is-modular{align-items:start}
+.topic.is-sized{height:var(--card-h);overflow:auto}
+.topic.is-sized .section_heading{position:sticky;top:0;z-index:2}
+.topic{position:relative}
+
+.widget-drag-handle{cursor:grab}
+.widget-drag-handle:active{cursor:grabbing}
+.topic.is-dragging{opacity:.45}
+.topic.drop-before{box-shadow:inset 5px 0 0 var(--primary)}
+.topic.drop-after{box-shadow:inset -5px 0 0 var(--primary)}
+
+.widget-resize{
+position:absolute;right:2px;bottom:2px;width:18px;height:18px;z-index:3;
+cursor:nwse-resize;opacity:.35;touch-action:none;
+background:linear-gradient(135deg,transparent 0 55%,var(--muted) 55% 65%,transparent 65% 75%,var(--muted) 75% 85%,transparent 85%);
+}
+.widget-resize:hover{opacity:.8}
+body:not(.modular-on) .widget-resize{display:none}
+
 /* ---------- Widgets: hiding, restoring, per-card features ---------- */
 .widget-hidden{display:none !important}
 .feature-off{display:none !important}
@@ -1156,6 +1176,28 @@ width:100%;min-height:150px;padding:10px 12px;border:1px solid #d5e1ee;border-ra
 background:#fbfdff;color:var(--text);font:inherit;font-size:.88rem;line-height:1.5;resize:vertical;
 }
 .notes-body textarea:focus{outline:2px solid rgba(23,105,224,.25);border-color:#7eafea}
+
+/* Countdowns, Quick Links and Grade Calculator widgets */
+.mini-body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px}
+.mini-row{display:flex;align-items:center;gap:8px;font-size:.86rem}
+.mini-row .mini-name{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:650}
+.mini-row .mini-value{flex:0 0 auto;color:var(--muted);font-size:.8rem;font-weight:700;font-variant-numeric:tabular-nums}
+.mini-row input{
+min-width:0;height:32px;padding:4px 8px;border:1px solid #d5e1ee;border-radius:7px;
+background:#fff;font:inherit;font-size:.82rem;color:var(--text);
+}
+.mini-row input.mini-num{flex:0 0 74px;width:74px;text-align:center}
+.mini-row button,.mini-add{
+min-height:32px;padding:5px 12px;border:1px solid #d5e1ee;border-radius:8px;background:#f4f8fc;
+color:#33587f;font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;
+}
+.mini-row button:hover,.mini-add:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
+.mini-row .mini-del{flex:0 0 auto;padding:4px 9px;border-color:transparent;background:none;color:#b7c3d1}
+.mini-row .mini-del:hover{color:#dc3545;background:none}
+.mini-empty{color:var(--muted);font-size:.82rem}
+.mini-total{margin-top:2px;padding-top:8px;border-top:1px solid var(--border);font-size:.92rem;font-weight:800}
+.mini-links a{color:var(--primary);text-decoration:none;font-weight:650}
+.mini-links a:hover{text-decoration:underline}
 
 /* Focus timer widget */
 .timer-body{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px}
@@ -1487,6 +1529,21 @@ Text <a class="link-inline" href="sms:+15873332724">587-333-2724</a>
 </div>
 </div>
 
+</div>
+
+<div class="topic" id="countdowns-card">
+<div class="section_heading"><i class="bi bi-hourglass-split"></i>Countdowns</div>
+<div class="mini-body" id="countdowns-body"></div>
+</div>
+
+<div class="topic" id="links-card">
+<div class="section_heading"><i class="bi bi-link-45deg"></i>Quick Links</div>
+<div class="mini-body mini-links" id="links-body"></div>
+</div>
+
+<div class="topic" id="grades-card">
+<div class="section_heading"><i class="bi bi-calculator"></i>Grade Calculator</div>
+<div class="mini-body" id="grades-body"></div>
 </div>
 
 <div class="topic add-widgets" id="add-widgets" hidden>
