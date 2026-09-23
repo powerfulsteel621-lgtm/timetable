@@ -1170,112 +1170,11 @@ color:#33587f;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;
 .timer-buttons .is-active{border-color:var(--primary);background:var(--primary-soft);color:#125dcc}
 
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
-
-/* ---------- Modular dashboard layout ---------- */
-:root{
-  --mod-cols:12;
-  --mod-row:96px;
-}
-.card-grid.modular-grid{
-  position:relative;
-  display:grid;
-  grid-template-columns:repeat(12,minmax(0,1fr));
-  grid-auto-rows:var(--mod-row);
-  gap:14px;
-  align-items:stretch;
-}
-.card-grid.modular-grid > .topic,
-.card-grid.modular-grid > .col-stack{
-  min-width:0;
-  min-height:0;
-}
-.card-grid.modular-grid > .topic{
-  display:flex;
-  flex-direction:column;
-}
-.card-grid.modular-grid > .topic > .section_heading,
-.card-grid.modular-grid > .topic > header{
-  flex:0 0 auto;
-}
-.card-grid.modular-grid > .topic > *:last-child{
-  min-height:0;
-}
-.mod-card-tools{
-  display:flex;
-  align-items:center;
-  gap:3px;
-  margin-left:auto;
-  opacity:.45;
-  transition:opacity .15s;
-}
-.topic:hover .mod-card-tools,.topic:focus-within .mod-card-tools,.topic.is-dragging .mod-card-tools{opacity:1}
-.mod-drag-handle,.mod-size-button{
-  width:27px;height:27px;padding:0;border:1px solid #cbd9e8;border-radius:7px;
-  background:rgba(255,255,255,.75);color:#5a6b7f;cursor:pointer;
-  display:inline-grid;place-items:center;font:inherit;
-}
-.mod-drag-handle{cursor:grab;touch-action:none}
-.mod-drag-handle:active{cursor:grabbing}
-.mod-drag-handle:hover,.mod-size-button:hover{background:#fff;color:var(--primary);border-color:#7eafea}
-.mod-size-menu{
-  position:fixed;z-index:1000;display:grid;grid-template-columns:repeat(3,1fr);
-  gap:5px;padding:7px;background:#fff;border:1px solid var(--border);
-  border-radius:10px;box-shadow:0 10px 30px rgba(30,60,95,.16);
-}
-.mod-size-menu button{
-  min-width:38px;height:32px;border:1px solid #d5e1ee;border-radius:7px;
-  background:#f7fafd;color:#33587f;font:inherit;font-size:.72rem;font-weight:750;cursor:pointer;
-}
-.mod-size-menu button:hover{background:var(--primary-soft);border-color:#7eafea;color:#125dcc}
-.mod-layout-toolbar{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;
-  padding:8px 10px;border:1px solid var(--border);border-radius:11px;background:rgba(255,255,255,.82);
-}
-.mod-layout-toolbar .mod-toolbar-text{font-size:.78rem;color:var(--muted);font-weight:650}
-.mod-toolbar-actions{display:flex;gap:6px;flex-wrap:wrap}
-.mod-toolbar-actions button{
-  min-height:32px;padding:5px 10px;border:1px solid #d5e1ee;border-radius:8px;
-  background:#f4f8fc;color:#33587f;font:inherit;font-size:.76rem;font-weight:700;cursor:pointer;
-}
-.mod-toolbar-actions button:hover{background:var(--primary-soft);border-color:#7eafea;color:#125dcc}
-.card-grid.modular-grid.is-dragging .topic:not(.is-dragging){transition:transform .12s,box-shadow .12s}
-.card-grid.modular-grid.is-dragging .topic:not(.is-dragging){outline:1px dashed transparent}
-.card-grid.modular-grid .topic.is-dragging{
-  z-index:50;opacity:.86;box-shadow:0 16px 38px rgba(23,105,224,.18);
-}
-.mod-grid-overlay{
-  position:absolute;inset:0;z-index:40;pointer-events:none;display:none;
-  grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:var(--mod-row);gap:14px;
-}
-.card-grid.modular-grid.is-dragging .mod-grid-overlay{display:grid}
-.mod-grid-cell{border:1px dashed rgba(23,105,224,.18);border-radius:8px;background:rgba(237,245,255,.18)}
-.mod-grid-cell.is-target{background:rgba(237,245,255,.7);border-color:#7eafea}
-.mod-card-empty{display:flex;align-items:center;justify-content:center;min-height:90px;color:var(--muted);font-size:.8rem}
-@media(max-width:1049px){
-  .card-grid.modular-grid{display:grid;grid-template-columns:1fr;grid-auto-rows:auto;gap:12px}
-  .card-grid.modular-grid > .topic{grid-column:1 !important;grid-row:auto !important}
-  .mod-drag-handle,.mod-size-button{display:none}
-  .mod-layout-toolbar{margin-bottom:10px}
-}
-@media(max-width:699px){
-  .mod-layout-toolbar{align-items:flex-start;flex-direction:column}
-  .mod-toolbar-actions{width:100%}
-  .mod-toolbar-actions button{flex:1}
-}
-
 </style>
 </head>
 
 <body>
 <div class="container-fluid">
-
-<div class="mod-layout-toolbar" id="mod-layout-toolbar">
-  <div class="mod-toolbar-text"><i class="bi bi-grid-3x3-gap"></i> Customize your dashboard: drag cards by <strong>⋮⋮</strong> and resize them with <strong>↗</strong>.</div>
-  <div class="mod-toolbar-actions">
-    <button type="button" id="mod-add-card"><i class="bi bi-plus-lg"></i> Add card</button>
-    <button type="button" id="mod-reset-layout"><i class="bi bi-arrow-counterclockwise"></i> Reset layout</button>
-  </div>
-</div>
 
 <div class="row card-grid">
 
@@ -1588,38 +1487,6 @@ Text <a class="link-inline" href="sms:+15873332724">587-333-2724</a>
 </div>
 </div>
 
-</div>
-
-<!-- Extra modular cards -->
-<div class="topic" id="quick-links-card">
-  <div class="section_heading"><i class="bi bi-link-45deg"></i>Quick Links</div>
-  <ul>
-    <li><a class="card-link" target="_blank" href="https://links.renertschool.ca/">Renert Links</a></li>
-    <li><a class="card-link" target="_blank" href="https://classes.renertschool.ca/?current=1">My Classes</a></li>
-    <li><a class="card-link" target="_blank" href="https://library.renertschool.ca/student_main">My Library</a></li>
-  </ul>
-</div>
-
-<div class="topic" id="goals-card">
-  <div class="section_heading"><i class="bi bi-bullseye"></i>Study Goals</div>
-  <div style="padding:12px 14px 14px">
-    <input id="goal-text" type="text" placeholder="Today's main goal…" aria-label="Today's main goal"
-      style="width:100%;height:36px;padding:6px 10px;border:1px solid #d5e1ee;border-radius:8px;background:#f9fbfe;color:var(--text)">
-    <div style="display:flex;align-items:center;gap:8px;margin-top:9px">
-      <input id="goal-progress" type="range" min="0" max="100" value="0" style="flex:1">
-      <strong id="goal-progress-label" style="min-width:40px;text-align:right;font-size:.82rem">0%</strong>
-    </div>
-  </div>
-</div>
-
-<div class="topic" id="calculator-card">
-  <div class="section_heading"><i class="bi bi-calculator"></i>Quick Calculator</div>
-  <div style="padding:12px 14px 14px">
-    <input id="quick-calc" type="text" inputmode="decimal" placeholder="e.g. 12 * 4 + 3"
-      aria-label="Calculator expression"
-      style="width:100%;height:38px;padding:6px 10px;border:1px solid #d5e1ee;border-radius:8px;background:#f9fbfe;color:var(--text);font-size:1rem">
-    <div id="quick-calc-result" style="margin-top:8px;text-align:right;color:var(--muted);font-weight:700">=</div>
-  </div>
 </div>
 
 <div class="topic add-widgets" id="add-widgets" hidden>
@@ -4388,10 +4255,11 @@ setInterval(updateGradCountdown, 3600000);
 renderTracker();
 
 
-/* ---------- Modular dashboard widgets ----------
-Every dashboard card is a widget. On desktop, cards live in a 12-column grid:
-drag a card to a grid position, then choose its width/height from the resize menu.
-The layout is saved locally so it survives refreshes. */
+/* ---------- Widgets ----------
+Every card is a widget: right-click its header to hide it, and the desktop
+grid is rebuilt around whatever is left. Hidden widgets, plus the optional
+ones that start hidden, are listed in the "Add a widget" panel at the bottom.
+The Assignment Tracker's menu is a checklist of its own parts instead. */
 var WIDGETS = [
 {id:"schedule",  sel:"#periods",             label:"Schedule",              region:"left",  width:"half"},
 {id:"title",     sel:"#top",                 label:"Title, clock & Now/Next", region:"stack"},
@@ -4399,299 +4267,286 @@ var WIDGETS = [
 {id:"week",      sel:"#week-card",           label:"Week at a Glance",      region:"stack"},
 {id:"calendar",  sel:"#calendar-card",       label:"Calendar",              region:"left",  width:"full"},
 {id:"postsec",   sel:"#postsec-card",        label:"Post-Secondary",        region:"left",  width:"half"},
-{id:"exams",     sel:"#exams-card",          label:"Exams & AP",             region:"left",  width:"half"},
-{id:"guidance",  sel:"#guidance-card",       label:"Guidance & Counseling",  region:"left",  width:"full"},
-{id:"printing",  sel:"#printing-card",       label:"Printing",               region:"left",  width:"full"},
-{id:"tv",        sel:"#tv-card",             label:"TV/Wall Displays",       region:"left",  width:"full"},
-{id:"notes",     sel:"#notes-card",          label:"Notes",                  region:"left",  width:"full", startHidden:true},
-{id:"timer",     sel:"#timer-card",          label:"Focus Timer",             region:"left",  width:"full", startHidden:true},
-{id:"quick-links",sel:"#quick-links-card",   label:"Quick Links",             region:"left",  width:"half", startHidden:true},
-{id:"goals",     sel:"#goals-card",          label:"Study Goals",              region:"left",  width:"half", startHidden:true},
-{id:"calculator",sel:"#calculator-card",     label:"Quick Calculator",         region:"left",  width:"half", startHidden:true},
-{id:"tracker",   sel:"#tracker-card",        label:"Assignment Tracker",      region:"right"}
+{id:"exams",     sel:"#exams-card",          label:"Exams & AP",            region:"left",  width:"half"},
+{id:"guidance",  sel:"#guidance-card",       label:"Guidance & Counseling", region:"left",  width:"full"},
+{id:"printing",  sel:"#printing-card",       label:"Printing",              region:"left",  width:"full"},
+{id:"tv",        sel:"#tv-card",             label:"TV/Wall Displays",      region:"left",  width:"full"},
+{id:"notes",     sel:"#notes-card",          label:"Notes",                 region:"left",  width:"full", startHidden:true},
+{id:"timer",     sel:"#timer-card",          label:"Focus Timer",           region:"left",  width:"full", startHidden:true},
+{id:"tracker",   sel:"#tracker-card",        label:"Assignment Tracker",    region:"right"}
 ];
+
+/* Order of the two-column area on the left. "middle" is the stack that holds
+the title card, the briefing and Week at a Glance. */
+var LEFT_ORDER = ["schedule", "middle", "calendar", "postsec", "exams",
+"guidance", "printing", "tv", "notes", "timer"];
 
 var TRACKER_FEATURES = [
-{id:"form",sel:"#assignment-form",label:"Add-assignment form"},
-{id:"chips",sel:"#next-chips",label:"Next-class date buttons"},
-{id:"difficulty",sel:"#difficulty-field",label:"Difficulty picker"},
-{id:"week",sel:'[data-feature="week"]',label:"Due This Week"},
-{id:"month",sel:'[data-feature="month"]',label:"Due This Month"},
-{id:"future",sel:'[data-feature="future"]',label:"Future"},
-{id:"someday",sel:'[data-feature="someday"]',label:"Someday"},
-{id:"completed",sel:'[data-feature="completed"]',label:"Completed archive"},
-{id:"sync",sel:'[data-feature="sync"]',label:"Sync buttons"},
-{id:"workload",sel:"#tab-chart",label:"Workload tab"}
+{id:"form",       sel:"#assignment-form",        label:"Add-assignment form"},
+{id:"chips",      sel:"#next-chips",             label:"Next-class date buttons"},
+{id:"difficulty", sel:"#difficulty-field",       label:"Difficulty picker"},
+{id:"week",       sel:'[data-feature="week"]',   label:"Due This Week"},
+{id:"month",      sel:'[data-feature="month"]',  label:"Due This Month"},
+{id:"future",     sel:'[data-feature="future"]', label:"Future"},
+{id:"someday",    sel:'[data-feature="someday"]',label:"Someday"},
+{id:"completed",  sel:'[data-feature="completed"]', label:"Completed archive"},
+{id:"sync",       sel:'[data-feature="sync"]',   label:"Sync buttons"},
+{id:"workload",   sel:"#tab-chart",              label:"Workload tab"}
 ];
-
-var MOD_DEFAULTS = {
-schedule:{x:1,y:1,w:4,h:5}, title:{x:5,y:1,w:4,h:2}, briefing:{x:9,y:1,w:4,h:3},
-week:{x:5,y:3,w:4,h:4}, tracker:{x:9,y:4,w:4,h:8}, calendar:{x:1,y:6,w:8,h:5},
-postsec:{x:1,y:11,w:4,h:2}, exams:{x:5,y:11,w:4,h:2}, guidance:{x:1,y:13,w:8,h:3},
-printing:{x:1,y:16,w:8,h:2}, tv:{x:1,y:18,w:8,h:3},
-notes:{x:1,y:21,w:4,h:3}, timer:{x:5,y:21,w:4,h:3},
-"quick-links":{x:1,y:24,w:4,h:3},goals:{x:5,y:24,w:4,h:3},calculator:{x:9,y:12,w:4,h:3}
-};
 
 var hiddenWidgets = [];
 try {
 var savedHidden = JSON.parse(localStorage.getItem("renert_hidden_widgets") || "null");
-hiddenWidgets = Array.isArray(savedHidden) ? savedHidden :
-WIDGETS.filter(function(w){return w.startHidden;}).map(function(w){return w.id;});
-} catch(e) { hiddenWidgets=["notes","timer","quick-links","goals","calculator"]; }
+hiddenWidgets = Array.isArray(savedHidden)
+? savedHidden
+: WIDGETS.filter(function (w) { return w.startHidden; }).map(function (w) { return w.id; });
+} catch (e) {
+hiddenWidgets = ["notes", "timer"];
+}
 
 var hiddenFeatures = [];
 try {
-var savedFeatures=JSON.parse(localStorage.getItem("renert_hidden_features")||"[]");
-if(Array.isArray(savedFeatures)) hiddenFeatures=savedFeatures;
-} catch(e){}
+var savedFeatures = JSON.parse(localStorage.getItem("renert_hidden_features") || "[]");
+if (Array.isArray(savedFeatures)) hiddenFeatures = savedFeatures;
+} catch (e) {}
 
-var modularLayout = null;
-try { modularLayout=JSON.parse(localStorage.getItem("renert_modular_layout")||"null"); } catch(e){}
-if(!modularLayout || typeof modularLayout!=="object") modularLayout={};
-
-function saveWidgetState(){
-try{localStorage.setItem("renert_hidden_widgets",JSON.stringify(hiddenWidgets));}catch(e){}
-try{localStorage.setItem("renert_hidden_features",JSON.stringify(hiddenFeatures));}catch(e){}
-}
-function saveModularLayout(){
-try{localStorage.setItem("renert_modular_layout",JSON.stringify(modularLayout));}catch(e){}
-}
-function widgetById(id){return WIDGETS.find(function(w){return w.id===id;})||null;}
-function widgetEl(id){var w=widgetById(id);return w?document.querySelector(w.sel):null;}
-function widgetHidden(id){return hiddenWidgets.indexOf(id)!==-1;}
-function setWidgetHidden(id,hide){
-var at=hiddenWidgets.indexOf(id);
-if(hide&&at===-1) hiddenWidgets.push(id);
-if(!hide&&at!==-1) hiddenWidgets.splice(at,1);
-saveWidgetState();applyWidgets();
-}
-function featureHidden(id){return hiddenFeatures.indexOf(id)!==-1;}
-function setFeatureHidden(id,hide){
-var at=hiddenFeatures.indexOf(id);
-if(hide&&at===-1) hiddenFeatures.push(id);
-if(!hide&&at!==-1) hiddenFeatures.splice(at,1);
-saveWidgetState();applyFeatures();
-}
-function applyFeatures(){
-TRACKER_FEATURES.forEach(function(f){
-var el=document.querySelector(f.sel);
-if(el)el.classList.toggle("feature-off",featureHidden(f.id));
-});
-if(featureHidden("workload")){
-var listTab=document.getElementById("tab-list");
-if(listTab&&!listTab.classList.contains("is-active"))listTab.click();
-}
+function saveWidgetState() {
+try { localStorage.setItem("renert_hidden_widgets", JSON.stringify(hiddenWidgets)); } catch (e) {}
+try { localStorage.setItem("renert_hidden_features", JSON.stringify(hiddenFeatures)); } catch (e) {}
 }
 
-function ensureModularDefaults(){
-WIDGETS.forEach(function(w){
-if(!modularLayout[w.id]) modularLayout[w.id]=Object.assign({},MOD_DEFAULTS[w.id]||{x:1,y:1,w:4,h:3});
-var l=modularLayout[w.id];
-l.w=Math.max(2,Math.min(12,Number(l.w)||4));
-l.h=Math.max(2,Math.min(10,Number(l.h)||3));
-l.x=Math.max(1,Math.min(13-l.w,Number(l.x)||1));
-l.y=Math.max(1,Number(l.y)||1);
-});
-}
-function modularizeDom(){
-var grid=document.querySelector(".card-grid");
-var middle=document.getElementById("middle-stack");
-if(!grid||!middle||middle.dataset.modularized)return;
-["top","daily-briefing-card","week-card"].forEach(function(id){
-var el=document.getElementById(id);
-if(el)grid.appendChild(el);
-});
-middle.remove();
-grid.dataset.modularized="1";
-grid.classList.add("modular-grid");
-var overlay=document.createElement("div");
-overlay.className="mod-grid-overlay";
-for(var i=0;i<12*32;i++){
-var cell=document.createElement("div");cell.className="mod-grid-cell";overlay.appendChild(cell);
-}
-grid.appendChild(overlay);
-ensureModularDefaults();
+function widgetById(id) {
+return WIDGETS.find(function (w) { return w.id === id; }) || null;
 }
 
-function applyModStyle(id){
-var el=widgetEl(id),l=modularLayout[id];
-if(!el||!l)return;
-el.style.gridColumn=l.x+" / span "+l.w;
-el.style.gridRow=l.y+" / span "+l.h;
-el.dataset.modX=l.x;el.dataset.modY=l.y;el.dataset.modW=l.w;el.dataset.modH=l.h;
+function widgetEl(id) {
+if (id === "middle") return document.getElementById("middle-stack");
+var w = widgetById(id);
+return w ? document.querySelector(w.sel) : null;
 }
-function visibleWidgetIds(){
-return WIDGETS.map(function(w){return w.id;}).filter(function(id){return !widgetHidden(id)&&widgetEl(id);});
+
+function widgetHidden(id) {
+// The middle stack disappears only once all three of its cards are hidden.
+if (id === "middle") {
+return ["title", "briefing", "week"].every(function (k) { return widgetHidden(k); });
 }
-function resolveCollision(id){
-var l=modularLayout[id];
-var others=visibleWidgetIds().filter(function(k){return k!==id;});
-function hit(a,b){
-return !(a.x+a.w-1<b.x||b.x+b.w-1<a.x||a.y+a.h-1<b.y||b.y+b.h-1<a.y);
+return hiddenWidgets.indexOf(id) !== -1;
 }
-while(others.some(function(k){return hit(l,modularLayout[k]);})){
-l.y++;
-if(l.y>80){l.y=1;l.x=Math.min(13-l.w,l.x+1);}
+
+function widgetWidth(id) {
+if (id === "middle") return "half";
+var w = widgetById(id);
+return w && w.width ? w.width : "full";
 }
+
+function setWidgetHidden(id, hide) {
+var at = hiddenWidgets.indexOf(id);
+if (hide && at === -1) hiddenWidgets.push(id);
+if (!hide && at !== -1) hiddenWidgets.splice(at, 1);
+saveWidgetState();
+applyWidgets();
 }
-function applyLayout(){
-var grid=document.querySelector(".card-grid.modular-grid");
-if(!grid)return;
-ensureModularDefaults();
-WIDGETS.forEach(function(w){
-var el=widgetEl(w.id);
-if(!el)return;
-el.classList.toggle("widget-hidden",widgetHidden(w.id));
-if(!widgetHidden(w.id))applyModStyle(w.id);
+
+function featureHidden(id) {
+return hiddenFeatures.indexOf(id) !== -1;
+}
+
+function setFeatureHidden(id, hide) {
+var at = hiddenFeatures.indexOf(id);
+if (hide && at === -1) hiddenFeatures.push(id);
+if (!hide && at !== -1) hiddenFeatures.splice(at, 1);
+saveWidgetState();
+applyFeatures();
+}
+
+function applyFeatures() {
+TRACKER_FEATURES.forEach(function (f) {
+var el = document.querySelector(f.sel);
+if (el) el.classList.toggle("feature-off", featureHidden(f.id));
 });
-grid.classList.toggle("modular-empty",visibleWidgetIds().length===0);
-renderAddWidgets();
+// With the Workload tab hidden, fall back to the list.
+if (featureHidden("workload")) {
+var listTab = document.getElementById("tab-list");
+if (listTab && !listTab.classList.contains("is-active")) listTab.click();
 }
-function renderAddWidgets(){
-var card=document.getElementById("add-widgets"),list=document.getElementById("add-widgets-list");
-if(!card||!list)return;
-var available=WIDGETS.filter(function(w){return widgetHidden(w.id);});
-card.hidden=available.length===0;
-list.innerHTML=available.map(function(w){
-return '<button type="button" class="add-widget-chip" data-widget="'+escapeHtml(w.id)+'"><i class="bi bi-plus-lg"></i>'+escapeHtml(w.label)+'</button>';
+}
+
+/* Rebuild the desktop grid from the widgets that are still visible. */
+function applyLayout() {
+var grid = document.querySelector(".card-grid");
+// The view toggle can call this before the widget list is set up.
+if (!grid || !Array.isArray(LEFT_ORDER)) return;
+
+LEFT_ORDER.concat(["tracker"]).forEach(function (id) {
+var el = widgetEl(id);
+if (!el) return;
+el.style.gridArea = "";
+el.style.marginTop = "";
+el.style.borderRadius = "";
+});
+grid.style.gridTemplateAreas = "";
+grid.style.gridTemplateColumns = "";
+grid.style.gridTemplateRows = "";
+
+var desktop = window.matchMedia("(min-width:1050px)").matches &&
+document.body.getAttribute("data-view") !== "phone";
+if (!desktop) return;
+
+var left = LEFT_ORDER.filter(function (id) { return !widgetHidden(id) && widgetEl(id); });
+var trackerOn = !widgetHidden("tracker");
+
+// Pack the left column: two half-width cards share a row, anything else
+// takes the full two columns.
+var rows = [];
+for (var i = 0; i < left.length; ) {
+if (widgetWidth(left[i]) === "half" && i + 1 < left.length && widgetWidth(left[i + 1]) === "half") {
+rows.push([left[i], left[i + 1]]);
+i += 2;
+} else {
+rows.push([left[i]]);
+i += 1;
+}
+}
+
+if (!rows.length && !trackerOn) return;
+
+var areaRows;
+if (!rows.length) {
+grid.style.gridTemplateColumns = "minmax(0,1fr)";
+areaRows = ['"tracker"'];
+} else if (!trackerOn) {
+grid.style.gridTemplateColumns = "minmax(0,1fr) minmax(0,1fr)";
+areaRows = rows.map(function (r) {
+return '"' + (r.length === 2 ? r[0] + " " + r[1] : r[0] + " " + r[0]) + '"';
+});
+} else {
+grid.style.gridTemplateColumns = "minmax(0,1fr) minmax(0,1fr) minmax(0,1.38fr)";
+areaRows = rows.map(function (r) {
+return '"' + (r.length === 2 ? r[0] + " " + r[1] : r[0] + " " + r[0]) + ' tracker"';
+});
+areaRows.push('". . tracker"');
+grid.style.gridTemplateRows = new Array(rows.length + 1).join("auto ") + "1fr";
+}
+grid.style.gridTemplateAreas = areaRows.join(" ");
+
+rows.forEach(function (r, ri) {
+r.forEach(function (id) {
+var el = widgetEl(id);
+if (!el) return;
+el.style.gridArea = id;
+// The first row sits on its own; everything below the gap is one joined
+// stack, so only its outer corners stay rounded.
+el.style.marginTop = ri === 0 ? "0" : (ri === 1 ? "22px" : "-1px");
+if (id !== "middle") {
+var top = ri <= 1 ? "var(--radius)" : "0";
+var bottom = ri === rows.length - 1 ? "var(--radius)" : "0";
+el.style.borderRadius = top + " " + top + " " + bottom + " " + bottom;
+}
+});
+});
+
+if (trackerOn) {
+var trackerCard = widgetEl("tracker");
+if (trackerCard) trackerCard.style.gridArea = "tracker";
+}
+}
+
+function renderAddWidgets() {
+var card = document.getElementById("add-widgets");
+var list = document.getElementById("add-widgets-list");
+if (!card || !list) return;
+
+var available = WIDGETS.filter(function (w) { return widgetHidden(w.id); });
+card.hidden = available.length === 0;
+list.innerHTML = available.map(function (w) {
+return '<button type="button" class="add-widget-chip" data-widget="' + escapeHtml(w.id) + '">' +
+'<i class="bi bi-plus-lg"></i>' + escapeHtml(w.label) + '</button>';
 }).join("");
 }
-function applyWidgets(){
-modularizeDom();
-applyLayout();
-var toolbar=document.getElementById("mod-layout-toolbar");
-if(toolbar)toolbar.hidden=false;
-}
-function resetModularLayout(){
-modularLayout=JSON.parse(JSON.stringify(MOD_DEFAULTS));
-saveModularLayout();applyLayout();showToast("Layout reset");
-}
 
-function openWidgetMenu(widget,x,y){
-closeWidgetMenu();
-var menu=document.createElement("div");menu.className="widget-menu";menu.id="widget-menu";
-var html='<h4>'+escapeHtml(widget.label)+'</h4>';
-if(widget.id==="tracker"){
-html+=TRACKER_FEATURES.map(function(f){
-return '<label><input type="checkbox" data-feature-toggle="'+escapeHtml(f.id)+'"'+(featureHidden(f.id)?"":" checked")+'>'+escapeHtml(f.label)+'</label>';
-}).join("")+'<hr>';
-}
-html+='<button type="button" data-hide-widget="'+escapeHtml(widget.id)+'"><i class="bi bi-eye-slash"></i>Hide this card</button>';
-menu.innerHTML=html;document.body.appendChild(menu);
-var box=menu.getBoundingClientRect();
-menu.style.left=Math.max(8,Math.min(x,window.innerWidth-box.width-8))+"px";
-menu.style.top=Math.max(8,Math.min(y,window.innerHeight-box.height-8))+"px";
-}
-function closeWidgetMenu(){var open=document.getElementById("widget-menu");if(open)open.remove();}
-
-document.addEventListener("contextmenu",function(e){
-var head=e.target.closest?e.target.closest(".section_heading,.intro-header"):null;
-if(!head)return;
-var card=head.closest(".topic");if(!card)return;
-var widget=WIDGETS.find(function(w){return widgetEl(w.id)===card;});
-if(!widget)return;
-e.preventDefault();openWidgetMenu(widget,e.clientX,e.clientY);
+function applyWidgets() {
+WIDGETS.forEach(function (w) {
+var el = document.querySelector(w.sel);
+if (el) el.classList.toggle("widget-hidden", widgetHidden(w.id));
 });
-document.addEventListener("click",function(e){
-var menu=e.target.closest?e.target.closest(".widget-menu"):null;
-if(!menu)closeWidgetMenu();
-if(e.target.closest("[data-hide-widget]")){
-setWidgetHidden(e.target.closest("[data-hide-widget]").getAttribute("data-hide-widget"),true);
-closeWidgetMenu();return;
+var stack = document.getElementById("middle-stack");
+if (stack) stack.classList.toggle("widget-hidden", widgetHidden("middle"));
+renderAddWidgets();
+applyLayout();
 }
-var chip=e.target.closest("[data-widget]");
-if(chip&&chip.closest("#add-widgets")){
-setWidgetHidden(chip.getAttribute("data-widget"),false);return;
+
+/* ---------- Right-click menu ---------- */
+function closeWidgetMenu() {
+var open = document.getElementById("widget-menu");
+if (open) open.remove();
 }
-var add=e.target.closest("#mod-add-card");
-if(add){
-var hidden=WIDGETS.find(function(w){return widgetHidden(w.id);});
-if(hidden)setWidgetHidden(hidden.id,false);
-else showToast("All card options are already on your dashboard");
+
+function openWidgetMenu(widget, x, y) {
+closeWidgetMenu();
+
+var menu = document.createElement("div");
+menu.className = "widget-menu";
+menu.id = "widget-menu";
+
+var html = '<h4>' + escapeHtml(widget.label) + '</h4>';
+if (widget.id === "tracker") {
+html += TRACKER_FEATURES.map(function (f) {
+return '<label><input type="checkbox" data-feature-toggle="' + escapeHtml(f.id) + '"' +
+(featureHidden(f.id) ? "" : " checked") + '>' + escapeHtml(f.label) + '</label>';
+}).join("") + '<hr>';
+}
+html += '<button type="button" data-hide-widget="' + escapeHtml(widget.id) + '">' +
+'<i class="bi bi-eye-slash"></i>Hide this card</button>';
+menu.innerHTML = html;
+
+document.body.appendChild(menu);
+var box = menu.getBoundingClientRect();
+menu.style.left = Math.max(8, Math.min(x, window.innerWidth - box.width - 8)) + "px";
+menu.style.top = Math.max(8, Math.min(y, window.innerHeight - box.height - 8)) + "px";
+}
+
+document.addEventListener("contextmenu", function (e) {
+var head = e.target.closest ? e.target.closest(".section_heading, .intro-header") : null;
+if (!head) return;
+var card = head.closest(".topic");
+if (!card) return;
+var widget = WIDGETS.find(function (w) {
+var el = document.querySelector(w.sel);
+return el && el === card;
+});
+if (!widget) return;
+e.preventDefault();
+openWidgetMenu(widget, e.clientX, e.clientY);
+});
+
+document.addEventListener("click", function (e) {
+var menu = e.target.closest ? e.target.closest(".widget-menu") : null;
+if (!menu) {
+closeWidgetMenu();
+} else {
+var hideBtn = e.target.closest("[data-hide-widget]");
+if (hideBtn) {
+setWidgetHidden(hideBtn.getAttribute("data-hide-widget"), true);
+closeWidgetMenu();
 return;
 }
-var reset=e.target.closest("#mod-reset-layout");
-if(reset){resetModularLayout();return;}
-var size=e.target.closest(".mod-size-button");
-if(size){openSizeMenu(size.closest(".topic"),size);return;}
+}
+
+var chip = e.target.closest ? e.target.closest(".add-widget-chip") : null;
+if (chip) setWidgetHidden(chip.getAttribute("data-widget"), false);
 });
 
-document.addEventListener("change",function(e){
-var toggle=e.target.closest?e.target.closest("[data-feature-toggle]"):null;
-if(toggle)setFeatureHidden(toggle.getAttribute("data-feature-toggle"),!toggle.checked);
+document.addEventListener("change", function (e) {
+var toggle = e.target.closest ? e.target.closest("[data-feature-toggle]") : null;
+if (!toggle) return;
+setFeatureHidden(toggle.getAttribute("data-feature-toggle"), !toggle.checked);
 });
 
-function addModTools(card){
-if(card.querySelector(".mod-card-tools"))return;
-var head=card.querySelector(":scope > .section_heading, :scope > .intro-header");
-if(!head)return;
-var tools=document.createElement("span");tools.className="mod-card-tools";
-tools.innerHTML='<button type="button" class="mod-drag-handle" title="Drag card" aria-label="Drag card"><i class="bi bi-grip-vertical"></i></button>'+
-'<button type="button" class="mod-size-button" title="Resize card" aria-label="Resize card"><i class="bi bi-arrows-angle-expand"></i></button>';
-head.appendChild(tools);
-}
-function buildModTools(){
-WIDGETS.forEach(function(w){var el=widgetEl(w.id);if(el)addModTools(el);});
-}
-
-var modDrag=null;
-function startModDrag(e){
-if(e.button!==0)return;
-var handle=e.target.closest(".mod-drag-handle");if(!handle)return;
-var card=handle.closest(".topic"),grid=document.querySelector(".card-grid.modular-grid");
-if(!card||!grid)return;
-e.preventDefault();
-var id=WIDGETS.find(function(w){return widgetEl(w.id)===card;});if(!id)return;
-var l=modularLayout[id.id],rect=grid.getBoundingClientRect();
-modDrag={id:id.id,card:card,grid:grid,rect:rect,startX:e.clientX,startY:e.clientY};
-grid.classList.add("is-dragging");card.classList.add("is-dragging");
-function move(ev){
-var colW=(rect.width-(11*14))/12;
-var col=Math.round((ev.clientX-rect.left)/((colW+14)))+1;
-var row=Math.round((ev.clientY-rect.top)/(96+14))+1;
-col=Math.max(1,Math.min(13-l.w,col));
-row=Math.max(1,row);
-l.x=col;l.y=row;applyModStyle(id.id);
-}
-function up(){
-document.removeEventListener("pointermove",move);document.removeEventListener("pointerup",up);
-card.classList.remove("is-dragging");grid.classList.remove("is-dragging");
-resolveCollision(id.id);saveModularLayout();applyLayout();showToast("Card position saved");
-modDrag=null;
-}
-document.addEventListener("pointermove",move);document.addEventListener("pointerup",up);
-}
-document.addEventListener("pointerdown",startModDrag);
-
-function openSizeMenu(card,button){
-var old=document.getElementById("mod-size-menu");if(old)old.remove();
-var widget=WIDGETS.find(function(w){return widgetEl(w.id)===card;});if(!widget)return;
-var menu=document.createElement("div");menu.className="mod-size-menu";menu.id="mod-size-menu";
-[[3,2],[4,2],[6,2],[3,3],[4,3],[6,3],[8,3],[4,4],[6,4],[8,4],[10,5],[12,6]].forEach(function(v){
-var b=document.createElement("button");b.type="button";b.textContent=v[0]+"×"+v[1];b.dataset.w=v[0];b.dataset.h=v[1];menu.appendChild(b);
-});
-document.body.appendChild(menu);
-var r=button.getBoundingClientRect();
-menu.style.left=Math.min(r.left,window.innerWidth-190)+"px";
-menu.style.top=Math.min(r.bottom+5,window.innerHeight-230)+"px";
-menu.addEventListener("click",function(e){
-var b=e.target.closest("button");if(!b)return;
-var l=modularLayout[widget.id];l.w=Number(b.dataset.w);l.h=Number(b.dataset.h);
-l.x=Math.min(l.x,13-l.w);resolveCollision(widget.id);saveModularLayout();applyLayout();menu.remove();
-});
-setTimeout(function(){
-document.addEventListener("click",function close(ev){
-if(!menu.contains(ev.target)&&ev.target!==button){menu.remove();document.removeEventListener("click",close);}
-},{once:true});
-},0);
-}
-
-document.addEventListener("keydown",function(e){
-if(e.key==="Escape"){var m=document.getElementById("mod-size-menu");if(m)m.remove();}
-});
-
-window.addEventListener("resize",function(){applyLayout();});
+window.addEventListener("resize", applyLayout);
+(function bindLayoutQuery() {
+var mq = window.matchMedia("(min-width:1050px)");
+if (mq.addEventListener) mq.addEventListener("change", applyLayout);
+})();
 
 /* ---------- Notes widget ---------- */
 (function bindNotes() {
@@ -4756,30 +4611,7 @@ stop();
 draw();
 })();
 
-
-/* Extra card persistence */
-(function bindExtraCards(){
-var goal=document.getElementById("goal-text"), gp=document.getElementById("goal-progress"), gl=document.getElementById("goal-progress-label");
-if(goal&&gp&&gl){
-try{goal.value=localStorage.getItem("renert_goal_text")||"";gp.value=localStorage.getItem("renert_goal_progress")||"0";}catch(e){}
-function drawGoal(){gl.textContent=gp.value+"%";}
-goal.addEventListener("input",function(){try{localStorage.setItem("renert_goal_text",goal.value);}catch(e){}});
-gp.addEventListener("input",function(){drawGoal();try{localStorage.setItem("renert_goal_progress",gp.value);}catch(e){}});
-drawGoal();
-}
-var calc=document.getElementById("quick-calc"),out=document.getElementById("quick-calc-result");
-if(calc&&out){
-calc.addEventListener("input",function(){
-var v=calc.value.trim();
-if(!v){out.textContent="=";return;}
-if(!/^[0-9+\-*/().%\s]+$/.test(v)){out.textContent="= ?";return;}
-try{var n=Function('"use strict";return ('+v+')')();out.textContent="= "+(Number.isFinite(n)?n:"?");}
-catch(e){out.textContent="= ?";}
-});
-}
-})();
 applyWidgets();
-buildModTools();
 applyFeatures();
 
 document.addEventListener("keydown", function(e) {
