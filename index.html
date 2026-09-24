@@ -10,6 +10,9 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap">
 
 <script>
 /* Some hosts rewrite the <head> and drop or override the viewport tag; without
@@ -1177,27 +1180,37 @@ background:#fbfdff;color:var(--text);font:inherit;font-size:.88rem;line-height:1
 }
 .notes-body textarea:focus{outline:2px solid rgba(23,105,224,.25);border-color:#7eafea}
 
-/* Countdowns, Quick Links and Grade Calculator widgets */
-.mini-body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px}
-.mini-row{display:flex;align-items:center;gap:8px;font-size:.86rem}
-.mini-row .mini-name{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:650}
-.mini-row .mini-value{flex:0 0 auto;color:var(--muted);font-size:.8rem;font-weight:700;font-variant-numeric:tabular-nums}
-.mini-row input{
-min-width:0;height:32px;padding:4px 8px;border:1px solid #d5e1ee;border-radius:7px;
-background:#fff;font:inherit;font-size:.82rem;color:var(--text);
+/* Links Hub widget */
+.links-body{display:flex;flex-direction:column;gap:12px;padding:14px 16px 16px}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.links-empty{color:var(--muted);font-size:.82rem}
+.link-button{
+position:relative;display:flex;align-items:center;gap:8px;min-height:42px;padding:9px 30px 9px 13px;
+border:1px solid var(--border);border-radius:11px;background:var(--surface);
+color:var(--text);font-size:.88rem;font-weight:600;text-decoration:none;
+transition:border-color .15s,background .15s,color .15s;
 }
-.mini-row input.mini-num{flex:0 0 74px;width:74px;text-align:center}
-.mini-row button,.mini-add{
-min-height:32px;padding:5px 12px;border:1px solid #d5e1ee;border-radius:8px;background:#f4f8fc;
-color:#33587f;font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;
+.link-button:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.link-button i{color:var(--primary);font-size:.95rem}
+.link-button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link-remove{
+position:absolute;right:4px;top:50%;transform:translateY(-50%);
+width:22px;height:22px;display:grid;place-items:center;
+border:0;border-radius:7px;background:none;color:#aab3c0;font-size:1rem;line-height:1;cursor:pointer;
 }
-.mini-row button:hover,.mini-add:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
-.mini-row .mini-del{flex:0 0 auto;padding:4px 9px;border-color:transparent;background:none;color:#b7c3d1}
-.mini-row .mini-del:hover{color:#dc3545;background:none}
-.mini-empty{color:var(--muted);font-size:.82rem}
-.mini-total{margin-top:2px;padding-top:8px;border-top:1px solid var(--border);font-size:.92rem;font-weight:800}
-.mini-links a{color:var(--primary);text-decoration:none;font-weight:650}
-.mini-links a:hover{text-decoration:underline}
+.link-remove:hover{background:#fdecec;color:#c0392b}
+.links-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px}
+.links-form input{
+min-width:0;height:40px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;
+background:var(--surface);font:inherit;font-size:.86rem;color:var(--text);
+}
+.links-form input:focus{outline:2px solid rgba(47,107,237,.22);border-color:var(--primary)}
+.links-form button{
+height:40px;padding:0 16px;border:1px solid var(--primary);border-radius:10px;background:var(--primary);
+color:#fff;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;
+}
+.links-form button:hover{opacity:.92}
+@media (max-width:520px){.links-form{grid-template-columns:1fr}}
 
 /* Focus timer widget */
 .timer-body{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px}
@@ -1210,6 +1223,298 @@ color:#33587f;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;
 }
 .timer-buttons button:hover{border-color:#7eafea;background:var(--primary-soft);color:#125dcc}
 .timer-buttons .is-active{border-color:var(--primary);background:var(--primary-soft);color:#125dcc}
+
+
+/* ==========================================================================
+   Skin: a quieter, flatter look. White cards on a soft grey page, hairline
+   borders, small-caps headers with no coloured bar, and one accent blue.
+   Colour is kept only where it carries meaning: class tints, completion
+   bands and test reds.
+   ========================================================================== */
+:root{
+--bg:#f4f6f9;
+--surface:#ffffff;
+--border:#e6e9ef;
+--text:#141a22;
+--muted:#78828f;
+--primary:#2f6bed;
+--primary-soft:#eef3ff;
+--radius:16px;
+--shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 28px rgba(16,24,40,.05);
+}
+body{background:var(--bg);letter-spacing:-.005em}
+
+.topic{border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+/* Headers: a quiet label, not a blue band. */
+.section_heading{
+min-height:50px;padding:14px 18px;gap:10px;
+background:var(--surface);border-bottom:1px solid var(--border);
+color:#5c6675;font-size:.74rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+}
+.section_heading i{
+width:20px;height:20px;flex-basis:20px;border-radius:0;
+background:none;color:var(--primary);font-size:1rem;
+}
+.section_heading .heading-note{font-size:.7rem;letter-spacing:.04em;text-transform:none}
+@media (min-width:1050px){
+#week-card .section_heading,#calendar-card .section_heading{
+min-height:50px;padding:14px 18px;font-size:.74rem;
+}
+.card-grid #printing-card .section_heading{padding:10px 18px;font-size:.74rem}
+}
+
+/* Title card */
+.intro-header{background:var(--surface);border-bottom:1px solid var(--border);gap:10px}
+.my-heading a{font-weight:700;letter-spacing:-.02em;color:var(--text)}
+@media (min-width:1050px){.my-heading{font-size:1.24rem}}
+.grad-countdown{color:var(--muted);font-size:.78rem;font-weight:600;letter-spacing:.01em}
+.clock-strip{background:none;border:0}
+.clock-strip strong{font-weight:700}
+.now-next{border:1px solid var(--border);border-radius:12px;background:#fbfcfe}
+.nn-track{height:5px;background:#e9edf3}
+.nn-seg-class{background:#e9edf3}
+.nn-seg-pass{background:#dfe3e9}
+
+/* Links, list buttons */
+.topic a.card-link{
+border:1px solid var(--border);border-radius:11px;background:var(--surface);
+color:#2b3541;font-weight:550;
+}
+.topic a.card-link:hover,.topic a.card-link:focus-visible{
+border-color:var(--primary);background:var(--primary-soft);color:var(--primary);box-shadow:none;
+}
+.sub-links{border-color:var(--border);border-radius:0 0 11px 11px}
+.sub-links a{border-color:var(--border);color:#4a5563}
+.sub-links a:hover{background:var(--primary-soft);color:var(--primary)}
+
+/* Briefing */
+.briefing-stat{border:1px solid var(--border);border-radius:12px;background:#fbfcfe}
+.briefing-stat span{font-size:.62rem;letter-spacing:.07em}
+.briefing-message{color:#4a5563;font-weight:550}
+.what-should-i-do{
+border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--text);font-weight:700;
+}
+.what-should-i-do:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.briefing-recommendation{border:1px solid var(--border);border-radius:12px}
+
+/* Schedule: white blocks with a coloured spine. */
+.block{
+background:var(--surface);
+border:1px solid var(--border);border-left:3px solid var(--tone-line,#dde6f1);
+border-radius:12px;
+}
+.block.is-now{background:var(--primary-soft);border-color:#c3d6fb;border-left-color:var(--primary);box-shadow:none}
+.block-time{color:#6b7684}
+.block-title{font-weight:700;letter-spacing:-.01em}
+.block-meta{color:var(--muted)}
+.block-left{border-radius:7px;background:var(--primary)}
+.is-dimmed .block:not(.is-now){opacity:.55;filter:none}
+.sched-hint kbd{border-color:var(--border);background:#f3f5f9;color:#6b7684}
+
+/* Tracker */
+.tracker-tabs{background:var(--surface)}
+.tracker-tab{font-size:.8rem;font-weight:700;letter-spacing:.02em}
+.tracker-form input,.tracker-form select{
+border:1px solid var(--border);border-radius:11px;background:var(--surface);font-size:.88rem;
+}
+.tracker-form input:focus,.tracker-form select:focus{outline:2px solid rgba(47,107,237,.2);border-color:var(--primary)}
+.tracker-form button{border-radius:11px;font-weight:700}
+.diff-seg span{border:1px solid var(--border);border-radius:11px;background:var(--surface);font-weight:700}
+.tracker-form .next-chip{border:1px solid var(--border);background:var(--surface);color:#4a5563}
+.tracker-section-title{font-size:.7rem;letter-spacing:.09em;color:#8b95a3}
+.week-day-heading{
+background:#f1f3f7;color:#5c6675;border-radius:10px;font-size:.72rem;letter-spacing:.07em;
+}
+.week-day-heading.is-today{background:var(--primary-soft);color:var(--primary)}
+.week-day-drop-hint{font-size:.68rem}
+.tracker-item{border:1px solid var(--border);border-radius:12px}
+.tracker-tag{border-radius:11px 0 0 11px;font-size:.78rem}
+.tracker-item-title{font-weight:650;letter-spacing:-.005em}
+.completion-percent{color:#4a5563;font-weight:800}
+.tracker-more,.done-head button,.data-tools button,.chart-table-toggle,.chart-week-nav button{
+border:1px solid var(--border);background:var(--surface);color:#4a5563;
+}
+.tracker-more:hover,.done-head button:hover,.data-tools button:hover,
+.chart-table-toggle:hover,.chart-week-nav button:hover{
+border-color:var(--primary);background:var(--primary-soft);color:var(--primary);
+}
+.subtasks{border-top:1px dashed var(--border)}
+.subtask-add input,.subtask .sub-date,.subtask-add .sub-new-date{border-color:var(--border);border-radius:9px}
+.subtask-add button{border-color:var(--border);border-radius:9px;background:var(--surface);color:#4a5563}
+
+/* Calendar */
+.cal-nav{background:var(--surface);border-bottom:1px solid var(--border)}
+.cal-nav button{border:1px solid var(--border);border-radius:10px;background:var(--surface);color:#4a5563}
+.cal-nav button:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.cal-month strong{font-weight:700;letter-spacing:-.01em}
+.cal-weekdays{color:#8b95a3;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase}
+.cal-day{border:1px solid var(--border);border-radius:10px}
+.cal-day.is-outside{background:#fafbfd;opacity:.6}
+.cal-day.is-today{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary)}
+.cal-bar{border-radius:6px;font-weight:650}
+.cal-detail{background:#fbfcfe}
+.cal-detail-item{border:1px solid var(--border);border-radius:11px}
+.cal-detail-head button{border:1px solid var(--border);border-radius:10px}
+
+/* Chart, menus, chips, toast */
+.chart-tip{background:#141a22;border-radius:10px}
+.legend-swatch{border-radius:4px}
+.widget-menu{border-radius:14px;box-shadow:0 16px 36px rgba(16,24,40,.16)}
+.add-widget-chip{border:1px solid var(--border);background:var(--surface);color:#4a5563}
+.add-widget-chip:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.view-switch button{border:1px solid var(--border);border-radius:12px;color:#4a5563}
+.view-switch button:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.toast{border-radius:14px;background:#141a22}
+.notes-body textarea,.timer-buttons button{border-color:var(--border);border-radius:11px}
+.timer-clock{letter-spacing:-.02em}
+
+
+/* ==========================================================================
+   Warm skin: paper-beige surfaces, bronze accent, muted earth tints for the
+   class colours, and a serif (Fraunces) for headings against Inter for the
+   interface text.
+   ========================================================================== */
+:root{
+--bg:#efe9df;
+--surface:#fbf8f3;
+--border:#e1d7c7;
+--text:#2b2620;
+--muted:#8a7f70;
+--primary:#9b6a3c;
+--primary-soft:#f3e9db;
+--shadow:0 1px 2px rgba(74,57,36,.05), 0 10px 28px rgba(74,57,36,.07);
+
+/* Class tints, pulled towards the beige so nothing shouts. */
+--class-english:#dbe3ea;  --class-english-line:#9aaebf;
+--class-social:#eee1c2;   --class-social-line:#c9ad77;
+--class-calculus:#eed9d7; --class-calculus-line:#c69a95;
+--class-math:#e2dbe8;     --class-math-line:#a89cba;
+--class-biology:#dce5d7;  --class-biology-line:#9ab08e;
+--class-physics:#d7e3e3;  --class-physics-line:#92b0b0;
+--class-cs:#eedcce;       --class-cs-line:#cda887;
+--class-calm:#e4dcea;     --class-calm-line:#b0a0c0;
+--class-alberta:#eee0cc;  --class-alberta-line:#cdaf85;
+--class-ontario:#dcdfe9;  --class-ontario-line:#a2a7bd;
+--class-personal:#e6e2da; --class-personal-line:#b5ac9d;
+
+--tone-homeroom:#e4dcea;  --tone-homeroom-line:#b0a0c0;
+--tone-break:#e7e2d8;     --tone-break-line:#bdb3a2;
+--tone-study:#e7e2d8;     --tone-study-line:#bdb3a2;
+--tone-humanities:#eee1c2;--tone-humanities-line:#c9ad77;
+--tone-stem:#dce5d7;      --tone-stem-line:#9ab08e;
+--tone-other:#e5e7cd;     --tone-other-line:#b2b787;
+--tone-activity:#eedbd4;  --tone-activity-line:#cb9e92;
+--tone-event:#dfe2e4;     --tone-event-line:#a9b2b8;
+--tone-alberta:#eee0cc;   --tone-alberta-line:#cdaf85;
+--tone-ontario:#dcdfe9;   --tone-ontario-line:#a2a7bd;
+}
+
+body{
+background:var(--bg);
+font-family:"Inter","Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,Arial,sans-serif;
+color:var(--text);
+}
+
+/* Serif for anything that reads as a title. */
+.my-heading,.section_heading,.block-title,.tracker-item-title,.cal-month strong,
+.cal-detail-head strong,.briefing-stat strong,.timer-clock,.chart-detail h4,
+.week-day-heading,.tracker-section-title,.nn-title,.weekend{
+font-family:"Fraunces",Georgia,"Times New Roman",serif;
+}
+.my-heading a{font-weight:600;letter-spacing:-.01em}
+.section_heading{letter-spacing:.12em;font-weight:600;color:#6d6154}
+.tracker-section-title{letter-spacing:.12em;font-weight:600;color:#8a7f70}
+.week-day-heading{letter-spacing:.1em;font-weight:600}
+.tracker-item-title,.block-title{font-weight:600;letter-spacing:0}
+.grad-countdown{font-family:"Inter",sans-serif;color:var(--muted)}
+
+/* Surfaces that were hard-coded white or cool grey. */
+.topic,.intro-header,.section_heading,.tracker-tabs,.cal-nav,.cal-day,.cal-detail-item,
+.tracker-item,.link-button,.links-form input,.notes-body textarea,.widget-menu,
+.subtask-add input,.subtask .sub-date,.subtask-add .sub-new-date,.completion-number,
+.tracker-edit-fields input,.tracker-edit-fields select,.block{
+background:var(--surface);
+}
+.now-next,.briefing-stat,.cal-detail,.briefing-recommendation,.chart-body,.week-day-empty{
+background:#f6f0e6;
+}
+.week-day-heading{background:#ece3d5;color:#6d6154}
+.week-day-heading.is-today{background:var(--primary-soft);color:#7d5227}
+.cal-day.is-outside{background:#f2ece2}
+.nn-track,.nn-seg-class{background:#e5dccd}
+.nn-seg-pass{background:#ded5c6}
+.nn-fill-pass{background:#a2978a}
+.sub-links a{background:var(--surface);color:#6d6154}
+.sub-links a:hover{background:var(--primary-soft);color:var(--primary)}
+.topic a.card-link{color:#4a4238}
+.tracker-more,.done-head button,.data-tools button,.chart-table-toggle,
+.chart-week-nav button,.cal-nav button,.add-widget-chip,.view-switch button,
+.what-should-i-do,.subtask-add button,.timer-buttons button,.tracker-form .next-chip,
+.sched-hint kbd,.diff-seg span{
+background:var(--surface);color:#6d6154;
+}
+.tracker-more:hover,.done-head button:hover,.data-tools button:hover,
+.chart-table-toggle:hover,.chart-week-nav button:hover,.cal-nav button:hover,
+.add-widget-chip:hover,.view-switch button:hover,.what-should-i-do:hover,
+.subtask-add button:hover,.timer-buttons button:hover,.tracker-form .next-chip:hover,
+.link-button:hover,.diff-seg input:checked + span,.timer-buttons .is-active{
+border-color:var(--primary);background:var(--primary-soft);color:var(--primary);
+}
+.tracker-tab:hover,.tracker-tab.is-active{color:var(--primary)}
+.tracker-tab.is-active{border-bottom-color:var(--primary);background:var(--surface)}
+.tracker-form button,.links-form button{background:var(--primary);border-color:var(--primary);color:#fdfaf6}
+.block-left{background:var(--primary)}
+.block.is-now{background:var(--primary-soft);border-color:#dcc3a4;border-left-color:var(--primary)}
+.cal-day.is-today{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary)}
+.chart-table-wrap tr.is-today td{color:var(--primary)}
+.toast{background:#2b2620}
+.toast button{color:#e0bd93}
+.chart-tip{background:#2b2620}
+.chart-tip em{color:#e0bd93}
+
+/* Completion bands, warmed to sit on beige. */
+.tracker-item.band-0{background:#f0d6cd;border-color:#d8ab9c}
+.tracker-item.band-1{background:#f1ddcd;border-color:#d9b593}
+.tracker-item.band-2{background:#f2e3cc;border-color:#d8bd8d}
+.tracker-item.band-3{background:#f1e7c9;border-color:#d4c085}
+.tracker-item.band-4{background:#eeeac6;border-color:#cbc37e}
+.tracker-item.band-5{background:#e8e9c4;border-color:#c0c37d}
+.tracker-item.band-6{background:#e1e7c4;border-color:#b3bf80}
+.tracker-item.band-7{background:#dbe6c8;border-color:#a7b984}
+.tracker-item.band-8{background:#d7e4cb;border-color:#9cb388}
+.tracker-item.band-9{background:#d3e2cf;border-color:#93ad8d}
+.tracker-item.sub-row{background:#f1e6c4;border-color:#d2bb7f}
+.tracker-item.overdue{background:#f1d5cf;border-color:#d6a397}
+
+/* Test shading, a shade warmer than before. */
+.block.tc-0{--tc-bg:#f3ddd6;--tc-border:#dfb8ab;--tc-line:#cfa08f;--tc-ink:#5a2a1e;--tc-chip:#9e4c34}
+.block.tc-1{--tc-bg:#eec6ba;--tc-border:#d8a08e;--tc-line:#c88b77;--tc-ink:#5a2a1e;--tc-chip:#9e4c34}
+.block.tc-2{--tc-bg:#e3a693;--tc-border:#cd8570;--tc-line:#bb705a;--tc-ink:#462015;--tc-chip:#8e412b}
+.block.tc-3{--tc-bg:#cf6f55;--tc-border:#b45740;--tc-line:#9c4530;--tc-ink:#fdf7f3;--tc-chip:#75301f}
+.block.tc-4{--tc-bg:#b24a33;--tc-border:#953827;--tc-line:#7b2c1d;--tc-ink:#fdf7f3;--tc-chip:#5f2015}
+.block.tc-5{--tc-bg:#8a2d1e;--tc-border:#6d2016;--tc-line:#551810;--tc-ink:#fdf7f3;--tc-chip:#3f1009}
+.exam-badge{background:#f6e3dc;color:#8a3b24}
+.testing-center-badge{background:#fdf7f3;color:#8a3b24}
+.due-late,.due-now{color:#a83d28}
+.due-soon{color:#8a6425}
+.sync-status.is-bad{color:#a83d28}
+.link-remove:hover{background:#f3ded6;color:#a83d28}
+
+
+/* ---------- Schedule: stronger subject colour ----------
+A wider spine plus a tint of the subject's own colour mixed into the card,
+so the subject reads at a glance. Tests and the current block keep their
+own fills, since those rules carry two classes and still win. */
+.block{
+border-left-width:6px;
+background:var(--tone,#f7fafd);
+background:color-mix(in srgb, var(--tone, #f7fafd) 58%, var(--surface));
+}
+.block-time{color:#5f5547;font-weight:700}
+.block-title{color:#241f19}
+.block-meta{color:#6d6154}
+.is-dimmed .block:not(.is-now){opacity:.62}
 
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
@@ -1299,6 +1604,20 @@ Week at a Glance
 <div class="cal-grid" id="calendar-grid"></div>
 <div class="cal-detail" id="calendar-detail" hidden></div>
 </div>
+
+<!-- Links Hub: your own buttons, added from the form at the bottom of the card -->
+<div class="topic" id="links-card">
+<div class="section_heading"><i class="bi bi-link-45deg"></i>Links Hub</div>
+<div class="links-body">
+<div class="links-grid" id="links-grid"></div>
+<form class="links-form" id="links-form">
+<input type="text" id="link-title" placeholder="Button name" aria-label="Link title" required>
+<input type="text" id="link-url" placeholder="paste a link" aria-label="Link address" required>
+<button type="submit">Add</button>
+</form>
+</div>
+</div>
+
 
 <!-- 3. Assignment Tracker -->
 <div class="topic" id="tracker-card">
@@ -1529,21 +1848,6 @@ Text <a class="link-inline" href="sms:+15873332724">587-333-2724</a>
 </div>
 </div>
 
-</div>
-
-<div class="topic" id="countdowns-card">
-<div class="section_heading"><i class="bi bi-hourglass-split"></i>Countdowns</div>
-<div class="mini-body" id="countdowns-body"></div>
-</div>
-
-<div class="topic" id="links-card">
-<div class="section_heading"><i class="bi bi-link-45deg"></i>Quick Links</div>
-<div class="mini-body mini-links" id="links-body"></div>
-</div>
-
-<div class="topic" id="grades-card">
-<div class="section_heading"><i class="bi bi-calculator"></i>Grade Calculator</div>
-<div class="mini-body" id="grades-body"></div>
 </div>
 
 <div class="topic add-widgets" id="add-widgets" hidden>
@@ -4328,6 +4632,7 @@ var WIDGETS = [
 {id:"guidance",  sel:"#guidance-card",       label:"Guidance & Counseling", region:"left",  width:"full"},
 {id:"printing",  sel:"#printing-card",       label:"Printing",              region:"left",  width:"full"},
 {id:"tv",        sel:"#tv-card",             label:"TV/Wall Displays",      region:"left",  width:"full"},
+{id:"links",     sel:"#links-card",          label:"Links Hub",             region:"left",  width:"full"},
 {id:"notes",     sel:"#notes-card",          label:"Notes",                 region:"left",  width:"full", startHidden:true},
 {id:"timer",     sel:"#timer-card",          label:"Focus Timer",           region:"left",  width:"full", startHidden:true},
 {id:"tracker",   sel:"#tracker-card",        label:"Assignment Tracker",    region:"right"}
@@ -4336,7 +4641,7 @@ var WIDGETS = [
 /* Order of the two-column area on the left. "middle" is the stack that holds
 the title card, the briefing and Week at a Glance. */
 var LEFT_ORDER = ["schedule", "middle", "calendar", "postsec", "exams",
-"guidance", "printing", "tv", "notes", "timer"];
+"links", "guidance", "printing", "tv", "notes", "timer"];
 
 var TRACKER_FEATURES = [
 {id:"form",       sel:"#assignment-form",        label:"Add-assignment form"},
@@ -4613,6 +4918,70 @@ try { box.value = localStorage.getItem("renert_notes") || ""; } catch (e) {}
 box.addEventListener("input", function () {
 try { localStorage.setItem("renert_notes", box.value); } catch (e) {}
 });
+})();
+
+/* ---------- Links Hub widget ----------
+Each saved link becomes a button. Everything is kept in this browser. */
+var customLinks = [];
+try {
+var savedLinks = JSON.parse(localStorage.getItem("renert_links") || "[]");
+if (Array.isArray(savedLinks)) customLinks = savedLinks;
+} catch (e) {}
+
+function saveCustomLinks() {
+try { localStorage.setItem("renert_links", JSON.stringify(customLinks)); } catch (e) {}
+}
+
+function tidyUrl(raw) {
+var url = String(raw || "").trim();
+if (!url) return "";
+if (!/^https?:\/\//i.test(url)) url = "https://" + url.replace(/^\/+/, "");
+return url;
+}
+
+function renderCustomLinks() {
+var grid = document.getElementById("links-grid");
+if (!grid) return;
+if (!customLinks.length) {
+grid.innerHTML = '<p class="links-empty">No links yet. Add one below and it becomes a button.</p>';
+return;
+}
+grid.innerHTML = customLinks.map(function (link, i) {
+return '<a class="link-button" href="' + escapeHtml(link.url) + '" target="_blank" rel="noopener noreferrer" title="' +
+escapeHtml(link.url) + '"><i class="bi bi-box-arrow-up-right"></i><span>' + escapeHtml(link.title) + '</span>' +
+'<button type="button" class="link-remove" data-link="' + i + '" aria-label="Remove ' + escapeHtml(link.title) + '">&times;</button></a>';
+}).join("");
+}
+
+(function bindCustomLinks() {
+var form = document.getElementById("links-form");
+var grid = document.getElementById("links-grid");
+if (!form || !grid) return;
+
+form.addEventListener("submit", function (e) {
+e.preventDefault();
+var titleInput = document.getElementById("link-title");
+var urlInput = document.getElementById("link-url");
+var title = titleInput.value.trim();
+var url = tidyUrl(urlInput.value);
+if (!title || !url) return;
+customLinks.push({title: title, url: url});
+saveCustomLinks();
+renderCustomLinks();
+form.reset();
+titleInput.focus();
+});
+
+grid.addEventListener("click", function (e) {
+var del = e.target.closest(".link-remove");
+if (!del) return;
+e.preventDefault();
+customLinks.splice(Number(del.getAttribute("data-link")), 1);
+saveCustomLinks();
+renderCustomLinks();
+});
+
+renderCustomLinks();
 })();
 
 /* ---------- Focus timer widget ---------- */
