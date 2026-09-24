@@ -1524,6 +1524,16 @@ background:color-mix(in srgb, var(--tone, #f7fafd) 80%, var(--surface));
 .block-meta{color:#6d6154}
 .is-dimmed .block:not(.is-now){opacity:.62}
 
+
+/* ---------- Test name under the class name ----------
+Its own line, in a rectangle rather than a pill. */
+.block-badges{margin-top:5px;line-height:1}
+.exam-badge,.testing-center-badge{
+display:inline-block;margin:0;padding:4px 9px;border-radius:4px;
+max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+font-size:.68rem;font-weight:800;letter-spacing:.03em;vertical-align:baseline;
+}
+
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
@@ -3845,10 +3855,16 @@ html +=
 leftChip +
 '</div>' +
 '<div class="block-body">' +
-'<div class="block-title">' + escapeHtml(b.title) +
-(exam ? '<span class="exam-badge" title="' + escapeHtml(exam.name) + '">' + escapeHtml(examWord) + '</span>' : '') +
-(b.testingCenter ? '<span class="testing-center-badge" title="' + escapeHtml(b.tcTest.name) + '">' +
-escapeHtml(tcName) + '</span>' : '') + '</div>' +
+'<div class="block-title">' + escapeHtml(b.title) + '</div>' +
+// The test's name sits on its own line under the class name.
+(exam
+? '<div class="block-badges"><span class="exam-badge" title="' + escapeHtml(exam.name) + '">' +
+escapeHtml(examWord) + '</span></div>'
+: '') +
+(b.testingCenter
+? '<div class="block-badges"><span class="testing-center-badge" title="' + escapeHtml(b.tcTest.name) + '">' +
+escapeHtml(tcName) + '</span></div>'
+: '') +
 (b.meta ? '<div class="block-meta">' + escapeHtml(b.meta) + '</div>' : '') +
 '</div>' +
 (owed > 0
