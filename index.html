@@ -1182,24 +1182,27 @@ background:#fbfdff;color:var(--text);font:inherit;font-size:.88rem;line-height:1
 
 /* Links Hub widget */
 .links-body{display:flex;flex-direction:column;gap:12px;padding:14px 16px 16px}
-.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.links-grid{display:flex;flex-wrap:wrap;gap:8px}
 .links-empty{color:var(--muted);font-size:.82rem}
 .link-button{
-position:relative;display:flex;align-items:center;gap:8px;min-height:42px;padding:9px 30px 9px 13px;
+/* Sized to its own name: short names make short buttons, long names grow. */
+flex:0 1 auto;min-width:96px;max-width:100%;
+position:relative;display:flex;align-items:center;gap:7px;min-height:38px;padding:8px 28px 8px 12px;
 border:1px solid var(--border);border-radius:11px;background:var(--surface);
 color:var(--text);font-size:.88rem;font-weight:600;text-decoration:none;
 transition:border-color .15s,background .15s,color .15s;
 }
 .link-button:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
 .link-button i{color:var(--primary);font-size:.95rem}
-.link-button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link-button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.85rem}
 .link-remove{
 position:absolute;right:4px;top:50%;transform:translateY(-50%);
 width:22px;height:22px;display:grid;place-items:center;
 border:0;border-radius:7px;background:none;color:#aab3c0;font-size:1rem;line-height:1;cursor:pointer;
 }
 .link-remove:hover{background:#fdecec;color:#c0392b}
-.links-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px}
+.links-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.links-form #link-title{grid-column:1 / -1}
 .links-form input{
 min-width:0;height:40px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;
 background:var(--surface);font:inherit;font-size:.86rem;color:var(--text);
@@ -2986,7 +2989,7 @@ if (dateInput) dateInput.addEventListener("input", renderNextChips);
 })();
 
 /* Testing Center eligibility is case-insensitive and defined before the form bindings run. */
-var TC_TEST_WORDS = /\b(source analysis|position paper|test|quiz)\b/i;
+var TC_TEST_WORDS = /\b(source analysis|position paper|crt|prt|test|quiz)\b/i;
 
 function isTcTest(item) {
 return !!item && TC_TEST_WORDS.test(String(item.name || "")) && !!item.testingCenter;
@@ -3715,7 +3718,7 @@ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];
 
 /* An item counts as a test when its own name says so. Anything else due that
 day (homework, a lab write-up) leaves the block alone. */
-var EXAM_WORDS = /\b(source analysis|position paper|test|quiz|exam|midterm|final|assessment)s?\b/i;
+var EXAM_WORDS = /\b(source analysis|position paper|crt|prt|test|quiz|exam|midterm|final|assessment)s?\b/i;
 function examOn(course, iso) {
 if (!course) return null;
 return assignments.find(function (a) {
@@ -3744,7 +3747,12 @@ if (note) note.textContent = DAY_NAMES[day] + " ┃ " + (isToday ? "today" : sho
 
 var hint = '<div class="sched-hint"><button type="button" class="sched-step" data-delta="-1"><kbd>a</kbd> previous day</button><button type="button" class="sched-step" data-delta="1">next day <kbd>d</kbd></button></div>';
 
-if (day === 0 || day === 6) {
+// A Saturday Testing Center booking is the one thing that shows on a weekend.
+var dayIso = isoDate(date);
+var tcTest = testingCenterOn(dayIso);
+var saturdayTc = day === 6 && !!tcTest;
+
+if ((day === 0 || day === 6) && !saturdayTc) {
 body.classList.remove("is-dimmed");
 body.innerHTML = '<p class="weekend">Enjoy the weekend.<span>No classes scheduled.</span></p>' + hint;
 return;
@@ -3767,21 +3775,20 @@ var html = "";
 if (early) html += '<p class="sched-note">Early dismissal at ' + label(early.time) + ' (' + escapeHtml(early.name) + ')</p>';
 if (isToday && !current) html += '<p class="sched-note">Nothing scheduled right now.</p>';
 
-var dayIso = isoDate(date);
-var tcTest = testingCenterOn(dayIso);
 var displayBlocks = blocks.slice();
 
-// A Testing Center booking occupies the after-school slot from 4–7 PM.
-// Any other after-school activity is automatically overridden for that day.
+// A Testing Center booking runs after school on a weekday (4–7 PM) and
+// 10 AM–2 PM on a Saturday. On a weekday it replaces any after-school
+// activity that day.
 if (tcTest) {
 displayBlocks = displayBlocks.filter(function (b) {
 return !(toMinutes(b.start) >= 15 * 60 || /after school/i.test(String(b.meta || "")));
 });
 displayBlocks.push({
-start:"16:00",
-end:"19:00",
+start: saturdayTc ? "10:00" : "16:00",
+end: saturdayTc ? "14:00" : "19:00",
 title:"Testing Center",
-meta:"After school ┃ 4:00–7:00 PM",
+meta: saturdayTc ? "Saturday ┃ 10:00 AM–2:00 PM" : "After school ┃ 4:00–7:00 PM",
 tone:"activity",
 testingCenter:true,
 tcTest:tcTest
@@ -4668,7 +4675,7 @@ var WIDGETS = [
 {id:"guidance",  sel:"#guidance-card",       label:"Guidance & Counseling", region:"left",  width:"full"},
 {id:"printing",  sel:"#printing-card",       label:"Printing",              region:"left",  width:"full"},
 {id:"tv",        sel:"#tv-card",             label:"TV/Wall Displays",      region:"left",  width:"full"},
-{id:"links",     sel:"#links-card",          label:"Links Hub",             region:"left",  width:"full"},
+{id:"links",     sel:"#links-card",          label:"Links Hub",             region:"left",  width:"half"},
 {id:"notes",     sel:"#notes-card",          label:"Notes",                 region:"left",  width:"full", startHidden:true},
 {id:"timer",     sel:"#timer-card",          label:"Focus Timer",           region:"left",  width:"full", startHidden:true},
 {id:"tracker",   sel:"#tracker-card",        label:"Assignment Tracker",    region:"right"}
@@ -4806,6 +4813,13 @@ i += 1;
 }
 }
 
+/* Two half cards share a row; a full card takes both columns; a half card
+with no partner keeps its single column and leaves the other empty. */
+function rowAreas(r) {
+if (r.length === 2) return r[0] + " " + r[1];
+return widgetWidth(r[0]) === "half" ? r[0] + " ." : r[0] + " " + r[0];
+}
+
 if (!rows.length && !trackerOn) return;
 
 var areaRows;
@@ -4814,14 +4828,10 @@ grid.style.gridTemplateColumns = "minmax(0,1fr)";
 areaRows = ['"tracker"'];
 } else if (!trackerOn) {
 grid.style.gridTemplateColumns = "minmax(0,1fr) minmax(0,1fr)";
-areaRows = rows.map(function (r) {
-return '"' + (r.length === 2 ? r[0] + " " + r[1] : r[0] + " " + r[0]) + '"';
-});
+areaRows = rows.map(function (r) { return '"' + rowAreas(r) + '"'; });
 } else {
 grid.style.gridTemplateColumns = "minmax(0,1fr) minmax(0,1fr) minmax(0,1.38fr)";
-areaRows = rows.map(function (r) {
-return '"' + (r.length === 2 ? r[0] + " " + r[1] : r[0] + " " + r[0]) + ' tracker"';
-});
+areaRows = rows.map(function (r) { return '"' + rowAreas(r) + ' tracker"'; });
 areaRows.push('". . tracker"');
 grid.style.gridTemplateRows = new Array(rows.length + 1).join("auto ") + "1fr";
 }
