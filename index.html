@@ -1386,28 +1386,28 @@ border-color:var(--primary);background:var(--primary-soft);color:var(--primary);
 --shadow:0 1px 2px rgba(74,57,36,.05), 0 10px 28px rgba(74,57,36,.07);
 
 /* Class tints, pulled towards the beige so nothing shouts. */
---class-english:#dbe3ea;  --class-english-line:#9aaebf;
---class-social:#eee1c2;   --class-social-line:#c9ad77;
---class-calculus:#eed9d7; --class-calculus-line:#c69a95;
---class-math:#e2dbe8;     --class-math-line:#a89cba;
---class-biology:#dce5d7;  --class-biology-line:#9ab08e;
---class-physics:#d7e3e3;  --class-physics-line:#92b0b0;
---class-cs:#eedcce;       --class-cs-line:#cda887;
---class-calm:#e4dcea;     --class-calm-line:#b0a0c0;
---class-alberta:#eee0cc;  --class-alberta-line:#cdaf85;
---class-ontario:#dcdfe9;  --class-ontario-line:#a2a7bd;
---class-personal:#e6e2da; --class-personal-line:#b5ac9d;
+--class-english:#c7d6e4;  --class-english-line:#7f9bb3;
+--class-social:#e6d19c;   --class-social-line:#bd9c58;
+--class-calculus:#e5c2bd; --class-calculus-line:#bd8880;
+--class-math:#d3c9e0;     --class-math-line:#9b8cb2;
+--class-biology:#c7d7bd;  --class-biology-line:#87a077;
+--class-physics:#c1d6d6;  --class-physics-line:#7ea3a3;
+--class-cs:#e7c8ae;       --class-cs-line:#c49871;
+--class-calm:#d7cbe3;     --class-calm-line:#a292b8;
+--class-alberta:#e7d0ab;  --class-alberta-line:#c4a271;
+--class-ontario:#c8cfe1;  --class-ontario-line:#9199b5;
+--class-personal:#dbd4c6; --class-personal-line:#aaa090;
 
---tone-homeroom:#e4dcea;  --tone-homeroom-line:#b0a0c0;
---tone-break:#e7e2d8;     --tone-break-line:#bdb3a2;
---tone-study:#e7e2d8;     --tone-study-line:#bdb3a2;
---tone-humanities:#eee1c2;--tone-humanities-line:#c9ad77;
---tone-stem:#dce5d7;      --tone-stem-line:#9ab08e;
---tone-other:#e5e7cd;     --tone-other-line:#b2b787;
---tone-activity:#eedbd4;  --tone-activity-line:#cb9e92;
---tone-event:#dfe2e4;     --tone-event-line:#a9b2b8;
---tone-alberta:#eee0cc;   --tone-alberta-line:#cdaf85;
---tone-ontario:#dcdfe9;   --tone-ontario-line:#a2a7bd;
+--tone-homeroom:#d7cbe3;  --tone-homeroom-line:#a292b8;
+--tone-break:#e0d9cb;     --tone-break-line:#b3a897;
+--tone-study:#e0d9cb;     --tone-study-line:#b3a897;
+--tone-humanities:#e6d19c;--tone-humanities-line:#bd9c58;
+--tone-stem:#c7d7bd;      --tone-stem-line:#87a077;
+--tone-other:#dde2bc;     --tone-other-line:#a7ad76;
+--tone-activity:#e9cec4;  --tone-activity-line:#c39181;
+--tone-event:#d4dade;     --tone-event-line:#9aa6ad;
+--tone-alberta:#e7d0ab;   --tone-alberta-line:#c4a271;
+--tone-ontario:#c8cfe1;   --tone-ontario-line:#9199b5;
 }
 
 body{
@@ -1509,7 +1509,7 @@ own fills, since those rules carry two classes and still win. */
 .block{
 border-left-width:6px;
 background:var(--tone,#f7fafd);
-background:color-mix(in srgb, var(--tone, #f7fafd) 58%, var(--surface));
+background:color-mix(in srgb, var(--tone, #f7fafd) 80%, var(--surface));
 }
 .block-time{color:#5f5547;font-weight:700}
 .block-title{color:#241f19}
@@ -2952,7 +2952,7 @@ if (dateInput) dateInput.addEventListener("input", renderNextChips);
 })();
 
 /* Testing Center eligibility is case-insensitive and defined before the form bindings run. */
-var TC_TEST_WORDS = /\b(test|quiz)\b/i;
+var TC_TEST_WORDS = /\b(source analysis|position paper|test|quiz)\b/i;
 
 function isTcTest(item) {
 return !!item && TC_TEST_WORDS.test(String(item.name || "")) && !!item.testingCenter;
@@ -3681,7 +3681,7 @@ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];
 
 /* An item counts as a test when its own name says so. Anything else due that
 day (homework, a lab write-up) leaves the block alone. */
-var EXAM_WORDS = /\b(test|quiz|exam|midterm|final|assessment)s?\b/i;
+var EXAM_WORDS = /\b(source analysis|position paper|test|quiz|exam|midterm|final|assessment)s?\b/i;
 function examOn(course, iso) {
 if (!course) return null;
 return assignments.find(function (a) {
@@ -3766,7 +3766,9 @@ var owed = b.course ? dueByNextClass(b.course, date, b.end) : 0;
 var exam = b.course ? examOn(b.course, dayIso) : null;
 // A test being written in the Testing Center does not turn the class red.
 if (exam && exam.testingCenter) exam = null;
-var examWord = exam ? (String(exam.name).match(EXAM_WORDS) || ["test"])[0].toUpperCase() : "";
+// The two long phrases would overflow the badge, so they show as TEST.
+var examMatch = exam ? (String(exam.name).match(EXAM_WORDS) || ["test"])[0] : "";
+var examWord = examMatch.length > 10 ? "TEST" : examMatch.toUpperCase();
 var tcDifficulty = b.testingCenter ? difficultyOf(b.tcTest) : 0;
 var examDifficulty = exam ? difficultyOf(exam) : 0;
 
