@@ -1499,6 +1499,11 @@ border-color:var(--primary);background:var(--primary-soft);color:var(--primary);
 .block.tc-5{--tc-bg:#8a2d1e;--tc-border:#6d2016;--tc-line:#551810;--tc-ink:#fdf7f3;--tc-chip:#3f1009}
 .exam-badge{background:#f6e3dc;color:#8a3b24}
 .testing-center-badge{background:#fdf7f3;color:#8a3b24}
+/* The badges now carry the test's name, so give them room and clip politely. */
+.exam-badge,.testing-center-badge{
+display:inline-block;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+vertical-align:-3px;letter-spacing:.02em;
+}
 .due-late,.due-now{color:#a83d28}
 .due-soon{color:#8a6425}
 .sync-status.is-bad{color:#a83d28}
@@ -3726,6 +3731,13 @@ return a.className === course && a.date === iso && EXAM_WORDS.test(a.name);
 }) || null;
 }
 
+/* Names longer than this are clipped on the schedule badge; the full name
+stays in the tooltip. */
+function shortName(name) {
+var text = String(name || "").trim();
+return text.length > 26 ? text.slice(0, 25).trim() + "…" : text;
+}
+
 /* The real date shown in the schedule card; a and d move it one day. */
 function scheduleDate() {
 var d = startOfToday();
@@ -3807,9 +3819,9 @@ var owed = b.course ? dueByNextClass(b.course, date, b.end) : 0;
 var exam = b.course ? examOn(b.course, dayIso) : null;
 // A test being written in the Testing Center does not turn the class red.
 if (exam && exam.testingCenter) exam = null;
-// The two long phrases would overflow the badge, so they show as TEST.
-var examMatch = exam ? (String(exam.name).match(EXAM_WORDS) || ["test"])[0] : "";
-var examWord = examMatch.length > 10 ? "TEST" : examMatch.toUpperCase();
+// The badge names the test itself, clipped if the name runs long.
+var examWord = exam ? shortName(exam.name) : "";
+var tcName = b.testingCenter ? shortName(b.tcTest.name) : "";
 var tcDifficulty = b.testingCenter ? difficultyOf(b.tcTest) : 0;
 var examDifficulty = exam ? difficultyOf(exam) : 0;
 
@@ -3834,8 +3846,9 @@ leftChip +
 '</div>' +
 '<div class="block-body">' +
 '<div class="block-title">' + escapeHtml(b.title) +
-(exam ? '<span class="exam-badge">' + escapeHtml(examWord) + '</span>' : '') +
-(b.testingCenter ? '<span class="testing-center-badge">TEST</span>' : '') + '</div>' +
+(exam ? '<span class="exam-badge" title="' + escapeHtml(exam.name) + '">' + escapeHtml(examWord) + '</span>' : '') +
+(b.testingCenter ? '<span class="testing-center-badge" title="' + escapeHtml(b.tcTest.name) + '">' +
+escapeHtml(tcName) + '</span>' : '') + '</div>' +
 (b.meta ? '<div class="block-meta">' + escapeHtml(b.meta) + '</div>' : '') +
 '</div>' +
 (owed > 0
@@ -4675,7 +4688,7 @@ var WIDGETS = [
 {id:"guidance",  sel:"#guidance-card",       label:"Guidance & Counseling", region:"left",  width:"full"},
 {id:"printing",  sel:"#printing-card",       label:"Printing",              region:"left",  width:"full"},
 {id:"tv",        sel:"#tv-card",             label:"TV/Wall Displays",      region:"left",  width:"full"},
-{id:"links",     sel:"#links-card",          label:"Links Hub",             region:"left",  width:"half"},
+{id:"links",     sel:"#links-card",          label:"Links Hub",             region:"left",  width:"full"},
 {id:"notes",     sel:"#notes-card",          label:"Notes",                 region:"left",  width:"full", startHidden:true},
 {id:"timer",     sel:"#timer-card",          label:"Focus Timer",           region:"left",  width:"full", startHidden:true},
 {id:"tracker",   sel:"#tracker-card",        label:"Assignment Tracker",    region:"right"}
