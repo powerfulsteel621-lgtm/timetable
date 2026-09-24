@@ -2076,24 +2076,45 @@ var defaultAssignments = [
 {name: "Source Analysis Test", className: "Personal", date: "2026-09-11"}
 ];
 
-/* University deadlines for September 2027 entry (Waterloo, McMaster, Queen's,
-U of C health sciences). Each is added once; delete any of them in the UI
-and it stays deleted. Mac's 2027 dates are not published yet, so the two
-marked (est.) carry last cycle's dates until the Nov 1 check. */
+/* ---------- Deadlines for September 2027 entry ----------
+Checked against the official pages in September 2026. Anything marked
+"check" is a date the institution has not published yet, so the entry is a
+reminder to look it up rather than a confirmed deadline.
+Sources: ucalgary.ca dates and deadlines, ualberta.ca dates, queensu.ca key
+dates, uwaterloo.ca deadlines, future.mcmaster.ca supplementary
+applications, loranscholar.ca, schulichleaders.com, terryfoxawards.ca. */
 var UNI_DEADLINES = [
-{id:"uni-ouac-open",   name:"OUAC opens",                    className:"Ontario Universities", date:"2026-10-01"},
-{id:"uni-ucal-open",   name:"UCalgary app + BHSc supp opens", className:"Alberta Universities", date:"2026-10-01"},
-{id:"uni-mac-check",   name:"Check Mac BHSc 2027 dates",     className:"Ontario Universities", date:"2026-11-01"},
-{id:"uni-ucal-presta", name:"Prestige Scholarship due",      className:"Alberta Universities", date:"2026-12-01"},
-{id:"uni-queens-maa",  name:"Queen's MAA award due",         className:"Ontario Universities", date:"2026-12-08"},
-{id:"uni-mac-ouac",    name:"Mac OUAC app due (est.)",       className:"Ontario Universities", date:"2027-01-15"},
-{id:"uni-queens-app",  name:"Queen's app due (QH)",          className:"Ontario Universities", date:"2027-02-01"},
-{id:"uni-uw-app",      name:"Waterloo app due",              className:"Ontario Universities", date:"2027-02-01"},
-{id:"uni-mac-supp",    name:"Mac BHSc supp due (est.)",      className:"Ontario Universities", date:"2027-02-05"},
-{id:"uni-queens-supp", name:"Queen's supp app due",          className:"Ontario Universities", date:"2027-02-15"},
-{id:"uni-uw-docs",     name:"Waterloo documents due",        className:"Ontario Universities", date:"2027-02-15"},
-{id:"uni-ucal-supp",   name:"UCalgary app + BHSc supp due",  className:"Alberta Universities", date:"2027-03-01"},
-{id:"uni-queens-docs", name:"Queen's documents due",         className:"Ontario Universities", date:"2027-03-31"}
+{id:"u27-ab-open",      name:"ApplyAlberta opens (UCalgary + UAlberta)", className:"Alberta Universities", date:"2026-10-01"},
+{id:"u27-ucal-awards",  name:"UCalgary awards application opens",        className:"Alberta Universities", date:"2026-10-01"},
+{id:"u27-queens-open",  name:"Queen's application opens",                className:"Ontario Universities", date:"2026-10-01"},
+{id:"u27-loran",        name:"Loran Award due (noon ET)",                className:"Personal",             date:"2026-10-15"},
+{id:"u27-terryfox",     name:"Terry Fox Award opens (check deadline)",   className:"Personal",             date:"2026-11-01"},
+{id:"u27-td",           name:"TD Community Leadership due (check date)", className:"Personal",             date:"2026-11-13"},
+{id:"u27-diploma-reg",  name:"Check Jan diploma exam registration on myPass", className:"Personal",        date:"2026-11-16"},
+{id:"u27-queens-maa-a", name:"Apply to Queen's by today for MAA access", className:"Ontario Universities", date:"2026-11-20"},
+{id:"u27-ucal-presta",  name:"UCalgary Prestige Award application due",  className:"Alberta Universities", date:"2026-12-01"},
+{id:"u27-queens-maa",   name:"Queen's Major Admission Award due",        className:"Ontario Universities", date:"2026-12-08"},
+{id:"u27-ucal-prestd",  name:"UCalgary Prestige Award documents due",    className:"Alberta Universities", date:"2026-12-15"},
+{id:"u27-ua-awards",    name:"UAlberta entrance awards due (check date)", className:"Alberta Universities", date:"2027-01-10"},
+{id:"u27-schulich-ask", name:"Ask school about Schulich nomination",     className:"Personal",             date:"2027-01-18"},
+{id:"u27-schulich-nom", name:"Schulich Leader school nomination due",    className:"Personal",             date:"2027-01-27"},
+{id:"u27-uw-app",       name:"Waterloo application due",                 className:"Ontario Universities", date:"2027-02-01"},
+{id:"u27-queens-app",   name:"Queen's Health Sci application due",       className:"Ontario Universities", date:"2027-02-01"},
+{id:"u27-mac-app",      name:"McMaster application due (check 105 date)", className:"Ontario Universities", date:"2027-02-01"},
+{id:"u27-mac-supp",     name:"McMaster BHSc supplementary due (early Feb)", className:"Ontario Universities", date:"2027-02-05"},
+{id:"u27-queens-supp",  name:"Queen's supplementary + awards profile due", className:"Ontario Universities", date:"2027-02-15"},
+{id:"u27-uw-aif",       name:"Waterloo AIF + documents due",             className:"Ontario Universities", date:"2027-02-15"},
+{id:"u27-schulich-app", name:"Schulich Leader application due",          className:"Personal",             date:"2027-02-17"},
+{id:"u27-ua-marks",     name:"UAlberta: update final marks",             className:"Alberta Universities", date:"2027-02-19"},
+{id:"u27-ucal-app",     name:"UCalgary application + BHSc documents due", className:"Alberta Universities", date:"2027-03-01"},
+{id:"u27-ua-app",       name:"UAlberta application due",                 className:"Alberta Universities", date:"2027-03-01"},
+{id:"u27-queens-other", name:"Queen's other programs application due",   className:"Ontario Universities", date:"2027-03-01"},
+{id:"u27-ucal-docs",    name:"UCalgary documents due",                   className:"Alberta Universities", date:"2027-03-15"},
+{id:"u27-queens-docs",  name:"Queen's documents due",                    className:"Ontario Universities", date:"2027-03-31"},
+{id:"u27-ab-accept",    name:"Accept Alberta offer + residence deadline", className:"Alberta Universities", date:"2027-05-01"},
+{id:"u27-on-accept",    name:"Earliest Ontario offer acceptance date",   className:"Ontario Universities", date:"2027-06-01"},
+{id:"u27-rutherford",   name:"Rutherford Scholarship via Alberta Student Aid", className:"Alberta Universities", date:"2027-07-05"},
+{id:"u27-ua-docs",      name:"UAlberta final documents due",             className:"Alberta Universities", date:"2027-08-01"}
 ];
 
 var SCHOOL_EVENTS = SCHOOL_CALENDAR.map(function (entry) {
@@ -2109,6 +2130,19 @@ var assignments = storedAssignments !== null ? storedAssignments : defaultAssign
 separate ledger so that existing items survive and deleted ones don't come
 back. Anything already over when first seen goes into the ledger only. */
 var seeded = JSON.parse(localStorage.getItem("renert_seeded") || "[]");
+
+/* The first list of university deadlines was replaced in September 2026 after
+the dates were checked against the official pages. Clear the old seeded
+entries once, so they don't sit in the tracker alongside the new ones. */
+try {
+if (!localStorage.getItem("renert_uni_refresh_v2")) {
+assignments = assignments.filter(function (a) {
+return !(a.id && a.id.indexOf("uni-") === 0);
+});
+seeded = seeded.filter(function (id) { return String(id).indexOf("uni-") !== 0; });
+localStorage.setItem("renert_uni_refresh_v2", "done");
+}
+} catch (e) {}
 var seedDay = isoDate(new Date());
 UNI_DEADLINES.concat(SCHOOL_EVENTS).forEach(function (item) {
 if (seeded.indexOf(item.id) !== -1) return;
