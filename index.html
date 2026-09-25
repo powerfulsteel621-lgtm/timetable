@@ -1534,6 +1534,18 @@ max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 font-size:.68rem;font-weight:800;letter-spacing:.03em;vertical-align:baseline;
 }
 
+
+/* ---------- Description editor ---------- */
+.inline-note{
+width:100%;min-width:0;height:28px;padding:3px 8px;
+border:1px solid var(--primary);border-radius:7px;background:var(--surface);
+font:inherit;font-size:.8rem;color:var(--text);
+}
+.inline-note:focus{outline:2px solid rgba(155,106,60,.22)}
+.block-meta.is-note{color:#4a4238;font-weight:600}
+.block,.tracker-item-info{user-select:none}
+.inline-note{user-select:text}
+
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
@@ -2188,6 +2200,7 @@ sub.done = !!sub.done;
 });
 if (typeof a.date !== "string") a.date = "";
 if (typeof a.testingCenter !== "boolean") a.testingCenter = false;
+if (typeof a.note !== "string") a.note = "";
 if (typeof a.completion !== "number" || !isFinite(a.completion)) a.completion = 0;
 a.completion = Math.max(0, Math.min(100, Math.round(a.completion)));
 });
@@ -2740,8 +2753,11 @@ DIFFICULTY[diff].dots.split("").map(function (dot) { return '<span aria-hidden="
 '" aria-label="Mark ' + escapeHtml(item.name) + ' complete">' +
 '<div class="tracker-item-info" role="button" tabindex="0" aria-expanded="' + (open ? "true" : "false") + '" title="Click to add a step">' +
 '<span class="tracker-item-title">' + escapeHtml(item.name) + '</span>' +
-'<span class="tracker-item-meta">' + escapeHtml(item.className) + ' ┃ ' +
-'<span class="' + due.cls + '">' + escapeHtml(due.text) + '</span>' +
+// A description, once written, stands in for the class and due line.
+'<span class="tracker-item-meta">' +
+(item.note
+? escapeHtml(item.note)
+: escapeHtml(item.className) + ' ┃ <span class="' + due.cls + '">' + escapeHtml(due.text) + '</span>') +
 '</span>' +
 '<div class="completion-control" title="Completion" onclick="event.stopPropagation()">' +
 '<input class="completion-slider" type="range" min="0" max="100" step="1" value="' + item.completion +
@@ -3209,6 +3225,7 @@ if (sub) sub.date = newDate;
 });
 });
 
+var rowClickTimer = null;
 var draggedAssignmentId = null;
 var draggedSubId = null;
 var justDraggedAssignment = false;
@@ -3328,14 +3345,15 @@ if (completionNumber) return;
 
 var assignmentInfo = e.target.closest(".tracker-item-info");
 if (assignmentInfo && row && !e.target.closest("button") && !e.target.closest("input") && !e.target.closest(".completion-control")) {
-if (row.hasAttribute("data-sub-id")) {
-var openId = row.getAttribute("data-sub-id");
-openSubRows[openId] = !openSubRows[openId];
+// Held briefly: a second click within the double-click window cancels it
+// and opens the description box instead.
+var subId = row.getAttribute("data-sub-id");
+clearTimeout(rowClickTimer);
+rowClickTimer = setTimeout(function () {
+if (subId) openSubRows[subId] = !openSubRows[subId];
+else openSubtasks[id] = !openSubtasks[id];
 renderTracker();
-return;
-}
-openSubtasks[id] = !openSubtasks[id];
-renderTracker();
+}, 230);
 return;
 }
 
@@ -3528,6 +3546,79 @@ e.preventDefault();
 var enterWrap = e.target.closest(".subtask-add");
 var enterDate = enterWrap ? enterWrap.querySelector(".sub-new-date") : null;
 addSubtask(e.target.getAttribute("data-id"), e.target.value, enterDate ? enterDate.value : "");
+});
+
+/* ---------- Double-click to describe ---------- */
+function openNoteEditor(host, current, onSave) {
+if (!host) return;
+var input = document.createElement("input");
+input.className = "inline-note";
+input.type = "text";
+input.value = current || "";
+input.placeholder = "Description (leave blank to restore)";
+input.setAttribute("aria-label", "Description");
+host.replaceChildren(input);
+input.focus();
+input.select();
+
+var done = false;
+function finish(save) {
+if (done) return;
+done = true;
+if (save) onSave(input.value.trim());
+else renderTracker();
+}
+input.addEventListener("keydown", function (e) {
+if (e.key === "Enter") { e.preventDefault(); finish(true); }
+if (e.key === "Escape") { e.preventDefault(); finish(false); }
+e.stopPropagation();
+});
+input.addEventListener("blur", function () { finish(true); });
+input.addEventListener("click", function (e) { e.stopPropagation(); });
+}
+
+document.addEventListener("dblclick", function (e) {
+// A class block: the description replaces the teacher and room line.
+var block = e.target.closest ? e.target.closest(".block[data-block-key]") : null;
+if (block) {
+var key = block.getAttribute("data-block-key");
+var host = block.querySelector(".block-meta");
+if (!host) {
+host = document.createElement("div");
+host.className = "block-meta";
+block.querySelector(".block-body").appendChild(host);
+}
+openNoteEditor(host, blockNotes[key] || "", function (text) {
+if (text) blockNotes[key] = text;
+else delete blockNotes[key];
+saveBlockNotes();
+renderSchedule();
+});
+return;
+}
+
+// An assignment row: the description replaces the class and due line.
+var row = e.target.closest ? e.target.closest(".tracker-item[data-id]") : null;
+if (!row || row.hasAttribute("data-sub-id") || row.classList.contains("is-done")) return;
+var id = row.getAttribute("data-id");
+var index = assignmentIndexById(id);
+if (index === -1) return;
+
+// Cancel the pending single-click, so the step list does not flicker open.
+clearTimeout(rowClickTimer);
+
+var live = row.isConnected
+? row
+: document.querySelector('.tracker-item[data-id="' + id + '"]:not([data-sub-id])');
+var meta = live ? live.querySelector(".tracker-item-meta") : null;
+openNoteEditor(meta, assignments[index].note || "", function (text) {
+var at = assignmentIndexById(id);
+if (at !== -1) {
+assignments[at].note = text;
+saveAssignments();
+}
+renderTracker();
+});
 });
 
 /* ---------- Calendar ---------- */
@@ -3741,6 +3832,25 @@ return a.className === course && a.date === iso && EXAM_WORDS.test(a.name);
 }) || null;
 }
 
+/* ---------- Descriptions ----------
+Double-click a class block or an assignment row to write a description. It
+replaces the teacher-and-room line on a block, and the class-and-due line on
+an assignment. Clearing the box restores the original text. Block notes are
+keyed by weekday, start time and title, so they come back every week. */
+var blockNotes = {};
+try {
+var savedNotes = JSON.parse(localStorage.getItem("renert_block_notes") || "{}");
+if (savedNotes && typeof savedNotes === "object") blockNotes = savedNotes;
+} catch (e) {}
+
+function blockKey(date, b) {
+return date.getDay() + "|" + b.start + "|" + b.title;
+}
+
+function saveBlockNotes() {
+try { localStorage.setItem("renert_block_notes", JSON.stringify(blockNotes)); } catch (e) {}
+}
+
 /* Names longer than this are clipped on the schedule badge; the full name
 stays in the tooltip. */
 function shortName(name) {
@@ -3844,8 +3954,11 @@ leftChip = minutes < passAt
 : '<span class="block-left is-passing">Passing</span>';
 }
 
+var key = blockKey(date, b);
+var note = blockNotes[key] || "";
+
 html +=
-'<div class="block tone-' + b.tone + (classTone ? " class-" + classTone : "") +
+'<div data-block-key="' + escapeHtml(key) + '" class="block tone-' + b.tone + (classTone ? " class-" + classTone : "") +
 (exam ? " is-exam tc-" + examDifficulty : "") +
 (b.testingCenter ? " is-testing-center tc-" + tcDifficulty : "") +
 (active ? " is-now" : "") + '"' +
@@ -3865,7 +3978,8 @@ escapeHtml(examWord) + '</span></div>'
 ? '<div class="block-badges"><span class="testing-center-badge" title="' + escapeHtml(b.tcTest.name) + '">' +
 escapeHtml(tcName) + '</span></div>'
 : '') +
-(b.meta ? '<div class="block-meta">' + escapeHtml(b.meta) + '</div>' : '') +
+(note || b.meta ? '<div class="block-meta' + (note ? " is-note" : "") + '">' +
+escapeHtml(note || b.meta) + '</div>' : '') +
 '</div>' +
 (owed > 0
 ? '<span class="block-assignment-count" title="' + escapeHtml(plural(owed, "item") + " due by the next " + b.course + " class") + '">' + owed + '</span>'
